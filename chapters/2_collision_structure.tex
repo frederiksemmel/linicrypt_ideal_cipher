@@ -24,30 +24,30 @@ The set of constraints $\C$ corresponding to $\P$ is then a subset of
 \begin{defn}[Collision structure]
     Let $\P = (\M, \C)$ be a Linicrypt program.
     A \textbf{collision structure} is an index $i^*$ and a tuple
-    $(\c_1, \dots, \c_n)$ for $c_i = (O_i, k_i, q_i, a_i)$ and
+    $(\c_1, \dots, \c_n)$ for $c_i = (O_i, \v k_i, \v q_i, \v a_i)$ and
     $O_i \in \{\E, \D\}$, such that:
     \begin{enumerate}
         \item $[\c_1], \dots, [\c_n]$ is an ordering of $\C$
         \item The input or output corresponding to the query $c_{i^*}$ can be fixed arbitrarily:
         \[
-            \span\big(\{ k_{i^*}, q_{i^*} \}\big) \nsubseteq
+            \span\big(\{ \v k_{i^*}, \v q_{i^*} \}\big) \nsubseteq
             \span\big( 
-            \left\{
-            k_1, \dots, k_{i^* -1},
-            q_1, \dots, q_{i^* -1},
-            a_1, \dots, a_{i^* -1}
-            \right\}
+            \{
+            \v k_1, \dots, \v k_{i^* -1},
+            \v q_1, \dots, \v q_{i^* -1},
+            \v a_1, \dots, \v a_{i^* -1}
+            \}
             \cup \rows\left(\M\right)
             \big)
         \]
         \item For all $j \geq i^*$ the constraint $c_j$ does not contradict previous constraints: 
         \[
-            a_j \notin \span\big( \{
-            k_1, \dots, k_{j -1},
-            q_1, \dots, q_{j -1},
-            a_1, \dots, a_{j -1},
+            \v a_j \notin \span\big( \{
+            \v k_1, \dots, \v k_{j -1},
+            \v q_1, \dots, \v q_{j -1},
+            \v a_1, \dots, \v a_{j -1},
             \} 
-            \cup \{ k_j, q_j\}
+            \cup \{ \v k_j, \v q_j\}
             \cup \rows\left(\M\right)
             \big)
         \]
