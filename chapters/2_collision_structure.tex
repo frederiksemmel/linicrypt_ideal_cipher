@@ -1,0 +1,55 @@
+\chapter{Extending Linicrypt to Ideal Ciphers}
+
+Let $\P$ be a Linicrypt program.
+For each query to $\E$ of the form $y = \E(k,x)$ we define the associated constraint
+$(\E, \v k, \v x, \v y)$, where $\v k \in \F^\base$ is the row vector corresponding
+to $k \in \F$ and similarly for $\v x$ and $\v y$.
+Each query to $\D$ of the form $x = \D(k, y)$, is associated with the
+constraint $(\D, \v k, \v y, \v x)$
+
+To capture the fact that $\E(k, x) = y$ should be associated to the same
+constraint as $\D(k,y) = x$ for the same $k$, $x$ and $y$,
+we introduce an equivalence relation on the constraints. 
+For all $\v k, \v x, \v y \in \Base$ we define
+\[
+    (\E, \v k,\v x, \v y) \sim (\D, \v k, \v y, \v x).
+\]
+
+The set of constraints $\C$ corresponding to $\P$ is then a subset of
+\[
+    \left( \{\E, \D\} \times \Base \times \Base \times \Base \right) \Big/\sim
+\]
+
+
+\begin{defn}[Collision structure]
+    Let $\P = (\M, \C)$ be a Linicrypt program.
+    A \textbf{collision structure} is an index $i^*$ and a tuple
+    $(\c_1, \dots, \c_n)$ for $c_i = (O_i, k_i, q_i, a_i)$ and
+    $O_i \in \{\E, \D\}$, such that:
+    \begin{enumerate}
+        \item $[\c_1], \dots, [\c_n]$ is an ordering of $\C$
+        \item The input or output corresponding to the query $c_{i^*}$ can be fixed arbitrarily:
+        \[
+            \span\big(\{ k_{i^*}, q_{i^*} \}\big) \nsubseteq
+            \span\big( 
+            \left\{
+            k_1, \dots, k_{i^* -1},
+            q_1, \dots, q_{i^* -1},
+            a_1, \dots, a_{i^* -1}
+            \right\}
+            \cup \rows\left(\M\right)
+            \big)
+        \]
+        \item For all $j \geq i^*$ the constraint $c_j$ does not contradict previous constraints: 
+        \[
+            a_j \notin \span\big( \{
+            k_1, \dots, k_{j -1},
+            q_1, \dots, q_{j -1},
+            a_1, \dots, a_{j -1},
+            \} 
+            \cup \{ k_j, q_j\}
+            \cup \rows\left(\M\right)
+            \big)
+        \]
+    \end{enumerate}
+\end{defn}

@@ -1,0 +1,6 @@
+\begin{abstract}
+    This thesis is an exposition of the components that make up the proof of the Penrose Incompleteness Theorem, a geometric theorem in the field of general relativity.
+    
+   The theorem states, that geodesic completeness, global hyperbolicity, spatial non-compactness and the existence of a compact trapped surface are mutually exclusive in a spacetime where the null energy condition holds.
+   Its importance lies in the fact that the existence of a trapped surface is a stable condition and thus, the formation of black holes is a robust prediction of general relativity.
+\end{abstract}

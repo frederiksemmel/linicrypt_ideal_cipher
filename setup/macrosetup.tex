@@ -1,0 +1,41 @@
+%% Custom commands
+%% ===============
+
+%% Special characters for number sets, e.g. real or complex numbers.
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\X}{\mathcal{X}}
+
+%% Cryptography stuff
+
+
+%% Linicrypt stuff
+\renewcommand{\v}{\boldsymbol}
+
+\renewcommand{\P}{\mathcal{P}}
+\newcommand{\M}{\boldsymbol{M}}
+\newcommand{\C}{\mathcal{C}}
+
+\newcommand{\base}{\mathsf{base}}
+\newcommand{\Base}{\F^\base}
+
+\renewcommand{\c}{c}
+\renewcommand{\span}{\mathsf{span}}
+\newcommand{\rows}{\mathsf{rows}}
+\newcommand{\E}{E}
+\newcommand{\D}{E^{-1}}
+
+
+%% Fixed/scaling delimiter examples (see mathtools documentation)
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}
+\DeclarePairedDelimiter\norm{\lVert}{\rVert}
+
+%% Use the alternative epsilon per default and define the old one as \oldepsilon
+\let\oldepsilon\epsilon
+\renewcommand{\epsilon}{\ensuremath\varepsilon}
+
+%% Also set the alternate phi as default.
+\let\oldphi\phi
+\renewcommand{\phi}{\ensuremath{\varphi}}
