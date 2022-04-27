@@ -48,19 +48,8 @@
 % \usepackage[amsmath,thmmarks]{ntheorem}
 
 %% LaTeX' own graphics handling
-\usepackage{graphicx}
+% \usepackage{graphicx}
 
-\newcommand{\executeiffilenewer}[3]{%
-\ifnum\pdfstrcmp{\pdffilemoddate{#1}}%
-{\pdffilemoddate{#2}}>0%
-{\immediate\write18{#3}}\fi%
-}
-\newcommand{\includesvg}[1]{%
-\executeiffilenewer{#1.svg}{#1.pdf}%
-{inkscape -z -D --file=#1.svg %
---export-pdf=#1.pdf --export-latex}%
-\input{#1.pdf_tex}%
-}
 
 %% We unfortunately need this for the Rules chapter.  Remove it
 %% afterwards; or at least NEVER use its underlining features.
@@ -121,10 +110,16 @@
 \tableofcontents
 \mainmatter
 
+\begin{enumerate}
+  \item cool
+\end{enumerate}
 \input{chapters/1_introduction}
-\input{chapters/2_collision_structure}
+\input{chapters/2_preliminaries}
+\input{chapters/3_collision_structure}
 
-% \backmatter
+This is an mistake
+
+\backmatter
 
 % \printbibliography
 

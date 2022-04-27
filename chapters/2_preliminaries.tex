@@ -1,0 +1,132 @@
+\chapter{Preliminaries}
+
+Outline:
+\begin{enumerate}
+  \item Standard linicrypt introduction
+  \begin{enumerate}
+  \item Type of constructions it captures, examples
+  \item Kind of adversaries considered
+  \item Algebraic representation, introduction of notation
+  \item Normalization and characterization of indistinguishability
+  \end{enumerate}
+
+  \item Collision resistance with linicrypt
+  \begin{enumerate}
+  \item What attacks are captured, degeneracy and collision structure
+  \end{enumerate}
+\end{enumerate}
+
+\section{Linicrypt}
+\subsection{Definition of a Linicrypt program}
+
+The Linicrypt model for cryptographic constructions was introduced by Cramer \& Rosulek in \cite{RC16}.
+Summarizing the formalization from that paper,
+a pure Linicrypt program $\P$ is a straight line program
+whose intermediate variables are elements in a field $\F$.
+% TODO maybe operation isn't right
+The only allowed operations to create an intermediate variable are:
+\begin{itemize}
+  \item Retrieve an input, which is in $\F$
+  \item Perform a linear combination of existing internal variables
+  \item Call a random oracle $\H: \{0,1\}^* \times \F^* \to \F^*$
+  \item Sample from $\F$ uniformly
+\end{itemize}
+
+The program $\P$ can output one or more of its variables.
+
+\subsection{Type of Adversary}
+The Linicrypt model only imposes computational restrictions on the constructions,
+not on the adversaries.
+Usually one considers arbitrary adversaries $\A$ that are computationally unbounded,
+but have bounded access to the random oracle $\H$.
+Therefore the behaviour of an adversary is typically described in terms of the number of queries it makes.
+
+\subsection{Algebraic Representation}
+
+One of the advantages of restricting the computational model is that one can characterize
+Linicrypt programs with an algebraic representation.
+Let $\P$ be a linicrypt program with intermediate variables $v_1, \dots, v_n$.
+
+A \textbf{base variable} is an intermediate variable which was created by retrieving an input,
+calling the random oracle $\H$ or sampling from $\F$.
+Let $\base$ be the number of base variables
+and let $\vbase \in \Base$ denote the vector of the base variables for an excecution of $\P$.
+A \textbf{derived variable} is one which is created by performing a linear combination of existing itermediate variables.
+Note, that derived variables are therefore linear combinations of base variables.
+As base variables are mostly independent of each other,
+it makes sense to \emph {model them as independent vectors in $\Base$}.
+The derived variables are then modeled by linear combinations of these vectors.
+
+Let $v_i$ be an intermediate variable.
+% Maybe row vector is not the best word, matrix?
+We define the \textbf{associated vector} $\v v_i$ to be the unique row vector such that
+% Maybe \cdot for matrix multiplication between vectors as in original paper
+$v_i = \v v_i \times \vbase$ for every excecution of $\P$.
+For example, if $v_i$ is the j'th base variable, then 
+$
+  \v v_i = \begin{bmatrix}
+  0,\dots,1,\dots,0
+  \end{bmatrix},
+$
+where the $1$ is in the j'th position.
+We follow the convention to write vectors in $\Base$ using a bold font.
+
+The outputs of $\P$ can be described by a matrix with entries in $\F$.
+Let $o_1, \dots, o_k$ be the output variables of $\P$.
+Then the \textbf{output matrix} $\M$ of $\P$ is defined by
+\[
+  \M =
+  \begin{bmatrix}
+  \v o_1\\
+  \vdots \\
+  \v o_k
+  \end{bmatrix}
+  .
+  % ,
+  % \quad
+  % \textrm{which gives}
+  % \quad
+  % \M \times \vbase = 
+  % \begin{bmatrix} 
+  %   o_1 \\
+  %   \vdots \\
+  %   o_k 
+  % \end{bmatrix}
+  % .
+\]
+By the definition of the associated vectors $\v o_i$ we have
+$
+\M \times \vbase = 
+  \begin{bmatrix} 
+  o_1, 
+  \dots,
+  o_k 
+  \end{bmatrix}^\top
+$.
+The output matrix describes the linear correlations in the output of $\P$.
+
+But the output matrix doesn't describe all correlations in $\vbase$.
+Namely, the relationship between the queries and answers to the random oracle $\H$ need to be captured algebraically.
+Let $v_i = H(t_i, (q_1, \dots, q_n))$ be an operation in $\P$.
+The \textbf{associated oracle constraint} $c$ to this operation is
+\[
+  c = \left( t_i, \begin{bmatrix}
+  \v q_1 \\
+  \vdots \\
+  \v q_n
+  \end{bmatrix},
+  \v v_i \right)
+	=
+	(t_i, \Q_i, \v v_i)
+	.
+\]
+This should be interpreted as the requirement that
+$
+\v v_i \times \vbase = \H \left( t_i, \Q_i \times \vbase \right)
+$.
+We denote the set of all (associated) oracle constraints of $\P$ by $\C$.
+
+Wrapping up these definitions,
+we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\M, \C)$.
+A natural question that arises at this point is:
+Does the algebraic representation determine the behaviour of $\P$ completely?
