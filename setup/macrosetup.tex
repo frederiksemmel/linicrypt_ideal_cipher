@@ -1,17 +1,14 @@
 %% Custom commands
 %% ===============
 
-%% Special characters for number sets, e.g. real or complex numbers.
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\F}{\mathbb{F}}
-
-\newcommand{\K}{\mathcal{K}}
-\newcommand{\X}{\mathcal{X}}
-
 %% Shortcuts
+\newcommand{\deq}{\coloneqq\,}
 
 %% Cryptography stuff
 \newcommand{\A}{\mathcal{A}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\X}{\mathcal{X}}
 
 %% Linicrypt stuff
 \renewcommand{\v}{\boldsymbol}
@@ -32,15 +29,9 @@
 \newcommand{\spn}{\mathsf{span}}
 \newcommand{\rows}{\mathsf{rows}}
 
+% cryptocode setup
+\setlength\pcbodylinesep{-0.2\baselineskip}
+\setlength\pcheadlinesep{0.1\baselineskip}
+\createprocedureblock{pcbl}{boxed}{}{}{beginline=\t}
+\createprocedureblock{pcb}{center,boxed}{}{}{beginline=\t}
 
-%% Fixed/scaling delimiter examples (see mathtools documentation)
-\DeclarePairedDelimiter\abs{\lvert}{\rvert}
-\DeclarePairedDelimiter\norm{\lVert}{\rVert}
-
-%% Use the alternative epsilon per default and define the old one as \oldepsilon
-\let\oldepsilon\epsilon
-\renewcommand{\epsilon}{\ensuremath\varepsilon}
-
-%% Also set the alternate phi as default.
-\let\oldphi\phi
-\renewcommand{\phi}{\ensuremath{\varphi}}

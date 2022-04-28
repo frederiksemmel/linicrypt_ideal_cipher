@@ -1,21 +1,5 @@
 \chapter{Preliminaries}
 
-Outline:
-\begin{enumerate}
-  \item Standard linicrypt introduction
-  \begin{enumerate}
-  \item Type of constructions it captures, examples
-  \item Kind of adversaries considered
-  \item Algebraic representation, introduction of notation
-  \item Normalization and characterization of indistinguishability
-  \end{enumerate}
-
-  \item Collision resistance with linicrypt
-  \begin{enumerate}
-  \item What attacks are captured, degeneracy and collision structure
-  \end{enumerate}
-\end{enumerate}
-
 \section{Linicrypt}
 \subsection{Definition of a Linicrypt program}
 
@@ -34,7 +18,29 @@ The only allowed operations to create an intermediate variable are:
 
 The program $\P$ can output one or more of its variables.
 
-\subsection{Type of Adversary}
+Below is an example of a Linicrypt program $\P^\H$,
+% TODO Linicrypt is actually a tuple of CMD's ... should I specify that? Maybe in the 
+% block cipher part.
+written in conventional pseudocode on the left and in explicit Linicrypt on the right. 
+
+\begin{pchstack}[center, space=0.4cm]
+  \pcbl[valign=c]{$\P^\H(x, y)$}{
+    r \sample \F \\
+    \pcreturn \H(x+r) + y
+  }
+  \pseudocode[valign=c]{\rightsquigarrow}
+  \pcbl[valign=c]{$\P^\H(x, y)$}{
+    v_1 \deq x \\
+    v_2 \deq y \\
+    v_3 \sample \F \\
+    v_4 \deq v_1 + v_3 \\
+    v_5 \deq \H(v_4) \\
+    v_6 \deq v_5 + v_2 \\
+    \pcreturn (v_6)
+  }
+\end{pchstack}
+
+\subsection{Type of Adversaries}
 The Linicrypt model only imposes computational restrictions on the constructions,
 not on the adversaries.
 Usually one considers arbitrary adversaries $\A$ that are computationally unbounded,
@@ -130,3 +136,55 @@ Wrapping up these definitions,
 we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\M, \C)$.
 A natural question that arises at this point is:
 Does the algebraic representation determine the behaviour of $\P$ completely?
+
+\subsection{Normalization and Indistinguishability}
+
+Todo: This leads to indistinguishability, normalization and theorem from first paper
+
+\subsection{Characterizing Collision Resistance in Linicrypt}
+
+\begin{enumerate}
+  \item Mention paper and results
+  \item Explain collision structure and degeneracy with the two examples 
+\end{enumerate}
+
+In a paper by I. McQuoid, T. Swope and M. Rosulek
+\cite[Characterizing Collision and Second-Preimage Resistance in Linicrypt]{RMS20},
+the authors introduced a characterization of collision resistance
+and second-preimage resistance for a class of Linicrypt program based on the algebraic representation.
+
+They identified two reasons why a \textit{deterministic} Linicrypt $\P$ program can fail to be second-preimage resistant:
+\begin{enumerate}
+  \item It is degenerate, meaning that it doesn't use all of its inputs independently
+  \item It has a collision structure,
+    which means that one can change some intermediate value and compute what the input needs to be to counteract this change
+\end{enumerate}
+
+Below are two examples, $\P^\H_\textrm{deg}$ is degenerate and $\P^\H_\textrm{deg}$ has a collision structure.
+Note, that you can choose $w' \neq w$ to be any value,
+then find a $x'$ such that the output of $\P^\H_{\textrm{cs}}$ stays the same,
+and finally find $y'$ according to $w' = x' + y'$.
+
+\begin{pchstack}[center,space=2cm]
+  \pcbl[valign=c]{$\P^\H_{\textrm{deg}}(x, y)$}{
+    v \deq x + y \\
+    \pcreturn H(v)
+  }
+  \pcbl[valign=c]{$\P^\H_{\textrm{cs}}(x, y)$}{
+    w \deq x+y \\
+    \pcreturn \H(w) + x
+  }
+\end{pchstack}
+
+The precise definition of degenerate and collision structure will be discussed in chapter \ref{collision_structure},
+in a variation that is adapted to the goals of this thesis.
+The authors show that for any deterministic Linicrypt program which is degenerate
+or has a collision structure
+second-preimage resistance (and hence also collision resistance) is completely broken.
+
+The main result of \cite{RMS20} is that they show that the converse of this is also true,
+for Linicrypt programs which use distinct nonces in each call to the random oracle.
+That is, if a Linicrypt program is not collision resistant,
+then it either has a collision structure, or it is degenerate.
+
+Furthermore, checking for degeneracy and existence of a collision structure can be done efficiently.
