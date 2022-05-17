@@ -10,8 +10,11 @@
 
 \setlrmarginsandblock{3.2cm}{3.2cm}{*}
 
-% \usepackage[backend=biber]{biblatex}
+% \usepackage[backend=bibtex]{biblatex}
 % \addbibresource{refs.bib} 
+% \addbibresource{crypto.bib} 
+
+
 
 %% Packages
 %% ========
@@ -110,18 +113,16 @@
 \tableofcontents
 \mainmatter
 
-\begin{enumerate}
-  \item cool
-\end{enumerate}
 \input{chapters/1_introduction}
 \input{chapters/2_preliminaries}
 \input{chapters/3_collision_structure}
 
-This is an mistake
-
 \backmatter
 
 % \printbibliography
+
+% \bibliographystyle{alpha}
+% \bibliography{crypto, refs}
 
 \includepdf[pages={-}]{declaration-originality.pdf}
 

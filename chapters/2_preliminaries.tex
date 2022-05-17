@@ -132,6 +132,18 @@ $
 $.
 We denote the set of all (associated) oracle constraints of $\P$ by $\C$.
 
+As we want the base variables to be linearly indepentent from each other,
+we restrict ourselves to Linicrypt programs which don't make multiple calls to the random oracle with the same input.
+In the language of the algebraic reprensentation:
+We assume wlog that no two constraints in $\C$ share the same $(t, \Q)$.
+
+
+TODO: Base variables which are created by a call of the same vector have to be removed.
+This is what is done wlog in the first two papers.
+This case corresponds to calling the random orcacle twice on the same input.
+But all this seems to be closely related to the ability of the adversary to make queries collapse,
+therefore I leave this open until I have thought more about that.
+
 Wrapping up these definitions,
 we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\M, \C)$.
 A natural question that arises at this point is:
@@ -142,11 +154,6 @@ Does the algebraic representation determine the behaviour of $\P$ completely?
 Todo: This leads to indistinguishability, normalization and theorem from first paper
 
 \subsection{Characterizing Collision Resistance in Linicrypt}
-
-\begin{enumerate}
-  \item Mention paper and results
-  \item Explain collision structure and degeneracy with the two examples 
-\end{enumerate}
 
 In a paper by I. McQuoid, T. Swope and M. Rosulek
 \cite[Characterizing Collision and Second-Preimage Resistance in Linicrypt]{RMS20},
@@ -160,7 +167,7 @@ They identified two reasons why a \textit{deterministic} Linicrypt $\P$ program 
     which means that one can change some intermediate value and compute what the input needs to be to counteract this change
 \end{enumerate}
 
-Below are two examples, $\P^\H_\textrm{deg}$ is degenerate and $\P^\H_\textrm{deg}$ has a collision structure.
+Below are two example Linicrypt programs, $\P^\H_\textrm{deg}$ is degenerate and $\P^\H_\textrm{deg}$ has a collision structure.
 Note, that you can choose $w' \neq w$ to be any value,
 then find a $x'$ such that the output of $\P^\H_{\textrm{cs}}$ stays the same,
 and finally find $y'$ according to $w' = x' + y'$.
@@ -182,7 +189,7 @@ The authors show that for any deterministic Linicrypt program which is degenerat
 or has a collision structure
 second-preimage resistance (and hence also collision resistance) is completely broken.
 
-The main result of \cite{RMS20} is that they show that the converse of this is also true,
+The main result of \cite{C:CarRos16} is that they show that the converse of this is also true,
 for Linicrypt programs which use distinct nonces in each call to the random oracle.
 That is, if a Linicrypt program is not collision resistant,
 then it either has a collision structure, or it is degenerate.

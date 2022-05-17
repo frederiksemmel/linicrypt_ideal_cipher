@@ -1,70 +1,198 @@
-\chapter{Extending Linicrypt to Ideal Ciphers}
+\chapter{Linicrypt with Ideal Ciphers}
 
-Let $\P$ be a Linicrypt program.
-For each query to $\E$ of the form $y = \E(k,x)$ we define the associated constraint
-$(\E, \v k, \v x, \v y)$, where $\v k \in \F^\base$ is the row vector corresponding
-to $k \in \F$ and similarly for $\v x$ and $\v y$.
-Each query to $\D$ of the form $x = \D(k, y)$, is associated with the
-constraint $(\D, \v k, \v y, \v x)$
+\section{Adapting the Linicrypt model to use block ciphers}
 
-To capture the fact that $\E(k, x) = y$ should be associated to the same
-constraint as $\D(k,y) = x$ for the same $k$, $x$ and $y$,
-we introduce an equivalence relation on the constraints. 
-For all $\v k, \v x, \v x', \v y, \v y' \in \Base$ we define
+In this chapter we modify the Linicrypt model to make use of the ideal cipher model instead of the random oracle model.
+This means that a Linicrypt program gets access to a block cipher $\mathcal{E} = (E, D)$ where $E$ and $D$ are functions $\F \times \F \to \F$
+instead of the hash function $\H : \{0,1\}^* \times \F^* \to \F$.
+By the definition of a block cipher,
+$\E_k := \E(k, \cdot)$ is a permutation of $\F$ for all $k \in \F$ and
+$\D_k := \D(k, \cdot)$ is its inverse.
+In the ideal cipher model, we assume that the block cipher has no weakness.
+This is modelled by choosing each permutation $\E_k$ uniforly at random at the beginning of every security game.
+
+The command $y = \E(k, x)$ in a Linicrypt program has to be treated differently from the command $y = \H(k, x)$ when considering collision resistance,
+because an attacker has access to the deterministic linicrypt program and both directions of the block cipher $\mathcal{E} = (\E, \D)$.
+Consider these two programs, $\PH$ in standard Linicrypt and $\PE$ in ideal cipher Linicrypt.
+
+\begin{pchstack}[center,space=2cm]
+  \pcbl[valign=c]{$\PH(k, x)$}{
+    \pcreturn \H(k,x)
+  }
+  \pcbl[valign=c]{$\PE(k, x)$}{
+    \pcreturn \E(k,x)
+  }
+\end{pchstack}
+While $\PH$ is collision resistant, it is trivial to find second preimages for $\PE$
+For any $k' \in \F$ the pair $(k', \D(k', \E(k, x)))$ is a second preimage to $(k,x)$.
+
+The permutation and invertibility property of block ciphers have to be taken into account
+in both the algebraic representation and the characterization of collision resistance.
+
+\subsection{Algebraic representation for ideal cipher Linicrypt}
+
+Let $\P$ be a ideal cipher Linicrypt program. For each query to $\E$ of the form $y =
+\E(k,x)$ we define the \textbf{associated ideal cipher constraint} $(\E, \v k, \v x, \v y)$.
+Each query to $\D$ of the form $x = \D(k, y)$, is
+associated with the constraint $(\D, \v k, \v y, \v x)$.
+
+As with standard Linicrypt,
+we want to exclude programs that make unnecessary queries to the block cipher.
+This way the base variables are linearly independent,
+except for the dependencies the adversary might introduce by carfully choosing the input.
+Hence we assume wlog that no two constraints have the same $(\E, \v k, \v x)$ or $(\D, \v k, \v y)$.
+
+With ideal ciphers there is a second way to make an unnecessary query.
+That is by first computing $y = \E(k,x)$ and then $x' = \D(k, y)$.
+As $\D_k$ is the inverse of $\E_k$ we have $x = x'$ although $\v x$ and $\v x'$ are linearly independent.
+
+
+Therfore for all $\v k, \v x, \v x', \v y, \v y' \in \Base$ we can assume there are no two constraints
+$(\E, \v k,\v x, \v y)$ and $(\D, \v k, \v y, \v x')$ in $\C$ for $\v x \neq \v x'$.
+Neither can there be $(\D, \v k,\v y, \v x)$ and $(\E, \v k, \v x, \v y')$ in $\C$ for $\v y \neq \v y'$.
+
+TODO: Maybe it is simpler with equivalence relation called always colliding queries
 \begin{align*}
-    (\E, \v k,\v x, \v y) &\sim (\E, \v k, \v x, \v y') \\
+    (\E, \v k,\v x, \v y) &\sim (\E, \v k, \v x, \v y') \\ 
     (\E, \v k,\v x, \v y) &\sim (\D, \v k, \v y, \v x') \\
     (\D, \v k,\v y, \v x) &\sim (\D, \v k, \v y, \v x') \\
-    (\D, \v k,\v y, \v x) &\sim (\E, \v k, \v x, \v y') \\
+    (\D, \v k,\v y, \v x) &\sim (\E, \v k, \v x, \v y')
 \end{align*}
+And saying that no two constraints in $\C$ are in the same equivalence class.
+This might be cleaner, if the equivalence relation used later to analyze repeated nonces case is defined similarly.
 
-The set of constraints $\C$ corresponding to $\P$ is then a subset of
-\[
-    \left( \{\E, \D\} \times \Base \times \Base \times \Base \right) \Big/\sim
-\]
-
-
-Todo: Include the idea that no constraint with the "same" input queries 
-are used twice.
-
-Each query should only be 
-
-Todo: Maybe scrap the idea of the equivalence relation, it seems to hinder more
-than it helps.
-
-Todo: Instead of doing weird things with equivalence relation in Collision structure
+TODO: Instead of doing weird things with equivalence relation in Collision structure
 definition, explicitly add data of reverse or forward direction.
 
 
+\section{Collision Struture}
+outline:
+\begin{itemize}
+\item Describe it in words
+\item Definition
+\end{itemize}
+
+To explain the concept of a collision structure, we will make use of an example.
+Consider the following Linicrypt program:
+\pcb[valign=c]{$\PE[col](a,b,c)$}{
+    w = E(c, b+c) + a \\
+    \pcreturn c + \E(w,b)
+}
+A second preimage to $(a,b,c)$ can be found bythe following procedure:
+Choose some 
+TODO: Finish this example of type 10,0,FF
+
+TODO: Add the example of type 10,0,BB
+
+
 \begin{defn}[Collision structure]
-Let $\P = (\M, \C)$ be a Linicrypt program.
-A \textbf{collision structure} is an index $i^*$ and a tuple
-$(c_1, \dots, c_n)$ for $c_i = (O_i, \v k_i, \v q_i, \v a_i)$ and
-$O_i \in \{\E, \D\}$, such that:
+Let $\P = (\M, \C)$ be a Linicrypt program with $|\C| = n$.
+A \textbf{collision structure} for $\P$ is an index $1 \leq i^* \leq n$, an ordering $(c_1, \dots, c_n)$ of $\C$ for $c_i = (Op_i, \v k_i, \v q_i,\v a_i)$
+and a tuple $(dir_{i^*}, \dots, dir_n)$ for $dir_i \in \{\For, \Back\}$,
+such that the following two conditions hold:
 \begin{enumerate}
-\item $[c_1], \dots, [c_n]$ is an ordering of $\C$
-\item The input or output corresponding to the query $c_{i^*}$ can be fixed arbitrarily:
-\[
-\spn\big(\{ \v k_{i^*}, \v q_{i^*} \}\big) \nsubseteq
-\spn\big( 
-\{
-\v k_1, \dots, \v k_{i^* -1},
-\v q_1, \dots, \v q_{i^* -1},
-\v a_1, \dots, \v a_{i^* -1}
-\}
-\cup \rows\left(\M\right)
-\big)
-\]
-\item For all $j \geq i^*$ the constraint $c_j$ does not contradict previous constraints: 
-\[
-\v a_j \notin \spn\big( \{
-\v k_1, \dots, \v k_{j -1},
-\v q_1, \dots, \v q_{j -1},
-\v a_1, \dots, \v a_{j -1},
-\} 
-\cup \{ \v k_j, \v q_j\}
-\cup \rows\left(\M\right)
-\big)
-\]
+\item 
+Let $\mathcal{F}_\is = \{
+    \v k_1, \dots, \v k_{i^* -1},
+    \v q_1, \dots, \v q_{i^* -1},
+    \v a_1, \dots, \v a_{i^* -1}
+    \}$. One of the following is true:
+        \begin{enumerate}
+    \item $dir_\is = \For \quad$ and 
+        $\quad
+            \spn\big(\{ \v k_{i^*}, \v q_{i^*} \}\big) \nsubseteq
+            \spn\big( \mathcal{F}_\is \cup \rows\left(\M\right) \big)
+        $
+    \item $dir_\is = \Back \quad$ and 
+        $\quad
+            \spn\big(\{ \v k_{i^*}, \v a_{i^*} \}\big) \nsubseteq
+            \spn\big( \mathcal{F}_\is \cup \rows\left(\M\right) \big)
+        $
+\end{enumerate}
+\item For all $j \geq i^*$ let $\mathcal{F}_j = \{
+    \v k_1, \dots, \v k_{j -1},
+    \v q_1, \dots, \v q_{j -1},
+    \v a_1, \dots, \v a_{j -1}
+    \}$. One of the following is true:
+\begin{enumerate}
+    \item $dir_j = \For \quad$ and 
+        $\quad
+        \v a_j \notin \spn\big(
+        \mathcal{F}_j
+        \cup \{ \v k_j, \v q_j\}
+        \cup \rows\left(\M\right)
+        \big)
+        $
+    \item $dir_j = \Back \quad$ and 
+        $\quad
+        \v q_j \notin \spn\big(
+        \mathcal{F}_j
+        \cup \{ \v k_j, \v a_j\}
+        \cup \rows\left(\M\right)
+        \big)
+        $
+\end{enumerate}
+\end{enumerate}
+\end{defn}
+
+TODO: Remove this wordy definition.
+All the info from here should be integrated into the example
+
+\begin{defn}[Collision structure]
+Let $\P = (\M, \C)$ be a Linicrypt program with $|\C| = n$.
+A \textbf{collision structure} for $\P$ is an index $1 \leq i^* \leq n$, an ordering $(c_1, \dots, c_n)$ of $\C$ for $c_i = (Op_i, \v k_i, \v q_i,\v a_i)$
+and a tuple $(dir_{i^*}, \dots, dir_n)$ for $dir_i \in \{\For, \Back\}$,
+such that:
+\begin{enumerate}
+\item The $i^*$'th constraint is unconstrained by the output of $\P$ and previous fixed constraints.
+Let $\mathcal{F} = \{
+    \v k_1, \dots, \v k_{i^* -1},
+    \v q_1, \dots, \v q_{i^* -1},
+    \v a_1, \dots, \v a_{i^* -1}
+    \}$
+denote the vectors fixed by previous constraints in the ordering.
+\begin{enumerate}
+    \item if $dir_\is = \For$, the input of the query associated to $c_\is$ is unconstrained:
+        \[
+            \spn\big(\{ \v k_{i^*}, \v q_{i^*} \}\big) \nsubseteq
+            \spn\big( \mathcal{F} \cup \rows\left(\M\right) \big)
+        \]
+    \item if $dir_\is = \Back$, the output of the query associated to $c_\is$ is unconstrained:
+        \[
+            \spn\big(\{ \v k_{i^*}, \v a_{i^*} \}\big) \nsubseteq
+            \spn\big( \mathcal{F} \cup \rows\left(\M\right) \big)
+        \]
+\end{enumerate}
+\item For all $j \geq i^*$ the constraint $c_j$ does not contradict previous constraints.
+Let $\mathcal{F} = \{
+    \v k_1, \dots, \v k_{j -1},
+    \v q_1, \dots, \v q_{j -1},
+    \v a_1, \dots, \v a_{j -1}
+    \}$
+denote the vectors fixed by previous constraints in the ordering.
+\begin{enumerate}
+    \item if $dir_j = \For$
+        \[
+        \v a_j \notin \spn\big( \{
+        \v k_1, \dots, \v k_{j -1},
+        \v q_1, \dots, \v q_{j -1},
+        \v a_1, \dots, \v a_{j -1},
+        \} 
+        \cup \{ \v k_j, \v q_j\}
+        \cup \rows\left(\M\right)
+        \big)
+        \]
+    \item if $dir_j = \Back$
+        \[
+        \v q_j \notin \spn\big( \{
+        \v k_1, \dots, \v k_{j -1},
+        \v q_1, \dots, \v q_{j -1},
+        \v a_1, \dots, \v a_{j -1},
+        \} 
+        \cup \{ \v k_j, \v a_j\}
+        \cup \rows\left(\M\right)
+        \big)
+        \]
+\end{enumerate}
 \end{enumerate}
 \end{defn}
