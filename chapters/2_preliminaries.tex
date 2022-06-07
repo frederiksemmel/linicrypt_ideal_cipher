@@ -52,6 +52,7 @@ Therefore the behaviour of an adversary is typically described in terms of the n
 One of the advantages of restricting the computational model is that one can characterize
 Linicrypt programs with an algebraic representation.
 Let $\P$ be a linicrypt program with intermediate variables $v_1, \dots, v_n$.
+These are sorted in the order in which they are created in the program.
 
 A \textbf{base variable} is an intermediate variable which was created by retrieving an input,
 calling the random oracle $\H$ or sampling from $\F$.
@@ -71,7 +72,7 @@ $v_i = \v v_i \times \vbase$ for every excecution of $\P$.
 For example, if $v_i$ is the j'th base variable, then 
 $
   \v v_i = \begin{bmatrix}
-  0,\dots,1,\dots,0
+  0 & \cdots & 1 & \cdots & 0
   \end{bmatrix},
 $
 where the $1$ is in the j'th position.
@@ -88,28 +89,23 @@ Then the \textbf{output matrix} $\M$ of $\P$ is defined by
   \v o_k
   \end{bmatrix}
   .
-  % ,
-  % \quad
-  % \textrm{which gives}
-  % \quad
-  % \M \times \vbase = 
-  % \begin{bmatrix} 
-  %   o_1 \\
-  %   \vdots \\
-  %   o_k 
-  % \end{bmatrix}
-  % .
 \]
 By the definition of the associated vectors $\v o_i$ we have
 $
 \M \times \vbase = 
-  \begin{bmatrix} 
-  o_1, 
-  \dots,
-  o_k 
-  \end{bmatrix}^\top
+  \begin{bmatrix} o_1 & \cdots & o_k \end{bmatrix}^\top
 $.
 The output matrix describes the linear correlations in the output of $\P$.
+
+In the same way we also define the \textbf{input matrix} of $\P$.
+If $i_1, \dots, i_l$ are the intermediate variables created by retrieving an input,
+then we write
+$\Inp = \begin{bmatrix}\v i_1 & \cdots &\v i_l\end{bmatrix}^\top$.
+As input variables are base variables,
+the rows of $\Inp$ are canonical basis vectors.
+If the linicrypt program is written such that it first retrieves all its inputs,
+and if 
+% TODO 
 
 But the output matrix doesn't describe all correlations in $\vbase$.
 Namely, the relationship between the queries and answers to the random oracle $\H$ need to be captured algebraically.

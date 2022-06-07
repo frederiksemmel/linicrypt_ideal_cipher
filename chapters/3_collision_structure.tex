@@ -1,10 +1,9 @@
 \chapter{Linicrypt with Ideal Ciphers}
 
 \section{Revisiting Algebraic Representations}
-We have constructed the algebraic representation of a Linicrypt program.
+We have defined the algebraic representation for any Linicrypt program.
 A question that arises is: Which combination of matrices of the structure $(\M, \C)$
-correspond to some valid Linicrypt program?
-
+correspond to a Linicrypt program?
 To answer this question, we need to define the terminology more carefully.
 
 \begin{defn}
@@ -155,16 +154,16 @@ The following example was slightly adapted so that it is invertible.
 }
 
 \begin{align*}
-\M    &= \begin{bmatrix}
+\M    &= \begin{vmatrix}
             1 & 0 & 0 & 0 & 0 & 1 \\
             0 & 0 & 1 & 0 & 0 & 0 
-            \end{bmatrix} \\
-\vq_1 &= \begin{bmatrix}1 & 0 & 0 & 0 & 0 & 0\end{bmatrix} \\
-\va_1 &= \begin{bmatrix}0 & 0 & 0 & 1 & 0 & 0\end{bmatrix} \\
-\vq_2 &= \begin{bmatrix}0 & 0 & 1 & 0 & 0 & 0\end{bmatrix} \\
-\vq_2 &= \begin{bmatrix}0 & 0 & 0 & 0 & 1 & 0\end{bmatrix} \\
-\vq_3 &= \begin{bmatrix}0 & 1 & 0 & 1 & 1 & 0\end{bmatrix} \\
-\vq_3 &= \begin{bmatrix}0 & 0 & 0 & 0 & 0 & 1\end{bmatrix} \\
+            \end{vmatrix} \\
+\vq_1 &= \begin{vmatrix}1 & 0 & 0 & 0 & 0 & 0\end{vmatrix} \\
+\va_1 &= \begin{vmatrix}0 & 0 & 0 & 1 & 0 & 0\end{vmatrix} \\
+\vq_2 &= \begin{vmatrix}0 & 0 & 1 & 0 & 0 & 0\end{vmatrix} \\
+\va_2 &= \begin{vmatrix}0 & 0 & 0 & 0 & 1 & 0\end{vmatrix} \\
+\vq_3 &= \begin{vmatrix}0 & 1 & 0 & 1 & 1 & 0\end{vmatrix} \\
+\va_3 &= \begin{vmatrix}0 & 0 & 0 & 0 & 0 & 1\end{vmatrix} \\
 \end{align*}
 
 Note, that $(c_3, c_2, c_1)$ is an ordering solving $\C$ and $\rows(M) \subset \sol(\C)$.
