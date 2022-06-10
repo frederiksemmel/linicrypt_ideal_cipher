@@ -1,174 +1,291 @@
 \chapter{Linicrypt with Ideal Ciphers}
 
 \section{Revisiting Algebraic Representations}
-We have defined the algebraic representation for any Linicrypt program.
-A question that arises is: Which combination of matrices of the structure $(\M, \C)$
-correspond to a Linicrypt program?
+We have defined the algebraic representation for a Linicrypt program.
+It consists of the input matrix $\Inp \in \F^{k \times \base}$,
+the output matrix $\M \in \F^{l \times \base}$
+and the set of constraints $\C = \{ (t_i, \Q_i, \va_i) \mid i = 1, \dots, n \}$,
+with $\Q_i \in \F^{m_i \times \base}$ and $\va_i \in \F^{1 \times \base}$.
+A question that arises is:
+Which combination of matrices this described structure correspond to a Linicrypt program?
 To answer this question, we need to define the terminology more carefully.
 
-\begin{defn}
-A random oracle constraint of dimension $\base$ with $k$ inputs is a tuple $(t, \v Q, \v a)$ for
+\begin{defn}[Random oracle constraing]
+A \textbf{random oracle constraint} of dimension $\base$ with $k$ inputs is a tuple $(t, \v Q, \v a)$ for
 $t \in \bin^*$, $\Q \in \F^{k \times \base}$ and $\va \in \F^{1 \times \base}$.
 \end{defn}
 
 We call $t$ the nonce and refer to $\Q$ and $\va$ as the query and answer to the random oracle.
 Usually we just say constraint when the other variables are clear from the context.
-The constraints $(t, \Q, \va)$ encodes a relationship between the base variables $\vbase \in \Base$ of a program.
-Namely $\H(t, \Q \vbase) = \va \vbase$.
+The constraints $(t, \Q, \va)$ encodes a relationship between the base variables $\vbase \in \Base$ of a program,
+namely $\H(t, \Q \vbase) = \va \vbase$.
 Because $\H$ is a well-defined function,
 and not just any relation,
 these requirements extend to the constraints.
 
-\begin{defn}
-A set of (random oracle) constraints $\C$ is well-defined if for any pair of constraints 
+\begin{defn}[Well-defined]
+A set of (random oracle) constraints $\C$ is \textbf{well-defined} if for any pair of constraints 
 $c_i, c_j \in \C$ we have $(t_i,\Q_i) = (t_j, \Q_j) \implies \va_i = \va_j$.
 \end{defn}
 
 When we use a set of constraints, we will implicitly also require that it is well-defined.
-Now we can characterize which sets of constraints correspond to a Linicrypt program.
+Highlighting the function like properties of a constraint $(t, \Q, \va)$,
+we will also use the shorthand $(t,\Q) \mapsto \va$ or $\Q \mapsto \va$ if $t$ is an empty string.
+This notation was introduced in \cite{CSF:HolRosRoy22}.
+If a set of constraints is well-defined, it might still not correspond to a valid Linicrypt program.
+Consider the set
+\[
+\C = \left\{ \m{1&0} \mapsto \m{0&1}, \m{0&1} \mapsto \m{1&0}\right\}.
+\]
+Although it is well-defined,
+it corresponds to the requirement that $\H(\H(x)) = x$
+for some $x \in \F$.
+Such an $x$ might not exists in the first place,
+and if it does,
+no efficient program can find it in the random oracle model.
+
+In order to characterize which constraints can be solved by a Linicrypt program,
+we also need to consider the concept of basis change as introduced in \cite{C:CarRos16}.
+
+\begin{defn}[Basis change]
+    Let $\v B$ be any matrix in $\F^{\base \times \base}$
+    and $\P = (\Inp, \M, \C)$ be a Linicrypt program.
+    We define 
+    \[
+        \C \B \coloneqq \big\{ (t, \Q \B, \va \B) \mid (t, \Q, \va) \in \C \big\}.
+    \]
+    If $\B$ is invertible,
+    we say $(\Inp \B, \M \B, \C \B)$ is the algebraic representation of $\P$
+    after applying the \textbf{basis change} $\B$.
+\end{defn}
+
+In the case that $\B$ is just a permutation of the input variables
+the transformed representation clearly describes the same program,
+we have just renamed the input variables.
+But a more complex basis changes won't change the program either, as is shown below.
+
+Now we can characterize which sets of constraints and input matrices correspond to a Linicrypt program.
 
 \begin{defn}[Solvable]
-Let $\C$ be a finite set of valid constraints.
-$\C$ is (deterministically) solvable if there exists an ordering $(c_1, \dots, c_n)$ of $\C$
-and a subspace $\Fix$ of $\Base$
+Let $\C$ be a finite set of valid constraints of dimension $\base$,
+and let $\Inp \in \F^{k \times \base}$ for some $k \in \NN$.
+$\C$ is deterministically solvable fixing $\Inp$
+if there exists an ordering $(c_1, \dots, c_n)$ of $\C$
 such that for all $i=1, \dots n$:
 \begin{enumerate}
 \item
-    $\spn(\Q_i) \subset \Fix + \spn \big(c_1, \dots, c_{i-1} \big)$
+    \label{solvable1}
+    $\rows(\Q_i) \subset \spn \big(\rows(\Inp) \cup \{\va_1, \dots, \va_{i-1}\}\big)$
 \item
-    $\va_i \notin \Fix + \spn \big(c_1, \dots, c_{i-1} \big) + \spn(\Q_i)$
-\item
-    TODO or this notation
-\item
-    $\rows(\Q_i) \subset \spn \big(\Fix \cup \rows(c_1) \cup \dots \cup \rows(c_{i-1})\big)$
-\item
-    $\va_i \notin \spn \big(\Fix \cup \rows(c_1) \cup \dots \cup \rows(c_{i-1}) \cup \rows(\Q_i) \big)$
+    \label{solvable2}
+    $\va_i \notin \spn \big(\rows(\Inp) \cup \{\va_1, \dots, \va_{i-1}\} \cup \rows(\Q_i) \big)$
 \end{enumerate}
-
-We call $\Fix$ the solvable space (TODO or free space or fixable space or fixed space) of $\C$
-and write $\sol(\C) = \Fix$.
-We call $(c_1, \dots, c_n)$ the (solution) ordering of $\C$.
+We call $(c_1, \dots, c_n)$ the solution ordering of $\C$ fixing $\Inp$ (or fixing $\rows(\Inp)$).
 \end{defn}
 
-If we construct the algebraic representation of a Linicrypt program $\P$,
+This is a generalization of the idea of the collision structure in \cite{TCC:McQSwoRos19}.
+We will use it to generalize the collision structure and degeneracy attacks from that work.
+
+Intuitively, $\C$ being solvable fixing $\Inp$ means,
+that we can constrain $\vbase$ by $\Inp \vbase = (i_1, \dots, i_k)^\top$ for arbitrary inputs $i_1, \dots, i_k \in \F$,
+and then compute each oracle query (condition \ref{solvable1}),
+without creating a contradiction (condition \ref{solvable2}).
+
+
+% TODO in general it is unclear if P is deterministic or not. I think everything works for
+% non deterministic programs too, just more cumbersome and useless for my purpose.
+If we construct the algebraic representation $(\Inp, \M, \C)$ of a deterministic Linicrypt program $\P$,
 we get a solvable set of constraints.
-Indeed, the ordering of the constraints in the definition can be exactly the order of the corresponding queries in the execution of $\P$.
-In this case, the solvable space would be the space spanned by the corresponding vectors to the input variables and the randomly sampled variables.
+Indeed, the solution ordering of $\C$ fixing $\Inp$
+can be exactly the order of the corresponding queries in the execution of $\P$.
+The following Lemma shows that the other direction also works,
+meaning that we can recover a Linicrypt program from solvable constraints.
 
-The other direction is also true.
-
-\begin{lemma}[Solvable constraints]
-    Let $\C$ be a set of solvable constraints and $k = \dim (\sol (\C))$.
-    Let $\out \in \NN$ be arbitrary and $\inp \leq k$.
-    Let $\M \in \F^{\out \times \base}$ be an arbitrary output matrix.
+% TODO add name?
+\begin{lemma}
+\label{solvable}
+    Let $\C$ be a set of deterministically solvable constraints fixing $\Inp \in \F^{k \times \base}$ for some $k \in \NN$.
+    Let $\M \in \F^{\out \times \base}$ be an arbitrary output matrix for some $\out \in \NN$.
     Then there is a basis change $\B \in \F^{\base \times \base}$
-    and a Linicrypt program $\P$ taking $\inp$ inputs
-    such that $(\M, \C \B^{-1})$ is it's algebraic representation.
+    and a Linicrypt program $\P$,
+    % TODO it doesnt actually matter that M is transformed, as it is arbitray anyways... Which way is less confusing? Probably without B, even though it is less visually pleasing
+    such that $(\Inp \B, \M \B, \C \B)$ is it's algebraic representation.
 \end{lemma}
 
 \begin{proof}
-Let $(\vx_1, \dots, \vx_k)$ be a basis for $\sol(\C)$ and let $(c_1, \dots, c_n)$ be the ordering.
-The new basis for $\Base$ is $(\vx_1, \dots, \vx_k, \va_1, \dots, \va_n)$.
+Let $(\vi_1, \dots, \vi_k) = \rows(I)$ let $(c_1, \dots, c_n)$ be the solution ordering of $\C$ fixing $\I$.
+% TODO wording, basis change matrix?
+We choose the new basis for $\Base$ as $(\vi_1, \dots, \vi_k, \va_1, \dots, \va_n)$, hence the basis change matrix is defined by
 \[
-    \B = 
+    \B^{-1} = 
     \begin{bmatrix}
-\vx_1 &
-\dots &
-\vx_k &
+\vi_1 &
+\cdots &
+\vi_k &
 \va_1 &
-\dots &
+\cdots &
 \va_n
-    \end{bmatrix}^\top
-\]
-TODO or
-\[
-    \B =
-    \begin{bmatrix}
-\vx_1 \\
-\vdots \\
-\vx_k \\
-\va_1 \\
-\vdots \\
-\va_n
-    \end{bmatrix}
+    \end{bmatrix}^\top.
 \]
 
-Then we define the constraints $\C'$ via $t_i' = t_i$, $\Q_i' B = \Q_i$ and $\va_i' B = \va_i$.
-Note, that, as $\C$ is solvable via the ordering $(c_1, \dots, c_n)$,
-these constraints have the form
+In the following we denote by $\v e_i$ the i'th canonical row vector.
+By definition of $\B$ we have for $i=1, \dots, n$
+% TODO this is not compact enough, for its importance
+\begin{equation*}
+\I = \begin{bmatrix}
+    \v e_1 \\
+    \vdots \\
+    \v e_k
+\end{bmatrix} \B^{-1}
+\qquad \textrm{and} \qquad
+\va_i = \v e_{k+i} \B^{-1},
+\end{equation*}
+which is equivalent to
+\begin{equation*}
+\I \B = \begin{bmatrix}
+    \v e_1 \\
+    \vdots \\
+    \v e_k
+\end{bmatrix}
+\qquad \textrm{and} \qquad
+\va_i \B = \v e_{k+i}.
+\end{equation*}
+
+Additionally, as $\C$ is solvable via the ordering $(c_1, \dots, c_n)$,
+we know that 
+\[
+\rows(\Q_i \B) \subset \spn\big( \ve_1, \dots, \ve_{k+i-1} \big)
+\]
+
+In other words, the query and answer matrices for the constraints in $\C \B$ have the form
 \begin{align*}
-\Q_i' &= \begin{bmatrix} \lambda^i_1 & \cdots & \lambda^i_{i-1} & 0 & 0 & \cdots & 0 \end{bmatrix} \qquad \textrm{for} \quad \lambda^i_j \in \F \\
-\va_i' &= \begin{bmatrix} \;0\;\, & \dots & \;\;\;0\;\;\; & 1 & 0 & \dots & 0 \end{bmatrix}
+\Q_i &= \begin{bmatrix} \parbox{12pt}{$\lambda^i_1$} & \cdots & \parbox{32pt}{$\lambda^i_{k+i-1}$} & 0 & 0 & \cdots & 0 \end{bmatrix} \qquad \textrm{for} \quad \lambda^i_j \in \F \\
+\va_i &= \begin{bmatrix} \parbox{12pt}{0}            & \cdots & \parbox{32pt}{0}                 & 1 & 0 & \cdots & 0 \end{bmatrix}
 \end{align*}
 
-This is the correct form for an algebraic representation of a program $\P$ taking $\inp \leq k$ inputs,
-randomly sampling the next $k - \inp \geq 0$ base variables,
-and outputting according to $\M$.
+Both the input matrix $\I \B$ and $\C \B$ have the correct form to be 
+the algebraic representation of a program $\P$ taking $k$ inputs,
+and outputting according to $\M \B$.
 \end{proof}
 
-TODO maybe switch to using input matrices, this would maybe clean things up later
-\begin{lemma}[Solvable constraints]
-Let $\C$ be a set of solvable constraints and $k = \dim (\sol (\C))$.
-Let $\out \in \NN$ be arbitrary and $\inp \leq k$.
-Let $\M \in \F^{\out \times \base}$ be arbitrary and $\Inp \in \F^{\inp \times \base}$ such that $\spn(\Inp) \subseteq \sol(\C)$.
-Then there is a basis change $\B \in \F^{\base \times \base}$ and a Linicrypt program $\P$
-such that $(\Inp \B^{-1}, \M\B^{-1}, \C \B^{-1})$ is it's algebraic representation.
-\end{lemma}
 
 \section{Revisiting Collision Structures}
-Using this language we can argue about the invertibility of a Linicrypt program and about the possibility to directly calculate second preimages.
-Let $\P = (\M, \C)$ be a Linicrypt program.
+Using this language we can argue about the invertibility and second preimage resistance of a Linicrypt program.
+Let $\P = (\I, \M, \C)$ be a Linicrypt program.
 
 \begin{lemma}
-    $\P$ is invertible if $\rows(\M) \subseteq \sol(\C).$
+    $\P$ is deterministically invertible if $\C$ is solvable fixing $\M$.
 \end{lemma}
 
 \begin{proof}
-TODO
+By Lemma \ref{solvable} we get a Linicrypt program $\P^{-1}$ with algebraic representation $(\M \B, \I \B, \C \B)$.
+By inputting $(o_1, \dots, o_l)$ into $\P^{-1}$ the program computes the values of $\vbase$.
+As $\vbase$ solves $\C\B$ with $\I\B \vbase = (i_1, \dots, i_k)^\top$ and $\M\B \vbase = (o_1, \dots, o_l)^\top$,
+it follows from associativity that $\B\vbase$ solves $\C$ with $\I (\B\vbase) = (i_1, \dots, i_k)^\top$.
+Therefore, if we run $\P$ with input $(i_1, \dots, i_k)$ we will get the output $(o_1, \dots, o_l)$.
 \end{proof}
+TODO this proof needs to be expanded, it relies on defining ``$\vv$ solves $\C$" and proving that
+if $\vv$ solves $\C$ then running $\P$ on $\I \vv$ we get $\M \vv$ as output.
+This is kind of obvious, but the proof I found is not super trivial, let's talk about it.
+
+To simplify the following statements we introduce a shorthand for all the row vectors contained in a set of constraints $\C$.
+We will write \[
+\rows(\C) = \bigcup_{(\Q,\va) \, \in \, \C} \big\{ \rows(\Q) \cup \{ \va \} \big\}
+\]
 
 \begin{lemma}
-    $\P$ has a collision structure
-    if $\C = \C_{\textrm{fixed}} \sqcup \C_{\textrm{cs}}$ such that
+    One can find second preimages for $\P$ with $\leq n$ queries
+    if $\C = \Cfix \sqcup \Ccs$ such that
+    $\C_\textrm{cs}$ is solvable fixing a matrix $\I_\textrm{cs}$ such that
     \begin{equation}
-        \sol(\C_\textrm{cs}) \supset \spn\big(\rows(\C_\textrm{fixed}) \cup \rows(\M)\big).
+        \spn(\rows(\I_\textrm{cs})) \supset \spn\big(\rows(\C_\textrm{fixed}) \cup \rows(\M)\big).
     \end{equation}
 \end{lemma}
 \begin{proof}
-TODO
+TODO, but same idea, using Lemma \ref{solvable}
 \end{proof}
 
 Note, that it is crucial that the space on the left is $\supset$ and not only $\supseteq$,
 as this gives the extra degree of freedom to find a different preimage.
-This is the same role that $w'$ plays in the example from \cite{RMS20}.
-
-This characterization directly includes the case of degeneracy,
-because then $\Ccs = \{\}$ and $\sol(\Ccs) = \Base$,
+It plays the same role as $\vq_{i^*}$ plays in the definition of collision structure from \cite{TCC:McQSwoRos19}.
+This characterization includes the case of degeneracy,
+namely it corresponds to choosing $\Ccs = \{\}$ and $\I_\textrm{cs} = \Id_\base$,
 while degeneracy means precisely $\Base \supset \spn(\rows(\C) \cup \rows(\M))$.
 
-The following example was slightly adapted so that it is invertible.
+The main benefit of this perspective on the collision structure attack is,
+that it describes the Linicrypt program which produces the second preimages.
 
-\pcb[valign=c]{$\PE[inv,1](x,y,z)$}{
+The following is the running example from \cite{TCC:McQSwoRos19}.
+\pcb[valign=c]{$\P(x,y,z)$}{
     w = \H(x) + \H(z) + y \\
-    \pcreturn (\H(w) + x, z)
+    \pcreturn (\H(w) + x, \H(z))
 }
-
+% TODO fix alignment
 \begin{align*}
-\M    &= \begin{vmatrix}
-            1 & 0 & 0 & 0 & 0 & 1 \\
+\I    &= \begin{bmatrix}
+            1 & 0 & 0 & 0 & 0 & 0 \\
+            0 & 1 & 0 & 0 & 0 & 0 \\
             0 & 0 & 1 & 0 & 0 & 0 
-            \end{vmatrix} \\
-\vq_1 &= \begin{vmatrix}1 & 0 & 0 & 0 & 0 & 0\end{vmatrix} \\
-\va_1 &= \begin{vmatrix}0 & 0 & 0 & 1 & 0 & 0\end{vmatrix} \\
-\vq_2 &= \begin{vmatrix}0 & 0 & 1 & 0 & 0 & 0\end{vmatrix} \\
-\va_2 &= \begin{vmatrix}0 & 0 & 0 & 0 & 1 & 0\end{vmatrix} \\
-\vq_3 &= \begin{vmatrix}0 & 1 & 0 & 1 & 1 & 0\end{vmatrix} \\
-\va_3 &= \begin{vmatrix}0 & 0 & 0 & 0 & 0 & 1\end{vmatrix} \\
+            \end{bmatrix} \\
+\M    &= \begin{bmatrix}
+            1 & 0 & 0 & 0 & 0 & 1 \\
+            0 & 0 & 0 & 0 & 1 & 0 
+            \end{bmatrix} \\
+\vq_1 &= \begin{bmatrix}1 & 0 & 0 & 0 & 0 & 0\end{bmatrix} \\
+\va_1 &= \begin{bmatrix}0 & 0 & 0 & 1 & 0 & 0\end{bmatrix} \\
+\vq_2 &= \begin{bmatrix}0 & 0 & 1 & 0 & 0 & 0\end{bmatrix} \\
+\va_2 &= \begin{bmatrix}0 & 0 & 0 & 0 & 1 & 0\end{bmatrix} \\
+\vq_3 &= \begin{bmatrix}0 & 1 & 0 & 1 & 1 & 0\end{bmatrix} \\
+\va_3 &= \begin{bmatrix}0 & 0 & 0 & 0 & 0 & 1\end{bmatrix} \\
 \end{align*}
 
-Note, that $(c_3, c_2, c_1)$ is an ordering solving $\C$ and $\rows(M) \subset \sol(\C)$.
+We set $\Ccs = \{ c_1, c_3 \}$ and $\Cfix = \{c_2\}$.
+Then $(c_3, c_1)$ is a solution ordering for $\C$ fixing the row vectors
+% TODO notation, thsi is not linear independet, fix solvable again ...
+\[
+\rows(\M) \cup \rows(\Cfix) \cup \{ \vq_3 \}.
+\]
+We then concatenate these rows to form the input matrix of the attacking program:
+% TODO explain why a_2 not in here, linear dependent
+$\I_\textrm{cs} = \begin{bmatrix}\M & \vq_2 & \vq_3 \end{bmatrix}^\top$.
+Then Lemma \ref{solvable} gives us the transformation $\B$
+such that $(\I_\textrm{cs} \B, \I \B, \Ccs \B)$
+is the algebraic representation of some $\P_\textrm{col}$.
+Here we have
+% TODO fix alignment
+\[
+\B = 
+\begin{bmatrix}
+1 & 0 & 0 & 0 &-1 & 0 \\
+0 &-1 & 0 & 1 & 0 &-1 \\
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & 0
+\end{bmatrix},
+\]
+which leads to the representation:
+\begin{align*}
+    % TODO fix this constraints mess
+    \C_{cs} \B &= \begin{Bmatrix}
+        \m{0 & 0 & 0 & 1 &\phantom{-}0 & 0} \mapsto \m{0 & 0 & 0 & 0 & 1 & 0} \} \\
+        \m{1 & 0 & 0 & 0 &-1 & 0} \mapsto \m{0 & 0 & 0 & 0 & 0 & 1} \}
+    \end{Bmatrix} \\
+    \I_\textrm{cs} \B &= \m{\Id_4 & 0} \\
+    \I \B &= \begin{bmatrix}
+1 & 0 & 0 & 0 &-1 & 0 \\
+0 &-1 & 0 & 1 & 0 &-1 \\
+0 & 0 & 1 & 0 & 0 & 0
+    \end{bmatrix}    
+\end{align*}
 
-TODO finish typing this example
+In the form of a Linicryp program this is:
+\pcb[valign=c]{$\P_\textrm{col}(o_1,o_2,z, q_3)$}{
+    a_3 = \H(q_3) \\
+    v = \H(o_1 - a_3) \\
+    \pcreturn (o_1 - a_3, q_3 -o_2 - v, z)
+}
+
 
 \section{Adapting the Linicrypt model to use block ciphers}
 

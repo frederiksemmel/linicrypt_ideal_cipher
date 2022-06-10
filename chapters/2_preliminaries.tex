@@ -56,8 +56,11 @@ These are sorted in the order in which they are created in the program.
 
 A \textbf{base variable} is an intermediate variable which was created by retrieving an input,
 calling the random oracle $\H$ or sampling from $\F$.
+These are special, because they can be independent of each other.
 Let $\base$ be the number of base variables
-and let $\vbase \in \Base$ denote the vector of the base variables for an excecution of $\P$.
+and let $\vbase \in \Base$ denote the vector of the values these base variables take
+in a specific excecution of $\P$.
+Here, we order the base variables the same way as the intermediate variables.
 A \textbf{derived variable} is one which is created by performing a linear combination of existing itermediate variables.
 Note, that derived variables are therefore linear combinations of base variables.
 As base variables are mostly independent of each other,
@@ -79,14 +82,14 @@ where the $1$ is in the j'th position.
 We follow the convention to write vectors in $\Base$ using a bold font.
 
 The outputs of $\P$ can be described by a matrix with entries in $\F$.
-Let $o_1, \dots, o_k$ be the output variables of $\P$.
+Let $o_1, \dots, o_l$ be the output variables of $\P$.
 Then the \textbf{output matrix} $\M$ of $\P$ is defined by
 \[
   \M =
   \begin{bmatrix}
   \v o_1\\
   \vdots \\
-  \v o_k
+  \v o_l
   \end{bmatrix}
   .
 \]
@@ -98,18 +101,23 @@ $.
 The output matrix describes the linear correlations in the output of $\P$.
 
 In the same way we also define the \textbf{input matrix} of $\P$.
-If $i_1, \dots, i_l$ are the intermediate variables created by retrieving an input,
+If $i_1, \dots, i_k$ are the intermediate variables created by retrieving an input,
 then we write
-$\Inp = \begin{bmatrix}\v i_1 & \cdots &\v i_l\end{bmatrix}^\top$.
+\[
+  \Inp = \begin{bmatrix}
+  \v i_1 \\
+  \vdots \\
+  \v i_k
+  \end{bmatrix}.
+\]
 As input variables are base variables,
 the rows of $\Inp$ are canonical basis vectors.
-If the linicrypt program is written such that it first retrieves all its inputs,
-and if 
-% TODO 
+If the Linicrypt program is written such that it first retrieves all its inputs,
+then $\v i_m$ is simply the $m$'th canonical basis vector. 
 
 But the output matrix doesn't describe all correlations in $\vbase$.
 Namely, the relationship between the queries and answers to the random oracle $\H$ need to be captured algebraically.
-Let $v_i = H(t_i, (q_1, \dots, q_n))$ be an operation in $\P$.
+Let $a_i = H(t_i, (q_1, \dots, q_n))$ be an operation in $\P$.
 The \textbf{associated oracle constraint} $c$ to this operation is
 \[
   c = \left( t_i, \begin{bmatrix}
@@ -117,14 +125,14 @@ The \textbf{associated oracle constraint} $c$ to this operation is
   \vdots \\
   \v q_n
   \end{bmatrix},
-  \v v_i \right)
+  \va_i \right)
 	=
-	(t_i, \Q_i, \v v_i)
+	(t_i, \Q_i, \va_i)
 	.
 \]
 This should be interpreted as the requirement that
 $
-\v v_i \times \vbase = \H \left( t_i, \Q_i \times \vbase \right)
+\va_i \times \vbase = \H \left( t_i, \Q_i \times \vbase \right)
 $.
 We denote the set of all (associated) oracle constraints of $\P$ by $\C$.
 
@@ -141,12 +149,13 @@ But all this seems to be closely related to the ability of the adversary to make
 therefore I leave this open until I have thought more about that.
 
 Wrapping up these definitions,
-we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\M, \C)$.
+we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\Inp, \M, \C)$.
 A natural question that arises at this point is:
 Does the algebraic representation determine the behaviour of $\P$ completely?
 
 \subsection{Normalization and Indistinguishability}
 
+% TODO
 Todo: This leads to indistinguishability, normalization and theorem from first paper
 
 \subsection{Characterizing Collision Resistance in Linicrypt}
