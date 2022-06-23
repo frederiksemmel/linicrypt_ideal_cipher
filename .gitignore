@@ -1,2 +1,5 @@
 *.synctex.*
 changes.pdf
+thesis.aux
+thesis.toc
+thesis.bcf

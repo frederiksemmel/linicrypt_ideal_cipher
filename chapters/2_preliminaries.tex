@@ -57,21 +57,21 @@ These are sorted in the order in which they are created in the program.
 A \textbf{base variable} is an intermediate variable which was created by retrieving an input,
 calling the random oracle $\H$ or sampling from $\F$.
 These are special, because they can be independent of each other.
-Let $\base$ be the number of base variables
-and let $\vbase \in \Base$ denote the vector of the values these base variables take
-in a specific excecution of $\P$.
+Let $\base$ be the number of base variables.
+We denote by $\vbase \in \Base$ the column vector
+consisting of the values that the base variables take in a specific excecution of $\P$.
 Here, we order the base variables the same way as the intermediate variables.
 A \textbf{derived variable} is one which is created by performing a linear combination of existing itermediate variables.
 Note, that derived variables are therefore linear combinations of base variables.
 As base variables are mostly independent of each other,
-it makes sense to \emph {model them as independent vectors in $\Base$}.
+it makes sense to \emph {model them as linearly independent vectors in $\Base$}.
 The derived variables are then modeled by linear combinations of these vectors.
 
 Let $v_i$ be an intermediate variable.
-% Maybe row vector is not the best word, matrix?
+% TODO here we make the distinction betwenn variable, it's value on an execution, is this cleaner? 
 We define the \textbf{associated vector} $\v v_i$ to be the unique row vector such that
-% Maybe \cdot for matrix multiplication between vectors as in original paper
-$v_i = \v v_i \times \vbase$ for every excecution of $\P$.
+for every excecution of $\P$ base variables taking the values $\vbase$,
+the variable $v_i$ has the value $\vv_i \vbase$.
 For example, if $v_i$ is the j'th base variable, then 
 $
   \v v_i = \begin{bmatrix}
@@ -79,13 +79,13 @@ $
   \end{bmatrix},
 $
 where the $1$ is in the j'th position.
-We follow the convention to write vectors in $\Base$ using a bold font.
+We follow the convention to write matrices and vectors using a bold font.
 
 The outputs of $\P$ can be described by a matrix with entries in $\F$.
-Let $o_1, \dots, o_l$ be the output variables of $\P$.
-Then the \textbf{output matrix} $\M$ of $\P$ is defined by
+Let $o_1, \dots, o_l \in \{v_1, \dots, v_n \}$ be the output variables of $\P$.
+Then the \textbf{output matrix} $\O$ of $\P$ is defined by
 \[
-  \M =
+  \O =
   \begin{bmatrix}
   \v o_1\\
   \vdots \\
@@ -95,13 +95,13 @@ Then the \textbf{output matrix} $\M$ of $\P$ is defined by
 \]
 By the definition of the associated vectors $\v o_i$ we have
 $
-\M \times \vbase = 
+\O \vbase = 
   \begin{bmatrix} o_1 & \cdots & o_k \end{bmatrix}^\top
 $.
 The output matrix describes the linear correlations in the output of $\P$.
 
 In the same way we also define the \textbf{input matrix} of $\P$.
-If $i_1, \dots, i_k$ are the intermediate variables created by retrieving an input,
+If $i_1, \dots, i_k \in \{v_1, \dots, v_n\}$ are the intermediate variables created by retrieving an input,
 then we write
 \[
   \Inp = \begin{bmatrix}
@@ -110,15 +110,16 @@ then we write
   \v i_k
   \end{bmatrix}.
 \]
-As input variables are base variables,
+As $i_1, \dots, i_k$ are base variables,
 the rows of $\Inp$ are canonical basis vectors.
 If the Linicrypt program is written such that it first retrieves all its inputs,
 then $\v i_m$ is simply the $m$'th canonical basis vector. 
 
-But the output matrix doesn't describe all correlations in $\vbase$.
-Namely, the relationship between the queries and answers to the random oracle $\H$ need to be captured algebraically.
+The input and output matrix describe the linear correlations between input and output of the program with respect to it's base variables.
+But the base variables are not completely independent of each other.
+In fact, the relationship between the queries and answers to the random oracle $\H$ needs to be captured algebraically.
 Let $a_i = H(t_i, (q_1, \dots, q_n))$ be an operation in $\P$.
-The \textbf{associated oracle constraint} $c$ to this operation is
+The \textbf{associated oracle constraint} $c$ of this operation is the tuple
 \[
   c = \left( t_i, \begin{bmatrix}
   \v q_1 \\
@@ -132,7 +133,7 @@ The \textbf{associated oracle constraint} $c$ to this operation is
 \]
 This should be interpreted as the requirement that
 $
-\va_i \times \vbase = \H \left( t_i, \Q_i \times \vbase \right)
+\va_i \vbase = \H \left( t_i, \Q_i \vbase \right)
 $.
 We denote the set of all (associated) oracle constraints of $\P$ by $\C$.
 
@@ -141,22 +142,22 @@ we restrict ourselves to Linicrypt programs which don't make multiple calls to t
 In the language of the algebraic reprensentation:
 We assume wlog that no two constraints in $\C$ share the same $(t, \Q)$.
 
-
-TODO: Base variables which are created by a call of the same vector have to be removed.
-This is what is done wlog in the first two papers.
-This case corresponds to calling the random orcacle twice on the same input.
-But all this seems to be closely related to the ability of the adversary to make queries collapse,
-therefore I leave this open until I have thought more about that.
-
 Wrapping up these definitions,
-we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\Inp, \M, \C)$.
+we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\Inp, \O, \C)$.
 A natural question that arises at this point is:
 Does the algebraic representation determine the behaviour of $\P$ completely?
 
-\subsection{Normalization and Indistinguishability}
+The answer is yes, because the algebraic representation does not loose any relevant information about the operations executed in $\P$.
+Informally, this is because the constraints in $\C$ have such a particular form, which makes it clear in which order the oracles calls have to be excecuted.
+Given the order, and using the input matrix, one can determine which variables used in the calls are retrieved from the input and which have to be sampled.
+Finally the output matrix completely describes how to construct the output from the input,
+the results of the queries, and randomly sampled values. 
 
-% TODO
-Todo: This leads to indistinguishability, normalization and theorem from first paper
+The authors of the original paper on Linicrypt \cite{C:CarRos16} establish this result for inputless programs
+
+% TODO how to ref?
+In chapter 3 we will discuss the 
+
 
 \subsection{Characterizing Collision Resistance in Linicrypt}
 
