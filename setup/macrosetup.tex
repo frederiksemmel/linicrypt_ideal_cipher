@@ -5,7 +5,7 @@
 \newcommand{\deq}{\coloneqq\,}
 \newcommand\m[1]{\begin{bmatrix}#1\end{bmatrix}} 
 \newcommand\mdts[2]{\m{#1_1 \\ \vdots \\ #1_{#2}}}
-\newcommand\mtdts[2]{\m{#1_1 & \cdots & #1_{#2}}^\top}
+\newcommand\mtdts[2]{\m{#1_1^\top & \cdots & #1_{#2}^\top}^\top}
 % \newcommand\mtdts[2]{(\dts #1 #2)}
 \renewcommand\vec[2]{(\dts #1 #2)}
 \newcommand\dts[2]{#1_1, \dots, #1_{#2}}
@@ -64,8 +64,12 @@
 \newcommand{\out}{\mathsf{out}}
 \newcommand{\inp}{\mathsf{in}}
 \newcommand{\base}{\mathsf{base}}
-\newcommand{\Base}{\F^\base}
+\newcommand{\Base}{\Fsp}
+\newcommand{\Fsp}{\F^\base}
+\newcommand{\Frowsp}{\F^{1\times\base}}
 \newcommand{\spn}{\mathsf{span}}
+\newcommand{\rowsp}{\mathsf{rowsp}}
+\renewcommand{\dim}{\mathsf{dim}}
 \newcommand{\rows}{\mathsf{rows}}
 \newcommand{\sol}{\mathsf{sol}}
 
