@@ -303,11 +303,13 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 \begin{proof}
     If we set $\O = \Id_\base$
     then we can apply Lemma \ref{det_solvable_lemma} to get a deterministic program $\P$ and basis change $\B$. 
-    The associated function $f_{\P}: \F^k \to \F^\base$ is injective.
+    The associated function $f_{\P}: \F^k \to \F^\base$ is injective,
+    as the input variables are base variables.
     Note, that by definition of $\P$ we know that $f_{\P}$ actually maps to $\sol(\C\B)$.
+    Hence $|\F^k| \leq |\sol(\C\B)|$.
     Because $\vv$ solves $\C\B$ is equivalent to $\B\vv$ solves $\C$,
     we also know that $|\sol(\C\B)| = |\sol(\C)|$. 
-    Putting this together we find $|\F^k| \leq |\sol(\C)|$.
+    Putting this together we find that $|\F^k| \leq |\sol(\C)|$.
 
     Now we will show that the input matrix $\I: \Fsp \to \F^k$ is injective
     when restricted to $\sol(\C)$.
@@ -340,7 +342,7 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 \end{proof}
 
 The benefit of this bijection is that every solution of $\C$ corresponds to a unique input.
-Therefore any question regarding the input and output of a Linicrypt program can be translated to the level of the algebaric representation.
+Therefore any question regarding the input and output of a Linicrypt program can be translated to the level of the algebaric representation and solutions of $\C$.
 Explicitly, we can formulate the following corollary.
 
 \begin{corollary}
@@ -391,11 +393,13 @@ and a Linicrypt program $\P^{-1}$ with algebraic representation $(\O \B, \I \B, 
 Note, that $\O$ and $\I$ have the same number of rows, because both $\rows(\I) \cup \{\dts \va n\}$ and
 $\rows(\O) \cup \{\dts \va n\}$ are bases of $\F^{1\times\base}$.
 
-By associativity of the matrix product, we have the following equivalence:
+Because of the bijection $\B: \sol(\C\B) \to \sol(\C)$ we have the following equivalence:
 \begin{gather*}
-    \vv \textrm{ solves } \C \B \textrm{ with } (\I \B) \vv = \vec i k \textrm{ and } (\O \B) \vv = \vec o l \\
+    \vv \textrm{ solves } \C \textrm{ with }
+    \I \vv = \vec i k \textrm{ and } \O \vv = \vec o l \\
     \Updownarrow \\
-    \B \vv \textrm{ solves } \C \textrm{ with } \I (\B \vv) = \vec i k \textrm{ and } \O (\B \vv) = \vec o l 
+    \B^{-1} \vv \textrm{ solves } \C \B \textrm{ with }
+    \O \B \B^{-1} \vv = \vec o l  \textrm{ and }\I \B \B^{-1} \vv = \vec i k  
 \end{gather*}
 
 Combining this equivalence with the one from Lemma \ref{det_solvable_equiv} we get:
@@ -452,12 +456,12 @@ Even doing so, we still have at least one degree of freedom before we have uniqu
 $\I_{cs} \vv$ is.
 We can therefore choose these further constraints to be arbitrary such that $\vv \neq \vv'$.
 Because $\Ccs$ is deterministically solvable fixing $\I_{cs}$,
-we can uniquely determine all the components of $\vv$ such that they solve $\Ccs$.
+we can uniquely determine $\vv$ such that it solves $\Ccs$.
 But we chose $\I_{cs} \vv$ in such a way, that $\vv$ also solves $\Cfix\,$,
 hence $\vv$ solves $\C = \Ccs \cup \Cfix$.
 
-Finally, because $\P$ is deterministic, $\vv \neq \vv'$ implies $\I \vv \neq \I \vv'$,
-so $\I\vv$ is a second preimage to $\I\vv'$ for the Linicrypt program $\P$.
+Finally, because $\P$ is deterministic $\I$ is injective and therefore
+$\I\vv$ is a second preimage to $\I\vv'$ for the Linicrypt program $\P$.
 \end{proof}
 
 The main benefit of this perspective on the collision structure attack is
@@ -533,7 +537,7 @@ which leads to the representation:
     \end{bmatrix}    
 \end{align*}
 
-The corresponding Linicrypt program to this algebraic representation in straight-line form is $\P_{cs}$ as below.
+The corresponding Linicrypt program $\P_{cs}$ to this algebraic representation can be written as:
 \pcb[valign=c]{$\P_{cs}(o_1,o_2,q_2, q_3)$}{
     a_3 = \H(q_3) \\
     v = \H(o_1 - a_3) \\
