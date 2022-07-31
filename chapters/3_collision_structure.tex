@@ -1,6 +1,7 @@
 \chapter{Linicrypt with Ideal Ciphers}
 
 \section{Revisiting Algebraic Representations}
+\label{revisiting_algebraic_representations}
 In the previous section we have defined the algebraic representation for a Linicrypt program.
 It consists of the input matrix $\Inp \in \F^{k \times \base}$,
 the output matrix $\O \in \F^{l \times \base}$
@@ -580,10 +581,57 @@ in both the algebraic representation and the characterization of collision resis
 
 \subsection{Algebraic representation for ideal cipher Linicrypt}
 
+Paralell to standard Linicrypt, we will define what the algebraic representation of an ideal cipher Linicrypt program is.
+Towards this goal we will make the definitions as in section \ref{revisiting_algebraic_representations}.
+
+\begin{defn}[Ideal cipher oracle constraint]
+An \textbf{ideal cipher oracle constraint} of dimension $\base$ taking $m$ inputs is a tuple $(\vk, \vx, \vy)$ for
+$\vk, \vx$ and $\vy$ in $\F^{1 \times \base}$.
+\end{defn}
+
+We will just say ``constraint" to mean ideal cipher oracle constraint or random oracle constraint depending on the context.
+
+\begin{defn}[Solution of constraints]
+    Let $\C$ be a set of ideal cipher constraints of dimension $\base$.
+    We say a vector $\vv \in \Base$ \textbf{solves} $\C$ if
+    $\vy \vv = \E(\vk \vv, \vx \vv)$ for all $(\vk, \vx, \vy) \in \C$.
+    Such a $\vv$ is also called a \textbf{solution} of $\C$.
+    The set of all solutions to $\C$ is called $\sol(\C)$.
+\end{defn}
+
 Let $\P$ be an ideal cipher Linicrypt program.
-For each command in $\E$ of the form $y = \E(k,x)$ we define the \textbf{associated ideal cipher constraint} $(\E, \v k, \v x, \v y)$.
-Each query to $\D$ of the form $x = \D(k, y)$, is
-associated with the constraint $(\D, \v k, \v y, \v x)$.
+Base variables and associated vectors are defined just as with standard Linicrypt.
+The only difference is that base variables can now be created with calls to the ideal cipher instead of calls to the random oracle.
+For each command in $\P$ of the form $v_3 = \E(v_1,v_2)$
+we define the \textbf{associated ideal cipher constraint} $(\vv_1, \vv_2, \vv_3)$.
+Note, that the bold variant of the intermediate variable denotes its associated vector.
+Correspondingly, each query to $\D$ of the form $v_3 = \D(v_1,v_2)$,
+is associated with the constraint $(\vv_1, \vv_3, \vv_2)$.
+We call the set of all associated constraints $\C$. 
+The input matrix $\I$ and output matrix $\O$ is defined just as with standard Linicrypt.
+We call $(\I,\O,\C)$ the algebraic representation of $\P$.
+Then, the following statement holds true, which is trivial in the standard case.
+
+\begin{lemma}
+    Let $\P$ be an indeal cipher Linicrypt program with algebraic representation $(\I,\O,\C)$.
+    Let $\vv$ denote the values of the base variables in an execution of $\P$ with input $(\dts i k)$ and output $(\dts o l)$.
+    Then $\vv$ is a solution to $\C$ with $\I\vv = (\dts i k)$ and $\O\vv = (\dts o l)$
+\end{lemma}
+
+\begin{proof}
+    The statements $\I\vv = (\dts i k)$ and $\O\vv = (\dts o l)$ follow from definition as in standard Linicrypt.
+    Each constraint in $\C$ comes from a command in $\P$ with a query to the ideal cipher.
+    Take some $(\vk, \vx, \vy) \in \C$.
+    It came either from the command $y = \E(k, x)$ or from the command $x = \D(k, y)$.
+    In the first case we have $\vy\vv = y = \E(k, x) = \E(\vk\vv, \vx\vv)$.
+    In the second case we also have $y = \E(k,x)$
+    by the properties of the ideal cipher $\mathcal{E} = (\E,\D)$.
+    Therefore $\vv$ solves all constraints in $\C$ and is hence a solution to $\C$.
+\end{proof}
+
+TODO
+
+Remove and change everything.
 
 As with standard Linicrypt,
 we want to exclude programs that make unnecessary queries to the block cipher.
