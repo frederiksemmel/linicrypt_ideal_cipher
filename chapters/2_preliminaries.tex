@@ -133,7 +133,7 @@ The \textbf{associated oracle constraint} $c$ of this operation is the tuple
 \]
 This should be interpreted as the requirement that
 $
-\va_i \vbase = \H \left( t_i, \Q_i \vbase \right)
+\va_i \vbase = \H( t_i, \Q_i \vbase)
 $.
 We denote the set of all (associated) oracle constraints of $\P$ by $\C$.
 
@@ -148,16 +148,13 @@ A natural question that arises at this point is:
 Does the algebraic representation determine the behaviour of $\P$ completely?
 
 The answer is yes, because the algebraic representation does not loose any relevant information about the operations executed in $\P$.
-Informally, this is because the constraints in $\C$ have such a particular form, which makes it clear in which order the oracles calls have to be excecuted.
+Informally, this is because the constraints in $\C$ have a particular form, which makes it clear in which order the oracles calls have to be excecuted.
 Given the order, and using the input matrix, one can determine which variables used in the calls are retrieved from the input and which have to be sampled.
 Finally the output matrix completely describes how to construct the output from the input,
-the results of the queries, and randomly sampled values. 
+the results of the queries and randomly sampled values. 
 
+% TODO mention further result of equivalence when in normalized form
 The authors of the original paper on Linicrypt \cite{C:CarRos16} establish this result for inputless programs
-
-% TODO how to ref?
-In chapter 3 we will discuss the 
-
 
 \subsection{Characterizing Collision Resistance in Linicrypt}
 
@@ -189,8 +186,7 @@ and finally find $y'$ according to $w' = x' + y'$.
   }
 \end{pchstack}
 
-The precise definition of degenerate and collision structure will be discussed in chapter \ref{collision_structure},
-in a variation that is adapted to the goals of this thesis.
+The precise definition of degenerate and collision structure will be discussed in section \ref{section_collision_structure}.
 The authors show that for any deterministic Linicrypt program which is degenerate
 or has a collision structure
 second-preimage resistance (and hence also collision resistance) is completely broken.
