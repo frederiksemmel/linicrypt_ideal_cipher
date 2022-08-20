@@ -128,10 +128,10 @@ For a set of constraints $\C$ we write:
     \begin{enumerate}
     \item
         \label{solvable1_ic}
-        $\rows(\Q_i) \subseteq \rowsp(\I) + \rowsp\big(\{c_1, \dots, c_{i-1}\}\big)$
+        $\rows(\Q_i) \subseteq \rowsp(\I) + \rowsp\big(\{\dts \va {i-1} \}\big)$
     \item
         \label{solvable2_ic}
-        $\va_i \notin \rowsp(\I) + \rowsp\big(\{c_1, \dots, c_{i-1}\}\big)$
+        $\va_i \notin \rowsp(\I) + \rowsp\big(\{\dts \va {i-1} \}\big)$
     \end{enumerate}
     Additionally we require that $\rows(\I) \cup \{\va_1, \dots, \va_n\}$ form a basis of $\F^{1\times\base}$.
     We call $(c_1, \dots, c_n)$ a solution ordering of $\C$ fixing $\I$ (or fixing $\rows(\I)$).
@@ -222,10 +222,10 @@ With these definitions in place the Lemmas from section \ref{det_solvable_equiv}
 We have all the prerequisites to prove the analog of Lemma \ref{collision_structure_implies_attack}.
 That is, we can give a sufficient condition for a program to be susceptible to a constant time second preimage attack.
 
-\begin{lemma}
+\begin{prop}
 \label{collision_structure_implies_attack_ic}
     Let $\P = (\I, \O, \C)$ be a deterministic ideal cipher Linicrypt program.
-    Assume we can write $\C = \Ccs \cup \Cfix$ and
+    Assume we can write $\C = \Ccs \sqcup \Cfix$ and
     $\Ccs$ is deterministically solvable fixing some $\Ics$ such that
     \begin{equation}
     \label{cs_condition_ic}
@@ -233,7 +233,7 @@ That is, we can give a sufficient condition for a program to be susceptible to a
     \end{equation}
     Then an attacker can find second preimages with $|\Ccs|$ queries.
     We say a program has a collision structure if it fulfills condition \eqref{cs_condition_ic}.
-\end{lemma}
+\end{prop}
 
 Here we will give a more formal proof of this statement.
 \begin{proof}
@@ -327,269 +327,158 @@ We can set $\Q_1 = \m{\vk_1 \\ \vy_1}$ and $\va_1 = \vx_1$ and then we have:
     \item $\va_1 \notin \rowsp(\Ics)$
 \end{enumerate}
 
-In other words,
-we can fix the output, set the second query and anser to the same values as for the given preimage and choose $k_1$ arbitrarily.
-This determines the key and answer $y_1$ to the first query to $\E$, but not the query itself.
-By using $\D$ we get the correct query $x_1$.
-Then $(k_2, x_1, k_1)$ are a second preimage.
+This makes Lemma \ref{collision_structure_implies_attack_ic} applicable and the Lemma describes how to construct an attack in the form of a Linicrypt program.
 
+In plain language,
+we can fix the output, set the second query and answer to the same values as for the given preimage and choose $k_1$ arbitrarily.
+This determines the key $k_1$ and answer $y_1$ of the first query to $\E$, but not the query itself.
+By using $\D$ we get the unique corresponding query $x_1$.
+Then $(k_2, x_1, k_1)$ is a second preimage.
 
-%%%%%%%%%%%%%%%%%%%%% OLD %%%%%%%%%%%%%%%%%%%%%%
+Now will work towards the converse of this statement.
+That is we are trying to answer the question:
+If $\P$ doesn't have a collision structure,
+is it collision resistant?
+We will confirm this for the case of a Linicrypt program which makes only a single query to the ideal cipher.
 
-\section{Collision Structure old}
-
-To explain the concept of a collision structure, we will make use of an example.
-Consider the following Linicrypt program:
-\pcb[valign=c]{$\PE[col,1](a,b,c)$}{
-    w = E(c, b+c) + a \\
-    \pcreturn c + \E(w,b)
-}
-A second preimage to $(a,b,c)$ can be found by the following procedure:
-Choose some $w' \neq w$.
-It will turn out, that even choosing $w'$ at random,
-one can calculate what the other base variables need to be such that the output stays the same.
-As we want $c + \E(w,b) = c' + \E(w', b')$ we can again choose any $b'$ and compute $c'$. 
-Finally, we can compute $a'$ from the equation $w' = \E(c', c' + b') + a'$
-
-One can more easily see that such a procedure is possible by looking at the algebraic representation of $\PE[col,1]$.
-In order to highlight which are the base variables, we rewrite the program a bit more explicitly.
-\pcb[valign=c]{$\PE[col,1](a,b,c)$}{
-    k_1 = c \\
-    x_1 = b+c \\
-    y_1 = \E(k_1, x_1) \\
-    k_2 = y_1 + a \\
-    x_2 = b \\
-    y_2 = \E(k_2, x_2) \\
-    \pcreturn c + y_2
-}
-The base variables are $(a, b, c, y_1, y_2)$ and the algebraic representation is
-\[
-    \O = \begin{bmatrix} 0, 0, 1, 0, 1 \end{bmatrix} 
-        \qquad \C = \{(\E, \v k_1, \v x_1, \v y_1), (\E, \v k_2, \v x_2, \v y_2)\}
-\]
-where
-\begin{align*}
-\v k_1 &= \begin{bmatrix} 0, 0, 1, 0, 0 \end{bmatrix} \\
-\v x_1 &= \begin{bmatrix} 0, 1, 1, 0, 0 \end{bmatrix} \\
-\v y_1 &= \begin{bmatrix} 0, 0, 0, 1, 0 \end{bmatrix} \\
-\v k_2 &= \begin{bmatrix} 1, 0, 0, 1, 0 \end{bmatrix} \\
-\v x_2 &= \begin{bmatrix} 0, 1, 0, 0, 0 \end{bmatrix} \\
-\v y_2 &= \begin{bmatrix} 0, 0, 0, 0, 1 \end{bmatrix}.
-\end{align*}
-
-We can formulate the previous attack from in terms of the algebraic representation.
-The task is to find a $\v v_\base' = [a', b', c', y_1', y_2'] \neq \v v_\base$ such that:
-\begin{align}
-\label{constraint_output}
-\PE[col,1](a', b', c') = \O \vbase' &= \O \vbase = \PE[col,1](a,b,c) \\
-\label{constraint_cipher_1}
-y_1' = \vy_i \vbase' &=  \E(\vk_1 \vbase'\,, \; \vx_1 \vbase')\\
-\label{constraint_cipher_2}
-y_2' = \vy_i \vbase' &=  \E(\vk_2 \vbase'\,, \; \vx_2 \vbase')
-\end{align}
-
-We can fulfill these requirements step by step.
-First, we constrain $\vbase'$ by requiring 
-\[
-    \O \vbase' = \O \vbase.
-\]
-This reduces the dimension of the space of possible solutions for $\vbase'$ to 4,
-as $\O \vbase$ is in the range of $\O$ by definition.
-Now note, that neither $\vk_2$ nor $\vx_2$ are in the span of $\rows(\O)$.
-Therefore we can choose $k_2'$ and $x_2'$ at random such that $(k_2', x_2') \neq (k_2, x_2)$,
-and constrain $\vbase'$ by requiring
-\[
-    \vk_2 \vbase' = k_2' \quad \textrm{and} \quad \vx_2 \vbase' = x_2'.
-\]
-Now we can compute $y_2' = \E(k_2', x_2')$ and add constraint \eqref{constraint_cipher_2}.
-This constraint is compatible with the previous constraints because $\vy_2$ is not in the span of
-$\rows(\O) \cup \{\vk_2, \vx_2\}$.
-The dimension of the subspace of solutions is now 1, as we have added 4 one-dimensional constraints.
-
-Now one only needs to fulfill constraint \eqref{constraint_cipher_1}.
-As $\vk_1$ and $\vx_1$ are in the span of
-$\rows(\O) \cup \{\vk_2, \vx_2, \vy_2\}$ the intermediate variables $k_1'$ and $x_1'$ are uniquely determined.
-E.g. $\vk_1 = \O - \vy_2$ and therefore $k_1' = \PE[col,1](a,b,c) - y_2'$.
-
-Finally, note that 
-$\vy_1 \notin \spn\big( \rows(\O) \cup \{ \vk_2, \vx_2, \vy_2 \} \cup \{ \vk_1, \vx_1 \} \big)$.
-Therefore, adding the constraint
-\[
-    \vy_1 \vbase' = y_1' = \E(k_1', x_1')
-\]
-reduces the solution space of possible $\vbase'$ to a single point in $\Base$.
-We know that $\vbase' \neq \vbase$ because $(k_2, x_2') \neq (k_2, x_2)$.
-The only way to produce different intermediate variables in a deterministic program is to choose different input,
-hence $(a',b',c') \neq (a,b,c)$.
-
-This example would have worked exactly the same if we replaced $\E$ with $\H$.
-What follows is an example where the invertibility property of $\E_k$ plays a role.
-
-\begin{pchstack}[center, space=2cm]
-    \pcbl[valign=c]{$\PE[col,2](a,b,c)$}{
-        k_1 = c \\
-        x_1 = b \\
-        y_1 = \E(k_1, x_1) \\
-        k_2 = a \\
-        x_2 = y_1 \\
-        y_2 = \E(k_2, x_2) \\
-        \pcreturn y_1 + y_2
-    }
-    \pseudocode[valign=c]{
-        \O    = \begin{bmatrix}0,0,0,1,1\end{bmatrix} \\
-        \vk_1 = \begin{bmatrix}0,0,1,0,0\end{bmatrix} \\
-        \vx_1 = \begin{bmatrix}0,1,0,0,0\end{bmatrix} \\
-        \vy_1 = \begin{bmatrix}0,0,0,1,0\end{bmatrix} \\
-        \vk_2 = \begin{bmatrix}1,0,0,0,0\end{bmatrix} \\
-        \vx_2 = \begin{bmatrix}0,0,0,1,0\end{bmatrix} \\
-        \vy_2 = \begin{bmatrix}0,0,0,0,1\end{bmatrix} 
-    }
-\end{pchstack}
-For this program there is a similar procedure to find second preimages.
-As before, the first constraint is $\O $
-In this case we can fix $\vk_2 \vbase' = k_2' = k_2$, $\vx_2 \vbase' = x_2' = x_2$ and $\vy_2 \vbase' = y_2' = y_2$.
-Therefore condition \eqref{constraint_cipher_2} is fulfilled trivially.
-After adding these 4 constraints the solutions space is still 1-dimensional.
-Note, that $\vy_1 = \vx_2$ and it is therefore already fixed at this point,
-hence to fulfill \eqref{constraint_cipher_1} we have to make use of the invertibility property of $\E_k$.
-Because
-\begin{align*}
-    \vy_1 \vbase' &= \E(\vk_1 \vbase', \vx_1 \vbase') \\
-    \iff \vx_1 \vbase' &= \D(\vk_1 \vbase', \vy_1 \vbase'),
-\end{align*}
-we can choose a random $k_1' \neq k_1$ and compute $x_1' = \D(k_1', y_1')$ in order to fulfill (3.1).
-With this fifth constraint we have found a single $\vbase' \neq \vbase$.
-
-We want to briefly summarize the conditions for this kind of second preimage attack.
-Let $\P'$ denote the execution of 
-\begin{itemize}
-\item
-    Some ideal cipher constraints are fulfilled by setting the intermediate variables in $\P(a',b',c')$ to the same value as in $\P(a,b,c)$ 
-\item
-    There is some constraint for which either the input or the output is undetermined by the previously fixed intermediate variables
-\item
-    For this constraint and all following constraint one can iteratively call the ideal cipher $\BC$ to set the intermediate variables such that the constraints are fulfilled.
-    This is only possible, if the either the output or the input is undetermined by previously fixed variables.
-\end{itemize}
-
-
-\begin{defn}[Collision structure]
-Let $\P = (\O, \C)$ be a Linicrypt program with $|\C| = n$.
-A \textbf{collision structure} for $\P$ is an index $1 \leq i^* \leq n$, an ordering $(c_1, \dots, c_n)$ of $\C$ for $c_i = (Op_i, \v k_i, \v q_i,\v a_i)$
-and a tuple $(dir_{i^*}, \dots, dir_n)$ for $dir_i \in \{\For, \Back\}$,
-such that the following two conditions hold:
-\begin{enumerate}
-\item 
-Let $\mathcal{F}_\is = \{
-    \v k_1, \dots, \v k_{i^* -1},
-    \v q_1, \dots, \v q_{i^* -1},
-    \v a_1, \dots, \v a_{i^* -1}
-    \}$. One of the following is true:
-        \begin{enumerate}
-    \item $dir_\is = \For \quad$ and 
-        $\quad
-            \spn\big(\{ \v k_{i^*}, \v q_{i^*} \}\big) \nsubseteq
-            \spn\big( \mathcal{F}_\is \cup \rows\left(\O\right) \big)
-        $
-    \item $dir_\is = \Back \quad$ and 
-        $\quad
-            \spn\big(\{ \v k_{i^*}, \v a_{i^*} \}\big) \nsubseteq
-            \spn\big( \mathcal{F}_\is \cup \rows\left(\O\right) \big)
-        $
-\end{enumerate}
-\item For all $j \geq i^*$ let $\mathcal{F}_j = \{
-    \v k_1, \dots, \v k_{j -1},
-    \v q_1, \dots, \v q_{j -1},
-    \v a_1, \dots, \v a_{j -1}
-    \}$. One of the following is true:
-\begin{enumerate}
-    \item $dir_j = \For \quad$ and 
-        $\quad
-        \v a_j \notin \spn\big(
-        \mathcal{F}_j
-        \cup \{ \v k_j, \v q_j\}
-        \cup \rows\left(\O\right)
-        \big)
-        $
-    \item $dir_j = \Back \quad$ and 
-        $\quad
-        \v q_j \notin \spn\big(
-        \mathcal{F}_j
-        \cup \{ \v k_j, \v a_j\}
-        \cup \rows\left(\O\right)
-        \big)
-        $
-\end{enumerate}
-\end{enumerate}
+\begin{defn}
+    A set of ideal cipher constraints $\C$ is called unsolvable fixing a space $\Fix \subseteq \Frowsp$ if for every ordering $(\dts c n)$ of $\C$,
+    we have some $c_i = (\vk_i, \vx_i, \vy_i)$ such that both
+    \begin{enumerate}
+    \item    $\vy \in \Fix + \rowsp(\{\dts c {i-1}\}) + \rowsp(\{ \vk, \vx \})$ and
+    \item    $\vx \in \Fix + \rowsp(\{\dts c {i-1}\}) + \rowsp(\{ \vk, \vy \})$.
+    \end{enumerate}
 \end{defn}
 
-TODO: Remove this wordy definition.
-All the info from here should be integrated into the example
-
-\begin{defn}[Collision structure]
-Let $\P = (\O, \C)$ be a Linicrypt program with $|\C| = n$.
-A \textbf{collision structure} for $\P$ is an index $1 \leq i^* \leq n$, an ordering $(c_1, \dots, c_n)$ of $\C$ for $c_i = (Op_i, \v k_i, \v q_i,\v a_i)$
-and a tuple $(dir_{i^*}, \dots, dir_n)$ for $dir_i \in \{\For, \Back\}$,
-such that:
-\begin{enumerate}
-\item The $i^*$'th constraint is unconstrained by the output of $\P$ and previous fixed constraints.
-Let $\mathcal{F} = \{
-    \v k_1, \dots, \v k_{i^* -1},
-    \v q_1, \dots, \v q_{i^* -1},
-    \v a_1, \dots, \v a_{i^* -1}
-    \}$
-denote the vectors fixed by previous constraints in the ordering.
-\begin{enumerate}
-    \item if $dir_\is = \For$, the input of the query associated to $c_\is$ is unconstrained:
-        \[
-            \spn\big(\{ \v k_{i^*}, \v q_{i^*} \}\big) \nsubseteq
-            \spn\big( \mathcal{F} \cup \rows\left(\O\right) \big)
-        \]
-    \item if $dir_\is = \Back$, the output of the query associated to $c_\is$ is unconstrained:
-        \[
-            \spn\big(\{ \v k_{i^*}, \v a_{i^*} \}\big) \nsubseteq
-            \spn\big( \mathcal{F} \cup \rows\left(\O\right) \big)
-        \]
-\end{enumerate}
-\item For all $j \geq i^*$ the constraint $c_j$ does not contradict previous constraints.
-Let $\mathcal{F} = \{
-    \v k_1, \dots, \v k_{j -1},
-    \v q_1, \dots, \v q_{j -1},
-    \v a_1, \dots, \v a_{j -1}
-    \}$
-denote the vectors fixed by previous constraints in the ordering.
-\begin{enumerate}
-    \item if $dir_j = \For$
-        \[
-        \v a_j \notin \spn\big( \{
-        \v k_1, \dots, \v k_{j -1},
-        \v q_1, \dots, \v q_{j -1},
-        \v a_1, \dots, \v a_{j -1},
-        \} 
-        \cup \{ \v k_j, \v q_j\}
-        \cup \rows\left(\O\right)
-        \big)
-        \]
-    \item if $dir_j = \Back$
-        \[
-        \v q_j \notin \spn\big( \{
-        \v k_1, \dots, \v k_{j -1},
-        \v q_1, \dots, \v q_{j -1},
-        \v a_1, \dots, \v a_{j -1},
-        \} 
-        \cup \{ \v k_j, \v a_j\}
-        \cup \rows\left(\O\right)
-        \big)
-        \]
-\end{enumerate}
-\end{enumerate}
-\end{defn}
-
-\begin{lemma}[Collision structure gives second preimages]
-    If collision structure blabla exists for $\P = (\O, \C)$ then blabla with probability 1.
+\begin{lemma}
+\label{lemma_no_collision_structure}
+    If $\P = (\I,\O,\C)$ does not have a collision structure,
+    then for every split $\C = \Ccs \sqcup \Cfix$ we have one of the following:
+    \begin{enumerate}
+    \item $\Ccs$ is deterministically solvable fixing $\rowsp(\O) + \rowsp(\Cfix)$
+    \item $\Ccs$ is is unsolvable fixing $\rowsp(\O) + \rowsp(\Cfix)$
+    \end{enumerate}
 \end{lemma}
 
-\pcb[mode=text]{$\mathsf{FindSecondPreimage}\Big(\Big)$}{
-Compute $\vbase$ by executing $\PE(\vx)$  \\
-... very similar
-}
+\begin{proof}
+    Assume $\P$ does not have a collision structure.
+    Let $\C = \Ccs \sqcup \Cfix$ be an arbitrary split of the set of constraints.
+    Then for any matrix $\Ics$ with $\rowsp(\Ics) \supsetneq \rowsp(\O) + \rowsp(\Cfix)$ we have
+    $\Ccs$ is not deterministically solvable fixing $\Ics$.
+    We now assume condition \textit{2.}~from Lemma \ref{lemma_no_collision_structure} not true
+    and show that this implies \textit{1.}~from Lemma \ref{lemma_no_collision_structure} is true.
+    So we assume $\Ccs$ is not unsolvable fixing $\Fix = \rowsp(\O) + \rowsp(\Cfix)$.
+    Then there is an ordering $(c_1, \dots, c_n)$ of $\Ccs$ such that for every $i$ we have
+    $\vy \notin \Fix + \rowsp(\{\dts c {i-1}\}) + \rowsp(\{ \vk, \vx \})$ or
+    $\vx \notin \Fix + \rowsp(\{\dts c {i-1}\}) + \rowsp(\{ \vk, \vy \})$.
+    This gives the condition \textit{2.} of the definition of deterministically solvable.
+    Therefore we can add some dimensions $\Fix$ and call it $\Fix' \supset \Fix$ such that
+    $\Ccs$ is deterministically solvable fixing $\Fix'$.
+    But if $\Fix' \supsetneq \Fix$ this would contradict the assumption that $\P$ does not have a collision structure.
+    Therefore we know that $\Ccs$ is deterministically solvable fixing $\Fix = \rowsp(\O) + \rowsp(\Cfix)$.
+\end{proof}
+
+\begin{corollary}
+\label{single_query_properties}
+    Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher.
+    Then $\C = \{ (\vk, \vx, \vy)\}$ for some $\vk, \vx, \vy \in \Frowsp$.
+    Assume $\P$ does not have a collision structure but there exists $\vv \neq \vv'$ in $\sol(\C)$ with $\O\vv = \O\vv'$.
+    Then the following hold:
+    \begin{enumerate}
+    \item $\ker(\O) \cap \ker(\C) = \{0\}$
+    \item $\vy \in \rowsp(\O) + \rowsp(\{\vk, \vx\})$
+    \item $\vx \in \rowsp(\O) + \rowsp(\{\vk, \vy\})$
+    \end{enumerate}
+\end{corollary}
+\begin{proof}
+    If we set $\Ccs = \{\}$ then case \textit{2.} from Lemma \ref{lemma_no_collision_structure} cannot be true.
+    Because $\{\}$ is deterministically solvable fixing $\rowsp(\O) + \rowsp(\C)$ we have a bijection between
+    $\sol(\{\}) = \Fsp$ and $\rowsp(\O) + \rowsp(\C)$.
+    Because $\rowsp(\O) = \ker(\O)^\perp$ and $\rowsp(\C) = \ker(\C)^\perp$
+    this implies $\ker(\O) \cap \ker(\C) = \{0\}$.
+    
+    If we set $\Ccs = \C$ on the other hand,
+    then case \textit{1.} from Lemma \ref{lemma_no_collision_structure} cannot be true.
+    This is because if it was, then there wouldn't exists vectors $\vv \neq \vv'$ in $\sol(\C)$ with $\O\vv = \O\vv'$.
+    Therefore $\C$ is unsolvable fixing $\rowsp(\O)$ which gives exactly 
+    $\vy \in \rowsp(\O) + \rowsp(\{\vk, \vx\})$ and
+    $\vx \in \rowsp(\O) + \rowsp(\{\vk, \vy\})$.
+\end{proof}
+
+\begin{prop}
+    Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher,
+    i.e. $\C = \{ (\vk, \vx, \vy)\}$ for some $\vk, \vx, \vy \in \Frowsp$.
+    Assume there is an adversary $\adv$ making $N$ queries to the ideal cipher winning the collision resistance security game with
+    \[
+        \prob{\mathsf{ColGame}(\P, \adv, \lambda) = 1 } > \frac{N(N-1)}{2(|\F| - N)}.
+    \]
+    Then $\P$ has a collision structure.
+\end{prop}
+
+This proof is based on the proofs of \cite[Lemma 10]{TCC:McQSwoRos19} and of \cite[Theorem 8.4 (Davies-Meyer)]{Boneh2015CourseIA}.
+
+\begin{proof}
+    Assume towards a contradiction that there is such an adversary $\A$ making $N$ queries
+    and that $\P$ does not have a collision structure.
+    % Without loss of generality we can assume that $\A$ has made the queries to the ideal cipher
+    % can output the whole tuple of base variales $\vv$ and $\vv'$ for a collision. 
+    We will work with the transcript between the adversary and the ideal cipher.
+    Let $\mathcal{T}: \{1, \dots, N\} \to \F^3$ be the function defined by $\mathcal{T}(i) = (k, x, y)$,
+    if the $i$th query of $\A$ is $\E(k, x)$ with response $y$ or if it is $\D(k, y)$ with response $x$.
+
+    Let $\v i$ and $\v i'$ be the output of $\A$ in the event that it successfully found a collision.
+    As $\C$ is deterministically solvable fixing $\I$, they correspond to unique vectors $\vv \neq \vv'$ in $\sol(\C)$.
+    We can assume the adversary actually makes the queries corresponding to these inputs,
+    i.e. $(\vk \vv, \vx \vv, \vy \vv)$ and $(\vk \vv', \vx \vv', \vy \vv')$ are contained in $\im(\mathcal{T})$.
+    Otherwise, we can force $\A$ to make these queries by modifying it,
+    so that it runs $\P(\v i)$ and $\P(\v i')$ as its last action.
+    Let $i$ and $j$ be defined by $\mathcal{T}(i) = (\vk \vv, \vx \vv, \vy \vv)$
+    and $\mathcal{T}(j) = (\vk \vv', \vx \vv', \vy \vv')$. 
+    That is, at query $i$ the adversary has determined the values involved in the query for $\P(\v i)$ and
+    at query $j$ it has determined the values involved in the query for $\P(\v i')$.
+    
+    Consider the case $i = j$.
+    This means $\vv - \vv \in \ker(\C)$.
+    By assumption $\v i$ and $\v i'$ are collisions, so $\vv - \vv' \in \ker(\O)$.
+    Corollary \ref{single_query_properties} states $\ker(\O) \cap \ker(\C) = \{0\}$,
+    so $\vv = \vv'$. 
+    This is a contradiction to $\v i \neq \v i'$.
+    
+    Therefore we have $i \neq j$.
+    By modifying $\A$ again,
+    we can assume it outputs the value it fixes first as the first output, then $i < j$.
+    Consider the point where $\A$ sent it's $j$th query and is waiting to receive the answer from the ideal cipher.
+    If this query was to $\E$ we define $\Q = \m{\vk \\ \vx}$ and $\va = \vy$,
+    otherwise we define $\Q = \m{\vk \\ \vy}$ and $\va = \vx$.
+    
+    Then we know from Corollary \ref{single_query_properties} that
+    \begin{equation}
+    \label{security_proof_equation}
+    \va \in \rowsp(\O) + \rowsp(\Q) ,\quad \textrm{which means} \quad \va = \v \lambda \O + \v \gamma \Q.
+    \end{equation}
+    At query $j$ the vectors $\Q\vv, \va\vv, \Q\vv'$ and $\O(\vv' - \vv)$ are determined.
+    The latter is $0$ by assumption that $\v i$ and $\v i'$ are a collision.
+    Therefore we can use \eqref{security_proof_equation} to show
+    \begin{equation*}
+    \va (\vv' - \vv) = \v\lambda\O(\vv' - \vv) + \v\gamma \Q (\vv' - \vv),
+    \end{equation*}
+    which is equivalent to
+    \begin{equation}
+    \label{security_proof_equation2}
+    \va \vv' = \va\vv + \v\gamma \Q \vv' - \v\gamma \Q\vv.
+    \end{equation}
+    All the vectors on the right of \eqref{security_proof_equation2} have been determined,
+    while $\va\vv'$ is sampled uniformly from a set of size at least $|\F| - j + 1$.
+    We call the event that this equation holds $Z_{i,j}$, then
+    \[
+        \prob{Z_{i,j}} = \frac{1}{|\F| - j + 1}.
+    \]
+    Using the union bound we have
+    \begin{equation*}
+    \prob{\mathsf{ColGame}(\P,\A,\lambda) = 1}
+    \leq \sum_{j=1}^N \sum_{i=1}^{j-1} \prob{Z_{i,j}}
+    \leq \sum_{j=1}^N \frac{j - 1}{|\F| - j + 1}
+    \leq \frac{N(N-1)}{2(|\F| - N)},
+    \end{equation*}
+    which gives the contradiction.
+\end{proof}
