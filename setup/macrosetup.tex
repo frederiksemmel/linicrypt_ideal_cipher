@@ -3,7 +3,7 @@
 
 %% Shortcuts
 \newcommand{\deq}{\coloneqq\,}
-\newcommand\m[1]{\begin{bmatrix}#1\end{bmatrix}} 
+\newcommand\m[1]{\arraycolsep=3pt\begin{bmatrix}#1\end{bmatrix}} 
 \newcommand\mdts[2]{\m{#1_1 \\ \vdots \\ #1_{#2}}}
 \newcommand\mtdts[2]{\m{#1_1^\top & \cdots & #1_{#2}^\top}^\top}
 % \newcommand\mtdts[2]{(\dts #1 #2)}
@@ -12,6 +12,7 @@
 \newcommand\vdts[2]{#1_1 \\ \vdots \\ #1_{#2}}
 
 \newcommand{\bigslant}[2]{{\left.\raisebox{.1em}{$#1$}\middle/\raisebox{-.1em}{$#2$}\right.}}
+\renewcommand{\ddot}{\boldsymbol\cdot}
 
 %% Cryptography stuff
 \newcommand{\A}{\adv}
@@ -29,7 +30,7 @@
 \renewcommand{\PH}[1][]{\P^\H_{\mathsf{#1}}}
 \newcommand{\PE}[1][]{\P^\BC_{\mathsf{#1}}}
 
-\newcommand{\M}{\boldsymbol{M}}
+% \newcommand{\M}{\boldsymbol{M}}
 \newcommand{\Inp}{\boldsymbol{I}}
 \newcommand{\I}{\boldsymbol{I}}
 \newcommand{\Out}{\boldsymbol{O}}
@@ -84,6 +85,7 @@
 % cryptocode setup
 \setlength\pcbodylinesep{-0.2\baselineskip}
 \setlength\pcheadlinesep{0.1\baselineskip}
-\createprocedureblock{pcbl}{boxed}{}{}{beginline=\t}
+\createprocedureblock{pcbl}{inline,boxed}{}{}{beginline=\t}
+\createprocedureblock{pcbm}{inline}{}{\setlength\pcbodylinesep{0\baselineskip}\setlength\pcheadlinesep{0\baselineskip}}{beginline=\t}
 \createprocedureblock{pcb}{center,boxed}{}{}{beginline=\t}
 

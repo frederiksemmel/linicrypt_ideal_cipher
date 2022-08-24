@@ -321,10 +321,11 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 
     Because $\rows(\I) \cup \{\va_1, \dots, \va_n\}$ is a basis, 
     the matrix 
-    \[
+    $
     \v C = \m{\I \\ \vdts \va n}
-    \]
+    $
     is invertible.
+
     Using the assumptions and the results from the induction we have shown that $\v C \vv' = \v C \vv$ and
     therefore $\vv' = \vv$.
     This shows that $\I|_{\sol(\C)}: \sol(\C) \to \F^k$ is injective.
@@ -552,16 +553,19 @@ Here we have
 which leads to the representation:
 \begin{align*}
     % TODO fix this constraints mess
-    \C_{cs} \B &= \begin{Bmatrix}
-        \m{0 & 0 & 0 & 1 &\phantom{-}0 & 0} \mapsto \m{0 & 0 & 0 & 0 & 1 & 0} \} \\
-        \m{1 & 0 & 0 & 0 &-1 & 0} \mapsto \m{0 & 0 & 0 & 0 & 0 & 1} \}
-    \end{Bmatrix} \\
+    \C_{cs} \B &= \left\{
+        \arraycolsep=2pt
+        \begin{array}{l l l}
+            \m{0 & 0 & 0 & 1 &\phantom{-}0 & 0} & \mapsto & \m{0 & 0 & 0 & 0 & 1 & 0}, \\[2pt]
+            \m{1 & 0 & 0 & 0 &-1 & 0} & \mapsto & \m{0 & 0 & 0 & 0 & 0 & 1}
+        \end{array}
+    \right\} \\
     \I_\textrm{cs} \B &= \m{\Id_4 & 0} \\
-    \I \B &= \begin{bmatrix}
+    \I \B &= \m{
 1 & 0 & 0 & 0 &-1 & 0 \\
 0 &-1 & 0 & 1 & 0 &-1 \\
 0 & 0 & 1 & 0 & 0 & 0
-    \end{bmatrix}    
+    }    
 \end{align*}
 
 The corresponding Linicrypt program $\P_{cs}$ to this algebraic representation can be written as:

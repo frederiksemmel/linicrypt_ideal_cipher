@@ -1,4 +1,4 @@
-\chapter{Adapting the Linicrypt model to the ideal cipher model}
+\chapter{Adapting Linicrypt to the ideal cipher model}
 
 In this chapter we modify the Linicrypt model to make use of the ideal cipher model instead of the random oracle model.
 This means that a Linicrypt program gets access to a block cipher $\mathcal{E} = (E, D)$ where $E$ and $D$ are functions $\F \times \F \to \F$
@@ -306,14 +306,29 @@ We give an example of a program which has a collision structure due to the inver
         y_2 = \E(k_2, x_2) \\
         \pcreturn y_1 + y_2
     }
-    \pseudocode[valign=c]{
-        \O    = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 1\end{bmatrix} \\
-        \vk_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0 \> 0\end{bmatrix} \\
-        \vx_1 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0 \> 0\end{bmatrix} \\
-        \vy_1 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 0\end{bmatrix} \\
-        \vk_2 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0 \> 0\end{bmatrix} \\
-        \vx_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 0\end{bmatrix} \\
+    % \pseudocode[valign=c]{
+    %     \O    = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 1\end{bmatrix} \\
+    %     \vk_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0 \> 0\end{bmatrix} \\
+    %     \vx_1 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0 \> 0\end{bmatrix} \\
+    %     \vy_1 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 0\end{bmatrix} \\
+    %     \vk_2 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0 \> 0\end{bmatrix} \\
+    %     \vx_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 0\end{bmatrix} \\
+    %     \vy_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 0 \> 1\end{bmatrix} 
+    % }
+    \pcbm[valign=c]{Algebraic Representation}{
+    % TODO fix matrix alignment
+    \begin{pcmbox}
+        \arraycolsep=3pt
+        \begin{array}{r wl{3mm} l}
+        \O    = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 1\end{bmatrix} \\[2pt]
+        \vk_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \vx_1 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \vy_1 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 0\end{bmatrix} \\[2pt]
+        \vk_2 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \vx_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \> 0\end{bmatrix} \\[2pt]
         \vy_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 0 \> 1\end{bmatrix} 
+        \end{array}
+    \end{pcmbox}
     }
 \end{pchstack}
 
@@ -406,6 +421,7 @@ We will confirm this for the case of a Linicrypt program which makes only a sing
 \end{proof}
 
 \begin{prop}
+\label{prop_single_query_cr_resistance}
     Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher,
     i.e. $\C = \{ (\vk, \vx, \vy)\}$ for some $\vk, \vx, \vy \in \Frowsp$.
     Assume there is an adversary $\adv$ making $N$ queries to the ideal cipher winning the collision resistance security game with
@@ -482,3 +498,109 @@ This proof is based on the proofs of \cite[Lemma 10]{TCC:McQSwoRos19} and of \ci
     \end{equation*}
     which gives the contradiction.
 \end{proof}
+
+\begin{corollary}
+\label{corollary_single_query_cr_resistance}
+    Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher.
+    Then the following are equivalent:
+    \begin{enumerate}
+    \item $\P$ has a collision structure.
+    \item There is an adversary making $2$ queries that always finds second preimages.
+    \item There is an adversary making $N$ queries that finds collisions with probability $N(N-1) / 2(|\F| - N)$.
+    \end{enumerate}
+\end{corollary}
+
+\section{Application: Compression schemes}
+Outline
+\begin{enumerate}
+    \item Introduction to the 64 compression schemes 
+    \item Trick with $v=0$ to model constants and why it is equivalent
+    \item Model 64 compression schemes in Linicrypt
+    \item Explain that the 12 secure schemes are the ones without a collision structure
+\end{enumerate}
+
+The papers \cite{C:BlaRogShr02} and \cite{C:PreGovVan93} have analyzed the 64 most basic constructions for a compression function
+based on a single call to a block cipher $\BC = (\E, \D)$.
+These compression schemes $f: \F \times \F \to \F$ are of the form $f(h, m) = \E(a, b) + c$ for $a,b,c \in \{h, m, h+m, v\}$.
+Here $v \in \F$ is a fixed constant.
+As these compression schemes are often used in the Merkle-Damg\aa rd construction,
+one should think about $h$ as the chaining value and $m$ as the message block.
+If not for the constant $v$, these constructions would be Linicrypt programs.
+But as we will show, one can set $v=0$ without loss of generality.
+Then Corollary \ref{corollary_single_query_cr_resistance} applies and it determines that 12 of these constructions are collision resistant.
+This agrees with the results achieved by \cite{C:BlaRogShr02},
+although they go further and identify 8 compression schemes that are not collision resistant,
+but which become collision resistant when iterated as in the Merkle-Damg\aa rd construction.
+
+First we argue why we can set $v=0$.
+Assume that an adversary $\A$ can find collisions for some $f$ as described above, in the case that $v=0$.
+If $a = 0$, then we can replace the block cipher $\E(\ddot, \ddot)$ by $\E(\ddot + v', \ddot)$ for some $v' \in \F$.
+From the adversaries perspective this is still an ideal cipher,
+so its success probability could not have been affected.
+But this is equivalent to $\A$ being able to find collisions for the same compression scheme $f$ but with with the constant set to $v'$.
+If $b=0$ we replace $\E$ with $\E(\ddot, \ddot + v')$ and if $c=0$ we replace it with $\E(\ddot, \ddot) + v'$.
+Both of these modifications to an ideal cipher $\E$ yield another ideal cipher.
+
+\subsection{The PGV compression schemes in Linicrypt}
+We will give the algebraic representation the compression schemes described above.
+First let us write them as an ideal cipher Linicrypt program. 
+
+\begin{pchstack}[center,space=2cm]
+    \pcbl[valign=c]{$\P(h,m)$}{
+        y = \E(ch + dm, eh + fm) \\
+        \pcreturn ah + bm + y
+    }
+    \pcbm[valign=c]{Algebraic Representation}{
+    % TODO fix matrix alignment
+    \begin{pcmbox}
+        \arraycolsep=3pt
+        \begin{array}{r wl{3mm} l}
+            \O \>= \> \m{a&b&1} \\[2pt]
+            \vk \>= \> \m{c&d&0} \\[2pt]
+            \vx \>= \> \m{e&f&0} \\[2pt]
+            \vy \>= \> \m{0&0&1}
+        \end{array}
+    \end{pcmbox}
+    }
+\end{pchstack}
+The base variables are $\{h, m, y\}$ and for the algebraic representation we have ordered them as $(h, m, y)$.
+The algebraic representation is $(\I, \O, \C)$ for $\I = \m{\Id_2 & 0}$ and $\C = \big\{(\vk, \vx, \vy) \big\}$.
+$\P$ depends on the constants $a,b,c,d,e,f \in \{0,1\}$.
+Each choice of these 6 binary constants corresponds to one of the compression schemes $f:\F \times \F \to \F$.
+% For example, setting the variables as $(a,b,c,d,e,f) = (1,0,0,1,1,0)$ gives the Davies-Meyes compression scheme:
+% $f(h,m) = \E(m,h) + h$.
+% 
+Using Lemma \ref{lemma_no_collision_structure} and Corollary \ref{corollary_single_query_cr_resistance},
+one can derive that $\P$ is collision resistant if and only if
+\begin{equation}
+\label{eq_compression_secure}
+    \m{a&b}, \m{c&d}, \m{e&f} \neq \m{0&0} \quad \textrm{and}\quad \m{a&b} \neq\m{c&d} \neq \m{e&f}.
+\end{equation}
+There are exactly 12 schemes fulfilling this condition,
+which we list in Table \ref{table_12_secure_compression_schemes}.
+The authors of \cite{C:BlaRogShr02} denote these as the group-1 schemes.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l |c|c|c|c|c|c|l|}
+    \hline
+    $f(h,m)=$  & $a$ & $b$ & $c$ & $d$ & $e$ & $f$ & Name \\
+    \hline
+    $E(h,m)   +m$    & 0 & 1 & 1 & 0 & 0 & 1 & Matyas-Meyer-Oseas \\
+    $E(h,h+m) +m$    & 0 & 1 & 1 & 0 & 1 & 1 &  \\
+    $E(h+m,m) +m$    & 0 & 1 & 1 & 1 & 0 & 1 &  \\
+    $E(h+m,h) +m$    & 0 & 1 & 1 & 1 & 1 & 0 &  \\
+    $E(m,h)   +h$    & 1 & 0 & 0 & 1 & 1 & 0 & Davies-Meyer \\
+    $E(m,h+m) +h$    & 1 & 0 & 0 & 1 & 1 & 1 &  \\
+    $E(h+m,m) +h$    & 1 & 0 & 1 & 1 & 0 & 1 &  \\
+    $E(h+m,h) +h$    & 1 & 0 & 1 & 1 & 1 & 0 &  \\
+    $E(m,h)   +h+m$  & 1 & 1 & 0 & 1 & 1 & 0 &  \\
+    $E(m,h+m) +h+m$  & 1 & 1 & 0 & 1 & 1 & 1 &  \\
+    $E(h,m)   +h+m$  & 1 & 1 & 1 & 0 & 0 & 1 & Miyaguchi-Preneel \\
+    $E(h,h+m) +h+m$  & 1 & 1 & 1 & 0 & 1 & 1 &  \\
+    \hline
+\end{tabular}
+\caption{Parameters for the 12 secure compression schemes according to \eqref{eq_compression_secure}}.
+\label{table_12_secure_compression_schemes}
+\end{table}
