@@ -3,20 +3,19 @@
 \section{Linicrypt}
 \subsection{Definition of a Linicrypt program}
 
-The Linicrypt model for cryptographic constructions was introduced by Cramer \& Rosulek in \cite{C:CarRos16}.
+The Linicrypt model for cryptographic constructions was introduced by Carmer \& Rosulek in \cite{C:CarRos16}.
 Summarizing the formalization from that paper,
 a pure Linicrypt program $\P$ is a straight line program
 whose intermediate variables are elements in a field $\F$.
 % TODO maybe operation isn't right
-The only allowed operations to create an intermediate variable are:
+The only operations allowed to create an intermediate variable are:
 \begin{itemize}
   \item Retrieve an input, which is in $\F$
-  \item Perform a linear combination of existing internal variables
-  \item Call a random oracle $\H: \{0,1\}^* \times \F^* \to \F^*$
+  \item Perform a linear combination of existing internal variables with fixed parameters
+  \item Call a random oracle $\H: \{0,1\}^* \times \F^* \to \F$
   \item Sample from $\F$ uniformly
 \end{itemize}
-
-The program $\P$ can output one or more of its variables.
+Finally, the program $\P$ is allowed to output one or more of its variables.
 
 Below is an example of a Linicrypt program $\P^\H$,
 % TODO Linicrypt is actually a tuple of CMD's ... should I specify that? Maybe in the 
@@ -40,46 +39,61 @@ written in conventional pseudocode on the left and in explicit Linicrypt on the 
   }
 \end{pchstack}
 
+We will usually work with programs in conventional pseudocode and use suggestive names for the intermediate variables instead of $v_i$.
+Nevertheless, one should keep in mind,
+that such programs could be formalized as a sequence of Linicrypt commands,
+each generating a new intermediate variable.
+The superscript $\H$ is used to highlight that $\P$ has access to a random oracle.
+As this is often clear from the context, this superscript will usually be dropped.
+When a Linicrypt program contains no sampling operations it is called a deterministic Linicrypt program. 
+In the context of collision resistance this is the case we care about the most.
+
 \subsection{Type of Adversaries}
-The Linicrypt model only imposes computational restrictions on the constructions,
+The Linicrypt model only imposes computational restrictions on the cryptographic constructions,
 not on the adversaries.
-Usually one considers arbitrary adversaries $\A$ that are computationally unbounded,
-but have bounded access to the random oracle $\H$.
-Therefore the behaviour of an adversary is typically described in terms of the number of queries it makes.
+We consider computationally unbounded adversaries $\A$,
+which have bounded access to the random oracle $\H$.
+Therefore, the behavior of an adversary is described in terms of the number of queries it makes.
+The additional power granted to an adversary by allowing unbounded computations is usually not helpful in this model.
+For example, we will show in the collision resistance case:
+A successful attack is either not possible for information-theoretical reasons,
+or it can be carried out by another Linicrypt program.
 
 \subsection{Algebraic Representation}
 
 One of the advantages of restricting the computational model is that one can characterize
 Linicrypt programs with an algebraic representation.
-Let $\P$ be a linicrypt program with intermediate variables $v_1, \dots, v_n$.
+We will introduce the concept of the algebraic representation as it was developed in previous Linicrypt papers.
+Some definitions, in particular the definition of an oracle constraint, will be generalized in the next chapters.
+Let $\P$ be a Linicrypt program with intermediate variables $v_1, \dots, v_n$.
 These are sorted in the order in which they are created in the program.
 
 A \textbf{base variable} is an intermediate variable which was created by retrieving an input,
 calling the random oracle $\H$ or sampling from $\F$.
-These are special, because they can be independent of each other.
-Let $\base$ be the number of base variables.
+These are special, because they are not intrinsically linearly dependent of other intermediate variables.
+A \textbf{derived variable} is one which is created by performing a linear combination of existing intermediate variables.
+Note, that derived variables can always be uniquely written as linear combinations of base variables.
+Let $\base$ be the number of base variables,
+and we name them $\dts b \base \subset \{\dts v n\}$
+We fix the ordering of the base variables by their order in $v_1, \dots, v_n$
 We denote by $\vbase \in \Base$ the column vector
-consisting of the values that the base variables take in a specific excecution of $\P$.
-Here, we order the base variables the same way as the intermediate variables.
-A \textbf{derived variable} is one which is created by performing a linear combination of existing itermediate variables.
-Note, that derived variables are therefore linear combinations of base variables.
-As base variables are mostly independent of each other,
-it makes sense to \emph {model them as linearly independent vectors in $\Base$}.
-The derived variables are then modeled by linear combinations of these vectors.
+consisting of the values that the base variables take in a specific execution of $\P$.
+That is, the $i$th component of $\vbase$ is set to the value of $b_i$ in that execution.
+One should think of $\vbase$ as a vector containing the whole state of the program execution.
+An intermediate variable, base or derived,
+can then be seen as a linear function going from the vector space $\Fsp$ to its concrete value in $\F$.
 
 Let $v_i$ be an intermediate variable.
 % TODO here we make the distinction betwenn variable, it's value on an execution, is this cleaner? 
-We define the \textbf{associated vector} $\v v_i$ to be the unique row vector such that
-for every excecution of $\P$ base variables taking the values $\vbase$,
+We define the \textbf{associated row vector} $\v v_i$ to be the unique row vector in $\Frowsp$ representing this function.
+That means, that for every execution of $\P$:
+If base variables take the values $\vbase$,
 the variable $v_i$ has the value $\vv_i \vbase$.
-For example, if $v_i$ is the j'th base variable, then 
-$
-  \v v_i = \begin{bmatrix}
-  0 & \cdots & 1 & \cdots & 0
-  \end{bmatrix},
-$
-where the $1$ is in the j'th position.
-We follow the convention to write matrices and vectors using a bold font.
+Here we use the ordinary matrix product.
+For example for the $i$th base variable $b_i$ we have 
+$\v b_i = \m{0 & \cdots & 1 & \cdots & 0}$
+where the $1$ is in the $i$th position.
+We follow the convention used in the previous papers about Linicrypt to write matrices and vectors using a bold font.
 
 The outputs of $\P$ can be described by a matrix with entries in $\F$.
 Let $o_1, \dots, o_l \in \{v_1, \dots, v_n \}$ be the output variables of $\P$.
@@ -90,8 +104,7 @@ Then the \textbf{output matrix} $\O$ of $\P$ is defined by
   \v o_1\\
   \vdots \\
   \v o_l
-  \end{bmatrix}
-  .
+  \end{bmatrix}.
 \]
 By the definition of the associated vectors $\v o_i$ we have
 $
@@ -111,11 +124,11 @@ then we write
   \end{bmatrix}.
 \]
 As $i_1, \dots, i_k$ are base variables,
-the rows of $\Inp$ are canonical basis vectors.
+the rows of $\Inp$ are canonical basis row vectors.
 If the Linicrypt program is written such that it first retrieves all its inputs,
-then $\v i_m$ is simply the $m$'th canonical basis vector. 
+then $\vi_m$ is simply the $m$'th canonical basis row vector. 
 
-The input and output matrix describe the linear correlations between input and output of the program with respect to it's base variables.
+The input and output matrix describe the linear correlations between input and output of the program with respect to its base variables.
 But the base variables are not completely independent of each other.
 In fact, the relationship between the queries and answers to the random oracle $\H$ needs to be captured algebraically.
 Let $a_i = H(t_i, (q_1, \dots, q_n))$ be an operation in $\P$.
@@ -131,50 +144,48 @@ The \textbf{associated oracle constraint} $c$ of this operation is the tuple
 	(t_i, \Q_i, \va_i)
 	.
 \]
-This should be interpreted as the requirement that
-$
-\va_i \vbase = \H( t_i, \Q_i \vbase)
-$.
+This should be interpreted as a constraint on $\vbase$, which requires
+$\va_i \vbase = \H( t_i, \Q_i \vbase)$.
 We denote the set of all (associated) oracle constraints of $\P$ by $\C$.
 
-As we want the base variables to be linearly indepentent from each other,
+As we want the base variables to be linearly independent of each other,
 we restrict ourselves to Linicrypt programs which don't make multiple calls to the random oracle with the same input.
-In the language of the algebraic reprensentation:
-We assume wlog that no two constraints in $\C$ share the same $(t, \Q)$.
+In the language of the algebraic representation:
+We assume wlog that no two constraints in $\C$ share the same $t$ and $\Q)$.
 
 Wrapping up these definitions,
-we define the \textbf{algebraic representation} of $\P$ to be the tuple $(\Inp, \O, \C)$.
+we define the \textbf{algebraic representation} of the program $\P$ to be the tuple $(\Inp, \O, \C)$.
 A natural question that arises at this point is:
-Does the algebraic representation determine the behaviour of $\P$ completely?
+Does the algebraic representation determine the behavior of $\P$ completely?
 
-The answer is yes, because the algebraic representation does not loose any relevant information about the operations executed in $\P$.
-Informally, this is because the constraints in $\C$ have a particular form, which makes it clear in which order the oracles calls have to be excecuted.
+The answer is yes, because the algebraic representation does not lose any relevant information about the operations executed in $\P$.
+Informally, this is because the constraints in $\C$ have a particular form, which makes it clear in which order the oracles calls have to be executed.
 Given the order, and using the input matrix, one can determine which variables used in the calls are retrieved from the input and which have to be sampled.
-Finally the output matrix completely describes how to construct the output from the input,
-the results of the queries and randomly sampled values. 
+Finally, the output matrix completely describes how to construct the output from the input,
+the results of the queries and the additional randomly sampled values. 
 
-% TODO mention further result of equivalence when in normalized form
-The authors of the original paper on Linicrypt \cite{C:CarRos16} establish this result for inputless programs
+The authors of the original paper on Linicrypt \cite{C:CarRos16} establish a much stronger result for inputless programs.
+First they define the normalized form of an algebraic representation.
+It can be efficiently generated from any inputless program description.
+They prove that two programs are indistinguishable if and only if their normalized algebraic representations are the same up to a basis change.
+The concept of basis change will be discussed extensively in the next chapters.
 
 \subsection{Characterizing Collision Resistance in Linicrypt}
 
 In a paper by I. McQuoid, T. Swope and M. Rosulek
 \cite[Characterizing Collision and Second-Preimage Resistance in Linicrypt]{TCC:McQSwoRos19},
-the authors introduced a characterization of collision resistance
-and second-preimage resistance for a class of Linicrypt program based on the algebraic representation.
+the authors introduced a necessary condition for collision resistance
+and second-preimage resistance for a deterministic Linicrypt program.
 
-They identified two reasons why a \textit{deterministic} Linicrypt $\P$ program can fail to be second-preimage resistant:
+They identified two reasons why a \textit{deterministic} Linicrypt $\P$ program can fail to be second-preimage resistant.
+One can describe them roughly as follows:
 \begin{enumerate}
   \item It is degenerate, meaning that it doesn't use all of its inputs independently
   \item It has a collision structure,
-    which means that one can change some intermediate value and compute what the input needs to be to counteract this change
+    which means that one can change some intermediate variable and compute what the input needs to be to counteract this change
 \end{enumerate}
 
 Below are two example Linicrypt programs, $\P^\H_\textrm{deg}$ is degenerate and $\P^\H_\textrm{cs}$ has a collision structure.
-Note, that you can choose $w' \neq w$ to be any value,
-then find a $x'$ such that the output of $\P^\H_{\textrm{cs}}$ stays the same,
-and finally find $y'$ according to $w' = x' + y'$.
-
 \begin{pchstack}[center,space=2cm]
   \pcbl[valign=c]{$\P^\H_{\textrm{deg}}(x, y)$}{
     v \deq x + y \\
@@ -185,15 +196,104 @@ and finally find $y'$ according to $w' = x' + y'$.
     \pcreturn \H(w) + x
   }
 \end{pchstack}
+Note, that you can set $w' \neq w$ to any value,
+then find an $x'$ such that the output of $\P^\H_{\textrm{cs}}$ stays the same,
+and finally solve for $y'$ according to $w' = x' + y'$.
 
-The precise definition of degenerate and collision structure will be discussed in section \ref{section_collision_structure}.
 The authors show that for any deterministic Linicrypt program which is degenerate
 or has a collision structure
 second-preimage resistance (and hence also collision resistance) is completely broken.
-
 The main result of \cite{C:CarRos16} is that they show that the converse of this is also true,
-for Linicrypt programs which use distinct nonces in each call to the random oracle.
-That is, if a Linicrypt program is not collision resistant,
+but only for Linicrypt programs which use distinct nonces in each call to the random oracle.
+That is, if a such a Linicrypt program is not collision resistant,
 then it either has a collision structure, or it is degenerate.
-
 Furthermore, checking for degeneracy and existence of a collision structure can be done efficiently.
+
+In the following chapters a similar result will be presented for a variant of Linicrypt
+where we replace the random oracle $\H$ with an ideal cipher $\BC=(\E, \D)$.
+Along the way,
+we will merge the concepts of degeneracy and collision structure by considering degeneracy as an edge case of a collision structure.
+
+\subsection{Notation}
+We have already introduced some notational conventions.
+For reference, we summarize the notation we are going throughout the argument.
+Variables of a Linicrypt program and their values will be denoted with letters from the Latin alphabet in a regular font.
+For example, depending on the context $x$ denotes a variable, or it denotes a concrete value in $\F$ a variable called $x$ takes in a specific execution of the program.
+Their associated row vectors will have the same letter but in bold font, e.g. $\vx \in \Frowsp$.
+Column vectors and matrices are also denoted by bold letters.
+We use $\vbase \in \Fsp$ or $\vv \in \Fsp$ to denote the column vector containing all the values for the base variables in a program execution.
+In a slight overload of notation,
+we will denote both the canonical basis column vectors and the canonical basis row vectors by $\ve_i$.
+
+Linicrypt statements are often about the span of the rows of matrices.
+If $\v A \in \F^{a\times\base}$ for arbitrary $a \in \NN$,
+then we define the rowspace of $\v A$ as $\rowsp(\v A) \coloneqq \spn(\rows(\v A)) \subseteq \Frowsp$.
+Here we see $\rows$ as a function mapping a matrix in $\F^{a\times\base}$ the set of its rows, where each row is in $\Frowsp$.
+Note that $\rowsp$ is sometimes defined as a subset of $\Fsp$ instead of $\Frowsp$.
+We do not do this to simplify the notation in many statements,
+and to emphasize that elements in $\rowsp(\v A)$ should be considered as possible intermediate variables.
+For convenience, we also define for $\dts{\v A}{n}$ matrices with $\base$ columns: $\rowsp(\dts{\v A}{n}) \coloneqq \sum_i^n \rowsp(\v A_i)$.
+The concept of rowspace is useful for example in the following style of arguments:
+If $\v A\vv$ has been determined, then $\vw\vv$ is determined for any $\vw \in \rowsp(\v A)$.
+
+The kernel of a matrix $\v A$ as above is also used in Linicrypt proofs.
+As a reminder, $\ker(\v A) \coloneqq \{ \vv \in \Fsp\ \mid \v A \vv = 0\}$.
+We will use the following facts from Linear Algebra:
+\begin{align*}
+  \rowsp(\v A)^\top &= \ker(\v A)^\perp \\
+  (V_1 + V_2)^\perp &= V_1^\perp \cap V_2^\perp \quad \textrm{for $V_1$ and $V_2$ subspaces of $\Fsp$}
+\end{align*}
+For example:
+If $\rowsp(\v A) + \rowsp(\v B) = \Frowsp$,
+then $\v A \vv = \v A \vv'$ and $\v B \vv = \v B \vv'$ implies $\vv = \vv'$ for any $\vv, \vv' \in \Fsp$.
+
+\subsection{Security Definitions}
+We will use the following security definitions.
+We only state them for ideal cipher model,
+as that is the one we actually need in the argument.
+Let $\P$ be a Linicrypt program taking $k$ inputs.
+The collision game and the second-preimage game in the ideal cipher model are defined as:
+\begin{pchstack}[center, space=0.4cm]
+  \pcbl[]{$\crgame(\P, \A)$}{
+  \textrm{instantiate an ideal cipher } \BC = (\E, \D) \\
+  (\vi, \vi') \sample \A^\BC \\
+  \pcreturn (\vi \neq \vi') \land \big(\P^\BC(\vi) = \P^\BC(\vi) \big)
+  }
+  \pcbl[]{$\sprgame(\P, \A)$}{
+  \textrm{instantiate an ideal cipher } \BC = (\E, \D) \\
+  \vi \sample \F^k \\
+  \vi' \sample \A^\BC(\vi) \\
+  \pcreturn (\vi \neq \vi') \land \big(\P^\BC(\vi) = \P^\BC(\vi) \big)
+  }
+\end{pchstack}
+
+\begin{defn}[Collision Resistance]
+  Let $\A$ be an adversary and $\P$ be a Linicrypt program.
+  We define $\A$'s advantage as 
+  \[
+    \cradv[\A, \P] = \prob{\crgame(\P, \A) = 1}.
+  \]
+  We call $\P$ collision resistant if
+  $\cradv[\A, \P]$ is negligible for all (possibly not efficient) adversaries $\A$.
+\end{defn}
+
+\begin{defn}[Second-preimage Resistance]
+  Let $\A$ be an adversary and $\P$ be a Linicrypt program.
+  We define $\A$'s advantage as 
+  \[
+    \spradv[\A, \P] = \prob{\sprgame(\P, \A) = 1}.
+  \]
+  We call $\P$ second-preimage resistant
+  if $\spradv[\A, \P]$ is negligible for all (possibly not efficient) adversaries $\A$.
+\end{defn}
+
+These definitions are dependent on the choice of the field $\F$.
+A result that limits the advantage of an adversary against a program usually depends on the size of the field $\F$.
+If one wants to have security definitions depending on a security parameter $\lambda \in \NN$,
+then one can choose a family of fields $\F_\lambda$ where $|\F_\lambda|$ is exponential in $\lambda$.
+One can then only talk about the security of a family of programs $\P_\lambda$.
+If the coefficients are in a subfield of every $\F_\lambda$,
+e.g. $\{0,1\}$ as they are for most constructions,
+then changing $\lambda$ will usually not affect the relevant properties of the program.
+For example, if such a $\P_\lambda$ has a collision structure for some $\lambda$,
+then it has a collision structure for all $\lambda$.

@@ -1,4 +1,4 @@
-%se% Custom commands
+%% Custom commands
 %% ===============
 
 %% Shortcuts
@@ -7,12 +7,18 @@
 \newcommand\mdts[2]{\m{#1_1 \\ \vdots \\ #1_{#2}}}
 \newcommand\mtdts[2]{\m{#1_1^\top & \cdots & #1_{#2}^\top}^\top}
 % \newcommand\mtdts[2]{(\dts #1 #2)}
-\renewcommand\vec[2]{(\dts #1 #2)}
+\renewcommand\vec[2]{(vdts #1 #2)}
 \newcommand\dts[2]{#1_1, \dots, #1_{#2}}
+% \newcommand\dtsup[2]{#1^1, \dots, #1^{#2}}
 \newcommand\vdts[2]{#1_1 \\ \vdots \\ #1_{#2}}
 
 \newcommand{\bigslant}[2]{{\left.\raisebox{.1em}{$#1$}\middle/\raisebox{-.1em}{$#2$}\right.}}
 \renewcommand{\ddot}{\boldsymbol\cdot}
+
+\newcommand{\<}{\langle}
+\renewcommand{\>}{\rangle}
+
+\renewcommand{\t}{^\top}
 
 %% Cryptography stuff
 \newcommand{\A}{\adv}
@@ -21,14 +27,23 @@
 \newcommand{\X}{\mathcal{X}}
 \newcommand{\BC}{\mathcal{E}}
 
+\newcommand{\spradv}{\mathrm{SPR}\mathsf{adv}^{\mathrm{ic}}}
+\newcommand{\cradv}{\mathrm{CR}\mathsf{adv}^{\mathrm{ic}}}
+\newcommand{\crgame}{\mathrm{CR}\mathsf{Game}^{\mathrm{ic}}}
+\newcommand{\sprgame}{\mathrm{SPR}\mathsf{Game}^{\mathrm{ic}}}
+
 
 %% Linicrypt stuff
 \renewcommand{\v}{\boldsymbol}
 
 \renewcommand{\P}{\mathcal{P}}
 \renewcommand{\A}{\mathcal{A}}
-\renewcommand{\PH}[1][]{\P^\H_{\mathsf{#1}}}
-\newcommand{\PE}[1][]{\P^\BC_{\mathsf{#1}}}
+\renewcommand{\PH}[1][]{\P^\H_{\textit{#1}}}
+\newcommand{\PE}[1][]{\P^\BC_{\textit{#1}}}
+% \newcommand{\PMD}{\P_{\textit{MD}}}
+\newcommand{\PMD}[1]{\H^n_{#1}}
+\newcommand{\MD}{Merkle-Damg\aa rd }
+
 
 % \newcommand{\M}{\boldsymbol{M}}
 \newcommand{\Inp}{\boldsymbol{I}}
@@ -55,7 +70,7 @@
 \newcommand{\Back}{\mathsf{Backward}}
 \newcommand{\is}{{i^*}}
 
-\newcommand{\vbase}{\v v_\base}
+\newcommand{\vbase}{\vv}
 \renewcommand{\vk}{\v k}
 \newcommand{\vx}{\v x}
 \newcommand{\vy}{\v y}
@@ -67,6 +82,8 @@
 \newcommand{\vv}{\v v}
 \newcommand{\vw}{\v w}
 \newcommand{\vl}{\v \lambda}
+\newcommand{\vh}{\v h}
+\newcommand{\vm}{\v m}
 
 \newcommand{\out}{\mathsf{out}}
 \newcommand{\inp}{\mathsf{in}}
@@ -89,3 +106,147 @@
 \createprocedureblock{pcbm}{inline}{}{\setlength\pcbodylinesep{0\baselineskip}\setlength\pcheadlinesep{0\baselineskip}}{beginline=\t}
 \createprocedureblock{pcb}{center,boxed}{}{}{beginline=\t}
 
+% Linicrypt visualizations
+\newcommand{\arrow}[2]{
+    \def\zero{0,0,0}%
+    \def\vect{#1}
+    \ifx\vect\zero
+        % \addplot3 [#2,mark=*,only marks] 
+        % ] table [row sep=\\, col sep=comma] {
+        % x,y,z\\
+        % 0,0,0\\
+        % };
+        \addplot3 [
+        #2,
+        only marks,
+        mark size=2.5pt,
+        ] table [row sep=\\, col sep=comma] {
+        x,y,z,u,v,w\\
+        0,0,0,#1\\
+        };
+    \else
+        \addplot3 [
+        #2,
+        quiver={
+            u=\thisrow{u},v=\thisrow{v},w=\thisrow{w},
+            every arrow/.append style={
+                line width=2pt,
+            },
+        },
+        -stealth,
+        ] table [row sep=\\, col sep=comma] {
+        x,y,z,u,v,w\\
+        0,0,0,#1\\
+        };
+    \fi
+}
+
+\newcommand{\arrowo}[1]{
+    \arrow{#1,1}{black}
+}
+\newcommand{\arrowk}[1]{
+    \arrow{#1,0}{red}
+}
+\newcommand{\arrowx}[1]{
+    \arrow{#1,0}{blue}
+}
+\newcommand{\arrowkx}[2]{
+    \def\k{#1,0}%
+    \def\x{#2,0}%
+    \ifx\k\x
+    \arrow{#1,0}{violet}
+    \else
+    \arrow{#1,0}{red}
+    \arrow{#2,0}{blue}
+    \fi
+}
+\newcommand{\plane}[3]{
+    \addplot3[fill=gray,fill opacity=0.5] coordinates {
+        (0,0,0) (#1) (#2) (#3) (0,0,0) };
+}
+\newcommand{\arrows}[3]{
+    \arrowo{#1}
+    \arrowkx{#2}{#3}
+}
+
+\newcommand{\cube}[2][30]{
+\begin{tikzpicture}
+\begin{axis}[
+    axis equal image=true,
+    % xlabel=m,
+    % ylabel=h,
+    % zlabel=y,
+    xmin=0,
+    xmax=1,
+    ymin=0,
+    ymax=1,
+    zmin=0,
+    zmax=1,
+    ticks=none,
+    axis lines=box,
+    y dir=reverse,
+    height=3.2cm,
+    view/v=25
+    ]
+    #2
+\end{axis}
+\end{tikzpicture}
+}
+\newcommand{\cubealt}[2][30]{
+\begin{tikzpicture}
+\begin{axis}[
+    axis equal image=true,
+    % xlabel=m,
+    % ylabel=h,
+    % zlabel=y,
+    xmin=0,
+    xmax=1,
+    ymin=0,
+    ymax=1,
+    zmin=0,
+    zmax=1,
+    ticks=none,
+    axis lines=box,
+    y dir=reverse,
+    height=3.55cm,
+    view/v=32,
+    ]
+    #2
+\end{axis}
+\end{tikzpicture}
+}
+
+
+\newcommand{\cubestd}[6]{
+% \vspace*{4mm}
+\begin{tikzpicture}
+\begin{axis}[
+    axis equal image=true,
+    % xlabel=m,
+    % ylabel=h,
+    % zlabel=y,
+    xmin=0,
+    xmax=1,
+    ymin=0,
+    ymax=1,
+    zmin=0,
+    zmax=1,
+    ticks=none,
+    axis lines=box,
+    y dir=reverse,
+    height=3.7cm,
+    ]
+    \arrow{#1,1}{black}
+    \def\k{#2,0}%
+    \def\x{#3,0}%
+    \ifx\k\x
+    \arrow{#2,0}{violet}
+    \else
+    \arrow{#2,0}{red}
+    \arrow{#3,0}{blue}
+    \fi
+    \addplot3[fill=gray,fill opacity=0.5] coordinates {
+        (0,0,0) (#4) (#5) (#6) (0,0,0) };
+\end{axis}
+\end{tikzpicture}
+}

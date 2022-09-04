@@ -56,10 +56,10 @@ $c, c' \in \C$ we have $(t,\Q) = (t', \Q') \implies \va = \va'$.
 When we use a set of constraints, we will implicitly also require that it is well-defined.
 Highlighting the function like properties of a constraint $(t, \Q, \va)$,
 we will also use the shorthand $(t,\Q) \mapsto \va$, or $\Q \mapsto \va$ if $t$ in case t is an empty string.
-This notation was introduced in \cite{CSF:HolRosRoy22}.
+This notation was introduced in \cite{EPRINT:HolRosRoy22}.
 
 We want to analyze which sets of constraints have solutions and how these solutions can be computed.
-First, every Linicrypt program is a method to solve the constraints $\C$ from it's algebraic representation.
+First, every Linicrypt program is a method to solve the constraints $\C$ from its algebraic representation.
 If we run a program $\P$ on some input $(\dts i k)$,
 it will query the random oracle
 and solve each random oracle constraint one by one in the order of the corresponding queries in $\P$.
@@ -96,9 +96,9 @@ we need to consider the concept of basis change as it was introduced in \cite{C:
     we say $\P\B \coloneqq (\Inp \B, \O \B, \C \B)$ is a \textbf{pseudo algebraic representation} of $\P$.
 \end{defn}
 
-The concept of basis change works well together with the definition of the set of solutions for some constraints.
-Let $\C$ a any set of constraints and $\B$ be a basis change matrix.
-Note the following equivalence which follows from associativity of the matrix product:
+The concept of base change combines well with the definition of the solution set for some constraints.
+Let $\C$ be any set of constraints and consider the basis change matrix $\B$.
+Note the following equivalence, which follows from the associativity of the matrix product:
 \begin{align*}
 &\parbox{30pt}{\phantom{$\iff$}} \vv \textrm{ solves } \C\B \\
 &\parbox{30pt}{$\iff$} \H(t, \Q \B \vv) = \va \B \vv \quad \textrm{for all} \quad (t, \Q, \va) \in \C \\
@@ -125,7 +125,7 @@ First, we describe the form $(\I, \O, \C)$ need to have such that they are the a
     \item
     $\rows(\Q_i) \subseteq \rowsp(\dts \ve {k+i-1})$
     \item
-    $\va_i = \ve_{k+i}$
+    $\va_i = \ve^{k+i}$
     \end{enumerate}
 \end{lemma}
 
@@ -139,11 +139,12 @@ First, we describe the form $(\I, \O, \C)$ need to have such that they are the a
     thus the input matrix is $\I = \m{\Id_k & 0}$.
     Then each of the random oracle constraints is converted into Linicrypt commands of the form
     $v_{k+i} = H(\dts q {k+i-1})$.
-    Condition 1. from the Lemma ensures that $\dts q {k+i-1}$ are linear combinations only of previously defined intermediate variables.  
-    Condition 2. from the Lemma guarantees that the variable $v_{k+i}$ has not been used previously,
+    Condition 1.~from the Lemma ensures that $\dts q {k+i-1}$ are linear combinations only of previously defined intermediate variables.  
+    Condition 2.~from the Lemma guarantees that the variable $v_{k+i}$ has not been used previously,
     so the command is a valid Linicrypt command.
     
-    Finally, because $k=\base - n$, we have instantiated all base variables and we can therefore output according to $\O$.
+    Finally, because $k=\base - n$, we have instantiated all base variables,
+    and we can therefore output according to $\O$.
 \end{sketch}
 
 We will now generalize the condition from this Lemma in order to make it independent of the chosen basis of $\Fsp$.
@@ -153,16 +154,16 @@ This leads to the characterization of pseudo algebraic representations.
 \label{def_det_solvable}
     Let $\C$ be a finite well-defined set of constraints of dimension $\base$,
     and let $\I \in \F^{k \times \base}$ for some $k \in \NN$.
-    $\C$ is \textbf{deterministically solvable fixing} fixing $\I$
+    $\C$ is \textbf{deterministically solvable fixing} $\I$ (or fixing $\rowsp(\I)$)
     if there exists an ordering $(c_1, \dots, c_n)$ of $\C$
     such that for all $i=1, \dots, n$:
     \begin{enumerate}
     \item
         \label{solvable1}
-        $\rows(\Q_i) \subseteq \rowsp(\I) + \rowsp\big(\{\va_1, \dots, \va_{i-1}\}\big)$
+        $\rows(\Q_i) \subseteq \rowsp(\I) + \rowsp(\va_1, \dots, \va_{i-1})$
     \item
         \label{solvable2}
-        $\va_i \notin \rowsp(\I) + \rowsp\big(\{\va_1, \dots, \va_{i-1}\}\big)$
+        $\va_i \notin \rowsp(\I) + \rowsp(\va_1, \dots, \va_{i-1})$
     \end{enumerate}
     Additionally we require that $\rows(\I) \cup \{\va_1, \dots, \va_n\}$ form a basis of $\F^{1\times\base}$.
     We call $(c_1, \dots, c_n)$ a solution ordering of $\C$ fixing $\I$ (or fixing $\rows(\I)$).
@@ -189,15 +190,15 @@ can be exactly the order of the corresponding queries in the execution of $\P$.
 
 \begin{proof}
     Consider a constraint $(t, \Q, \va)$ in $\C$.
-    By definition $\va = \ve_i$ for some $i$.
-    and $\Q$ has only zeros in the columns including and to the right of column $i$.
+    By definition $\va = \ve^i$ for some $i$.
+    And $\Q$ has only zeros in the columns including and to the right of column $i$.
     We can sort $\C = \{\dts c n\}$, such that the $\va$'s are sorted.
     Indeed, this is the same order as the associated oracle calls in the execution of $\P$.
     
     Clearly condition \ref{solvable2} from Definition $\ref{def_det_solvable}$ is then fulfilled.
     Because $\P$ is deterministic, 
     the queries to the oracle are linear combinations of input variables and results of previous queries.
-    Therefore condition \ref{solvable1} must be fulfilled.
+    Therefore, condition \ref{solvable1} must be fulfilled.
     Finally, as $\P$ contains no sampling operation, we know $\base = k + n$.
     The associated vectors $\rows(I) = \{ \dts \vi k \}$ to the input variables are linearly independent,
     hence it follows that $\{ \dts \vi k, \dts \va n \}$ is a basis of $\F^{1\times\base}$. 
@@ -205,7 +206,7 @@ can be exactly the order of the corresponding queries in the execution of $\P$.
 
 The following Lemma shows that the reversed direction also works,
 meaning that we can recover a deterministic Linicrypt program from deterministically solvable constraints by applying a basis change.
-This charaterization up to basis change is not a problem, 
+This characterization up to basis change is not a problem, 
 if all security characterization making use of the algebraic representation are invariant under basis change.
 
 \begin{lemma}
@@ -243,7 +244,7 @@ We choose the new basis for $\Frowsp$ as $(\dts \vi k, \dts \va n)$, hence the b
     \end{bmatrix}.
 \]
 
-In the following we denote by $\v e_i$ the $i$'th canonical row vector in $\Fsp$.
+In the following we denote by $\v e_i$ the $i$th canonical row vector in $\Frowsp$.
 By definition of $\B$ we have for $i=1, \dots, n$
 % TODO this is not compact enough, for its importance
 \begin{equation*}
@@ -269,7 +270,7 @@ which is equivalent to
 Additionally, as $\C$ is solvable via the ordering $(c_1, \dots, c_n)$,
 we know that 
 \[
-\rows(\Q_i \B) \subset \rowsp(\vi_1 \B, \dots, \vi_k \B, \va_1 \B, \dots, \va_{i-1} \B) = \rowsp( \ve_1, \dots, \ve_{k+i-1} )
+\rows(\Q_i \B) \subset \rowsp(\vi_1 \B, \dots, \vi_k \B, \va_1 \B, \dots, \va_{i-1} \B) = \rowsp(\dts \ve k+i-1)
 \]
 
 This shows that $(\I\B, \O\B, \C\B)$ fulfills the conditions in Lemma \ref{is_algebraic_repr},
@@ -300,7 +301,7 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
     the vector of the values of the base variables in any execution of $\P$ is in $\sol(\C\B)$.
     Note that the output matrix of $\P$ is $\B$ 
     and $\B|_{\sol(\C\B)}: \sol(\C\B) \to \sol(\C)$ is a bijection.
-    Therefore $f_\P$ is an injective map from $\F^k$ to $\sol(\C)$.
+    Therefore, $f_\P$ is an injective map from $\F^k$ to $\sol(\C)$.
 
     Now we will show that the input matrix $\I: \Fsp \to \F^k$ is injective
     when restricted to $\sol(\C)$.
@@ -313,9 +314,9 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 
     Assume this is true for all $ j \leq i$.
     Because of the solution ordering of $\C$ we know that
-    $\rows(\Q_{i+1}) \subseteq \rowsp(\I) + \rowsp(\{\dts \va {i}\})$. 
+    $\rows(\Q_{i+1}) \subseteq \rowsp(\I) + \rowsp(\dts \va {i})$. 
     This means there is a $\v \lambda$ such that $\Q_{i+1} = \v \lambda \m{\I^\top & \va_1^\top & \cdots & \va_n^\top}^\top =: \lambda \v A_i$.
-    Therefore we have $\Q_{i+1} \vv' = \vl \v A_i \vv' = \vl \v A_i \vv = \Q_{i+1} \vv$.
+    Therefore, we have $\Q_{i+1} \vv' = \vl \v A_i \vv' = \vl \v A_i \vv = \Q_{i+1} \vv$.
     Because $\vv$ and $\vv'$ are solutions to $\C$ we know that
     $\va_{i+1}\vv' = \H(\Q_{i+1}\vv') = \H(\Q_{i+1}\vv) = \va_{i+1}\vv$.
 
@@ -348,8 +349,8 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
     If we run $\P$ on $(\dts i k)$ we compute the values of the remaining base variables.
     Let us call the vector containing the values of the base variables $\vv \in \Fsp$.
     Clearly $\I\B \vv = (\dts i k)$.
-    Also $\P$ outputs $\B\vv$, so $f_\P\big((\dts i k)\big) = \B\vv$. 
-    Therefore 
+    Also, $\P$ outputs $\B\vv$, so $f_\P\big((\dts i k)\big) = \B\vv$. 
+    Therefore, 
     \begin{equation}
     \label{input_is_inversion}
     \I\B \vv = (\I \circ f_\P)\big((\dts i k)\big) = (\dts i k).
@@ -359,7 +360,7 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 \end{proof}
 
 The benefit of this bijection is that every solution of $\C$ corresponds to a unique input.
-Therefore any question regarding the input and output of a Linicrypt program can be translated to the level of the algebraic representation and solutions of $\C$.
+This implies, that any question regarding the input and output of a Linicrypt program can be translated to the level of the algebraic representation and solutions of $\C$.
 Explicitly, we can formulate the following corollary.
 
 \begin{corollary}
@@ -377,7 +378,7 @@ Explicitly, we can formulate the following corollary.
 \end{corollary}
 
 \begin{proof}
-    The direction 1. $\implies$ 2. is clear, by definition of the algebraic representation.
+    The direction 1.~$\implies$ 2.~is clear, by definition of the algebraic representation.
     
     For the other direction, assume we have such a $\vv \in \Base$.
     If we run $\P$ on $\I\vv = (\dts i k)$ we compute the base variables $\vv' \in \Base$.
@@ -462,11 +463,11 @@ For a set of constraints $\C$ we write:
 \end{lemma}
 
 This Lemma is similar to Lemma \ref{inversion} in the sense that both describe a condition for being able to find a $\vv$ solving $\C$ while fixing $\O\vv = \vec o l$.
-The difference is that here we consider the easier case (from an attackers perspective):
+The difference is that here we consider the easier case (from an attacker's perspective):
 We already have a solution $\vv'$ with $\O \vv' = \vec o l$ and only require a different one. 
 
 The definition of collision structure in Lemma \ref{collision_structure_implies_attack}
-is sligthy more general than the one from \cite{TCC:McQSwoRos19}.
+is slightly more general than the one from \cite{TCC:McQSwoRos19}.
 It also includes the case of degeneracy, 
 namely it corresponds to choosing $\Ccs = \{\}$ and $\I_\textrm{cs} = \Id_\base$.
 Degeneracy means precisely that $\F^{1\times\base} \supset \rowsp(\C) + \rowsp(\O)$.
@@ -480,13 +481,13 @@ a more formal proof will be given in the next section when we adapt Linicrypt to
 Assume we are given a $\vv'$ solving $\C$ such that $\I \vv' = \vec i k$ and $\O \vv' = \vec o l$.
 The goal is to find a different $\vv$ solving $\C$ with $\O \vv = \vec o l$.
 By \eqref{cs_condition} we can constrain $\vv$ to fulfill $\O \vv = \O \vv'$
-as well as $\Q \vv = \Q \vv'$ and $\va\vv = \va\vv'$ for every $(t, \Q, \va) \in \Cfix\,$.
+as well as $\Q \vv = \Q \vv'$ and $\va\vv = \va\vv'$ for every $(t, \Q, \va) \in \Cfix$.
 Even doing so, we still have at least one degree of freedom before we have uniquely determined what
 $\I_{cs} \vv$ is.
 We can therefore choose these further constraints to be arbitrary such that $\vv \neq \vv'$.
 Because $\Ccs$ is deterministically solvable fixing $\I_{cs}$,
 we can uniquely determine $\vv$ such that it solves $\Ccs$.
-But we chose $\I_{cs} \vv$ in such a way, that $\vv$ also solves $\Cfix\,$,
+But we chose $\I_{cs} \vv$ in such a way, that $\vv$ also solves $\Cfix$,
 hence $\vv$ solves $\C = \Ccs \cup \Cfix$.
 
 Finally, because $\P$ is deterministic $\I$ is injective and therefore

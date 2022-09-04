@@ -1,5 +1,89 @@
 \chapter{Introduction}
+\renewcommand{\MD}{Merkle-Damg\aa rd }
  
-Todo
+The theme of this thesis is to apply a new proof model to well known and trusted cryptographic constructions.
+The goal is twofold.
+On one hand we hope to increase our understanding of the known cryptographic constructions.
+On the other hand we aim to improve and extend the proof model.
 
+\section{Background and Motivation}
+
+It has been well studied, that hash functions can be constructed securely from block ciphers.
+Since the success of very strong block ciphers such as AES, 
+the trust in the security of modern block cipher constructions is very high.
+Therefore, it is sensible to use a block cipher which is believed to be secure as a building block for other constructions,
+and express their security in terms of the security of the block cipher.
+The ideal cipher model, which was introduced by Shannon in \cite{Shannon49},
+is a useful technique in this context.
+In this model, we assume that the block cipher is actually a perfect PRP, and we call it an ideal cipher.
+This enables a proof of security for a cryptographic construction in absolute terms,
+depending only on the amount of queries an adversary makes to the ideal cipher.
+The number of queries acts as a proxy for the time and resources needed to break the construction,
+as we assume that the execution of the ideal cipher program has a fixed cost.
+In a seminal paper from 1993 \cite{C:PreGovVan93}, the authors Preneel, Govaerts and Vandewalle analyze the 64 most basic constructions of a compression function from a block cipher.
+12 of them were found to lead to secure hash functions in the \MD construction, including e.g. the Davies-Meyer construction.
+This construction is used, for example, in the popular hash function family SHA-2.
+A follow-up paper by Black, Rogaway and Shrimpton \cite{C:BlaRogShr02} in 2002 confirms these results
+by providing tight security proofs in the ideal cipher model.
+In addition, 
+they find that 8 insecure compression functions of the 64 PGV constructions still lead to collision resistant \MD hash function constructions.
+
+The PGV compression functions as well as the \MD construction itself consist of linear operations in a field,
+mixed with calls to a primitive.
+They are just two of many examples of this type of cryptographic construction.
+The Linicrypt model was introduced by Carmer and Rosulek \cite{C:CarRos16}
+with the aim of analyzing such constructions at a higher level of abstraction.
+The central idea of this proof model is the abstraction of a cryptographic construction from its program representation to an algebraic representation.
+% TODO put this sentences in the preliminaries somewhere
+% One defines a vector space where each vector capture the whole state of a Linicryp program.
+% A variable can then be seen as a linear map from this vector space to its value for a specific execution of the program.
+
+The Linicrypt model has several benefits.
+Firstly, attacks and security proofs tend to work for a big class of constructions.
+It is easier to create a characterization for a given security definition at the level of the algebraic representation than at the level of the program description. 
+Therefore, one can write proofs that work for all constructions that fulfill this characterization.
+Secondly, characterizations can often be checked efficiently by a machine.
+For example, in \cite{C:CarRos16} two inputless Linicrypt programs were shown to be indistinguishable if and only if their algebraic representation are equivalent under a relation they define.
+Another example is a Theorem from \cite{EPRINT:HolRosRoy22}.
+The authors of describe a sufficient condition for a program to be IND\$-CPA secure in terms of ts the algebraic representation.
+Both these characterizations can be computed in polynomial time.
+
+\section{Our Contribution}
+
+This thesis focuses on the results in \cite{TCC:McQSwoRos19} by McQuoid, Swope and Rosulek.
+They find a complete and sound characterization of collision resistance for a Linicrypt program,
+if the program uses only distinct nonces in its calls to a random oracle.
+It turns out that collision resistance is equivalent to second-preimage resistance.
+We replace the random oracle with an ideal cipher and adapt the algebraic representation accordingly.
+Following the philosophy of the Linicrypt model,
+we try to unify the proofs for both primitives.
+
+
+
+In order to do so, we make a set of definitions which differ slightly in the case of the random oracle and the ideal cipher.
+Some basic lemmas have to be proven separately for both cases, but their statements are identical.
+Our characterization for the existence of a second-preimage attack is then expressed in terms of these lemmas.
+This way, the characterization and proof for the attack works for both primitives at the same time.
+If a program fulfills our condition we say that it has a collision structure, copying \cite{TCC:McQSwoRos19}.
+But our more general definition of collision structure naturally includes the case of degeneracy as an edge case,
+which they had to treat separately.
+Unfortunately the security proof from \cite{TCC:McQSwoRos19} cannot be used directly in the ideal cipher model,
+because a block cipher does not take a nonce as input.
+Therefore, we restrict ourselves to single query constructions for our security proof.
+The existence of a collision structure is then a complete and sound characterization of collision resistance and second-preimage resistance for single query constructions.
+We then apply the ideal cipher Linicrypt model to the 64 compression functions from \cite{C:PreGovVan93}.
+Using the new concepts we are able to derive a second-preimage attack taxonomy for the \MD constructions based on these compression functions.
+Such derivation of the types of attacks was not given in the aforementioned works.
+Our categorization for second-preimage attacks agrees mostly with the categories developed by \cite{C:PreGovVan93} and \cite{C:BlaRogShr02} for collision attacks.
+However, we consider it to be more fine-grained.
+We could not find a second-preimage attack for 13 schemes.
+8 of them have been proven to be collision resistant by \cite{C:BlaRogShr02},
+hence also second-preimage resistant.
+The remaining 5 are not collision resistant due to very specific collisions that occur with inputs of different lengths.
+We suspect, however, that they are second-preimage resistant.
+
+The high degree of geometric symmetry in the derivation,
+as well as the gaps in our taxonomy, point to possible future results in the Linicrypt model.
+In particular,
+a theorem about collision resistance and second-preimage resistance for a general Linicrypt programs using no nonces should fill these gaps.
 

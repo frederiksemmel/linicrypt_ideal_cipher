@@ -5,16 +5,10 @@
 % (lecture notes) project.
 
 
-%% We use the memoir class because it offers a many easy to use features.
+% We use the memoir class because it offers a many easy to use features.
 \documentclass[11pt,a4paper,titlepage,oneside]{memoir}
 
 \setlrmarginsandblock{3.2cm}{3.2cm}{*}
-
-\usepackage[backend=bibtex]{biblatex}
-\addbibresource{refs.bib} 
-\addbibresource{crypto.bib} 
-
-
 
 %% Packages
 %% ========
@@ -76,6 +70,10 @@
 %% Helpful macros.
 \input{setup/macrosetup}
 
+\usepackage[backend=bibtex,style=alphabetic]{biblatex}
+\addbibresource{refs.bib} 
+\addbibresource{crypto.bib} 
+
 %% Make document internal hyperlinks wherever possible. (TOC, references)
 %% This MUST be loaded after varioref, which is loaded in 'extrapackages'
 %% above.  We just load it last to be safe.
@@ -120,10 +118,11 @@
 
 \backmatter
 
+
 \printbibliography
 
-% \bibliographystyle{alpha}
-% \bibliography{crypto, refs}
+% \bibliography{crypto, refs}{}
+% \bibliographystyle{alphaurl}
 
 \includepdf[pages={-}]{declaration-originality.pdf}
 
