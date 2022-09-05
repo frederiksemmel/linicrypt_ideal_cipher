@@ -1,6 +1,6 @@
 \chapter{Adapting Linicrypt to the ideal cipher model}
 
-In this chapter we modify the Linicrypt model to make use of the ideal cipher model instead of the random oracle model.
+In this chapter, we modify the Linicrypt model to make use of the ideal cipher model instead of the random oracle model.
 This means that a Linicrypt program gets access to a block cipher $\mathcal{E} = (E, D)$ where $E$ and $D$ are functions $\F \times \F \to \F$
 instead of the hash function $\H : \{0,1\}^* \times \F^* \to \F$.
 By the definition of a block cipher,
@@ -31,7 +31,7 @@ in both the algebraic representation and the characterization of collision resis
 \section{Algebraic representation for ideal cipher Linicrypt}
 
 Parallel to standard Linicrypt, we will define the algebraic representation of an ideal cipher Linicrypt program.
-Towards this goal we will make the equivalent definitions to the ones in chapter \ref{revisiting_algebraic_representations}.
+Towards this goal, we will make the equivalent definitions to the ones in chapter \ref{chapter:revisiting_algebraic_representations}.
 
 \begin{defn}[Ideal cipher oracle constraint]
 An \textbf{ideal cipher oracle constraint} of dimension $\base$ is a tuple $(\vk, \vx, \vy)$ for
@@ -50,7 +50,7 @@ We will just say ``constraint" to mean ideal cipher oracle constraint or random 
 
 Let $\P$ be an ideal cipher Linicrypt program.
 Base variables and associated vectors are defined exactly as defined in standard Linicrypt.
-The only difference is that base variables can now be instantiated with calls to the ideal cipher instead of calls to the random oracle.
+The only difference is that the base variables can now be instantiated with calls to the ideal cipher instead of calls to the random oracle.
 For each command in $\P$ of the form $v_3 = \E(v_1,v_2)$
 we define the \textbf{associated ideal cipher constraint} $(\vv_1, \vv_2, \vv_3)$.
 Note, that the bold variant of the intermediate variable denotes its associated vector.
@@ -59,7 +59,7 @@ is associated with the constraint $(\vv_1, \vv_3, \vv_2)$.
 We call the set of all associated constraints $\C$. 
 The input matrix $\I$ and output matrix $\O$ are defined in the same way as in standard Linicrypt.
 We call $(\I,\O,\C)$ the algebraic representation of $\P$.
-Then, the following statement holds true, which is trivial direction of Corollary \ref{det_solvable_equiv} in standard Linicrypt.
+Then, the following statement holds true, which is the trivial direction of Corollary \ref{det_solvable_equiv} in standard Linicrypt.
 
 \begin{lemma}
     Let $\P$ be an ideal cipher Linicrypt program with algebraic representation $(\I,\O,\C)$.
@@ -81,9 +81,9 @@ Then, the following statement holds true, which is trivial direction of Corollar
 \end{proof}
 
 The main definition that changes with ideal cipher Linicrypt is the one determining if $\C$ is deterministically solvable.
-This definition captures the properties of the black box which $\P$ and an attacker can access.
-In standard Linicrypt the black box is a one way random function.
-In ideal cipher Linicrypt the black box is a random permutation which can be computed both ways,
+This definition captures the properties of the black box that $\P$ and an attacker can access.
+In standard Linicrypt the black box is a one-way random function.
+In ideal cipher Linicrypt the black box is a random permutation that can be computed both ways,
 as both the Linicrypt program and the attacker have full access to the ideal cipher $\mathcal{E} = (\E,\D)$.
 
 To simplify the notation we extend the linear algebra operators $\rowsp$ and $\ker$
@@ -138,9 +138,9 @@ For a set of constraints $\C$ we write:
 \end{defn}
 
 Note that the case distinction (Case a and Case b) is what models the invertibility of the ideal cipher.
-It is actually an exclusive or,
+It is indeed an exclusive ``or"
 because condition 1.~of Case a implies that condition 2.~of Case b is false.
-With these definitions in place the Lemmas from section \ref{det_solvable_equiv} can be formulated in the same way.
+With these definitions in place, the Lemmas from Chapter \ref{chapter:revisiting_algebraic_representations} can be formulated in the same way.
 
 \begin{lemma}
 \label{alg_rep_det_solvable_ic}
@@ -204,7 +204,7 @@ With these definitions in place the Lemmas from section \ref{det_solvable_equiv}
 \end{lemma}
 
 \begin{sketch}
-    By setting $\Q_i$ and $\va_i$ as in the definition \ref{def_det_solvable_ic} we can copy the proof of Lemma \ref{solution_space_bijection}.
+    By setting $\Q_i$ and $\va_i$ as in the definition \ref{def_det_solvable_ic} we can copy the proof of Lemma \ref{lemma:solution_space_bijection}.
 \end{sketch}
 
 \begin{corollary}
@@ -240,7 +240,7 @@ Here we will give a more formal proof of this statement.
     The proof describes how to find a second preimage to some input $(\dts i k)$ to $\P$.
     By executing $\P$ on $(\dts i k)$ we compute the values of the base variables $\vv \in \sol(\C)$.
     Recall the bijection $\Ics|_{\sol(\Ccs)}: \sol(\Ccs) \to \F^{k'}$ where $k'$ is the number of rows of $\Ics$. 
-    Instead of seeing this bijection as a map into the input space of $\P$ we will see it as a map into the quotient space
+    Instead of seeing this bijection as a map into the input space of $\P$, we will see it as a map into the quotient space
     $\sfrac{\Fsp}{\ker(\Ics)}$.
     This quotient space is defined by the equivalence relation $\vv \; \simcs \; \vw \iff \vv - \vw \in \ker(\Ics)$.
     We denote it by:
@@ -284,7 +284,7 @@ Here we will give a more formal proof of this statement.
     As $\vv$ is a solution to $\Cfix$ it follows that $\vv'$ is a solution, too.
     Summing up, $\vv' \in \sol(\Ccs) \cap \sol(\Cfix) = \sol(\C)$ and $\vv' \neq \vv$.
     
-    By the bijection argument we know that $\I\vv' \neq \I\vv$ and hence
+    By the bijection argument, we know that $\I\vv' \neq \I\vv$ and hence
     $\I\vv'$ is a second preimage to $\I\vv = (\dts i k)$.
     
     We argue why the second preimage is computable with $|\Ccs|$ queries.
@@ -294,7 +294,7 @@ Here we will give a more formal proof of this statement.
     The inverse of the bijection $\widetilde\Ics$ is computable with $|\Ccs|$ queries by Corollary \ref{corollary:det_solvable_computeable_ic}.
 \end{proof}
 
-We give an example of a program which has a collision structure due to the invertibility of $\E$.
+We give an example of a program that has a collision structure due to the invertibility of $\E$.
 
 \begin{pchstack}[center, space=2cm]
     \pcbl[valign=c]{$\PE[col](a,b,c)$}{
@@ -437,7 +437,7 @@ This proof is based on the proofs of McQuoid, Swope and Rosulek in \cite[Lemma 1
     Assume towards a contradiction that there is such an adversary $\A$ making $N$ queries
     and that $\P$ does not have a collision structure.
     % Without loss of generality we can assume that $\A$ has made the queries to the ideal cipher
-    % can output the whole tuple of base variales $\vv$ and $\vv'$ for a collision. 
+    % can output the whole tuple of base variables $\vv$ and $\vv'$ for a collision. 
     We will work with the transcript between the adversary and the ideal cipher.
     Let $\mathcal{T}: \{1, \dots, N\} \to \F^3$ be the function defined by $\mathcal{T}(i) = (k, x, y)$,
     if the $i$th query of $\A$ is $\E(k, x)$ with response $y$ or if it is $\D(k, y)$ with response $x$.
@@ -463,7 +463,7 @@ This proof is based on the proofs of McQuoid, Swope and Rosulek in \cite[Lemma 1
     Therefore, we have $i \neq j$.
     By modifying $\A$ again,
     we can assume it outputs the value it fixes first as the first output, then $i < j$.
-    Consider the point where $\A$ sent it's $j$th query and is waiting to receive the answer from the ideal cipher.
+    Consider the point where $\A$ sent its $j$th query and is waiting to receive the answer from the ideal cipher.
     If this query was to $\E$ we define $\Q = \m{\vk \\ \vx}$ and $\va = \vy$,
     otherwise we define $\Q = \m{\vk \\ \vy}$ and $\va = \vx$.
     
@@ -473,7 +473,7 @@ This proof is based on the proofs of McQuoid, Swope and Rosulek in \cite[Lemma 1
     \va \in \rowsp(\O) + \rowsp(\Q) ,\quad \textrm{which means} \quad \va = \v \lambda \O + \v \gamma \Q.
     \end{equation}
     At query $j$ the vectors $\Q\vv, \va\vv, \Q\vv'$ and $\O(\vv' - \vv)$ are determined.
-    The latter is $0$ by assumption that $\v i$ and $\v i'$ are a collision.
+    The latter is $0$ by the assumption that $\v i$ and $\v i'$ are a collision.
     Therefore, we can use \eqref{security_proof_equation} to show
     \begin{equation*}
     \va (\vv' - \vv) = \v\lambda\O(\vv' - \vv) + \v\gamma \Q (\vv' - \vv),
@@ -526,7 +526,7 @@ This agrees with the results achieved by \cite{C:BlaRogShr02},
 although they go further and identify 8 compression schemes that are not collision resistant,
 but for which the \MD construction is collision resistant.
 
-First we argue why we can set $v=0$.
+First, we argue why we can set $v=0$.
 Assume that an adversary $\A$ can find collisions for some $f$ as described above in the case that $v=0$.
 If $a = v = 0$, then we can replace the block cipher $\E(\ddot, \ddot)$ by $\E(\ddot + v', \ddot)$ for some $v' \in \F$.
 From the perspective of the adversary,
@@ -538,8 +538,8 @@ All of these modifications to an ideal cipher $\E$ yield another ideal cipher,
 even when applied at the same time.
 
 \subsection{The PGV compression schemes in Linicrypt}
-We will give the algebraic representation the compression schemes described above.
-First let us write them as an ideal cipher Linicrypt program. 
+We will give the algebraic representation of the compression schemes described above.
+First, let us write them as an ideal cipher Linicrypt program. 
 
 \begin{pchstack}[center,space=2cm]
     \pcbl[valign=c]{$\P(h,m)$}{
@@ -559,12 +559,12 @@ First let us write them as an ideal cipher Linicrypt program.
     \end{pcmbox}
     }
 \end{pchstack}
-The base variables are $\{h, m, y\}$ and for the algebraic representation we have ordered them as $(h, m, y)$.
+The base variables are $\{h, m, y\}$, and for the algebraic representation we have ordered them as $(h, m, y)$.
 The algebraic representation is $(\I, \O, \C)$ for $\I = \m{\Id_2 & 0}$ and $\C = \big\{(\vk, \vx, \vy) \big\}$.
 $\P$ depends on the constants $a,b,c,d,e,f \in \{0,1\}$ (we redefine the parameters $a,b,c$ which were used above).
 Each choice of these 6 binary constants corresponds to one of the compression schemes.
 The is, $f_\P = f:\F \times \F \to \F$ for some compression scheme $f$ as described above.
-% For example, setting the variables as $(a,b,c,d,e,f) = (1,0,0,1,1,0)$ gives the Davies-Meyes compression scheme:
+% For example, setting the variables as $(a,b,c,d,e,f) = (1,0,0,1,1,0)$ gives the Davies-Meyer compression scheme:
 % $f(h,m) = \E(m,h) + h$.
 % 
 Using Lemma \ref{lemma_no_collision_structure} and Corollary \ref{corollary_single_query_cr_resistance},
@@ -608,11 +608,11 @@ then the compression function is susceptible to a second preimage attack needing
 
 \subsection{\MD in Linicrypt}
 
-In the context of the \MD construction the classification of the compression schemes is more nuanced.
+In the context of the \MD construction, the classification of the compression schemes is more nuanced.
 Some schemes that are broken as a compression function can be used to form collision resistant \MD constructions.
 This is because the initialization vector (IV) is fixed and cannot be chosen by the attacker.
 Therefore, a second preimage attack on the compression scheme is useless if it gives no control over the chaining value.
-In order to formalize this idea we define the \MD construction in the Linicrypt model.
+In order to formalize this idea, we define the \MD construction in the Linicrypt model.
 
 \begin{defn}[Merkle-Damg\aa rd construction]
     Let $\P$ be an ideal cipher Linicrypt program taking 2 inputs and returning one output, i.e. $f_\P: \F \times \F \to \F$.
@@ -646,11 +646,11 @@ when used in the \MD construction.
 The attack types are stated in a table, but no derivation or intuition for why this structure makes sense is given.
 We will briefly present their categorizations of the attacks.
 This serves as a comparison to the classification which we will later derive from the Linicrypt model.
-Our classification agrees on the most part with theirs,
+Our classification agrees for the most part with theirs,
 although a few interesting differences remain.
 
 In \cite{C:BlaRogShr02}, the authors classify the schemes into 3 groups.
-There are 12 group-1 schemes which are secure compression functions and give secure \MD constructions.
+There are 12 group-1 schemes that are secure compression functions and give secure \MD constructions.
 Then they define 8 additional group-2 schemes.
 Although these are insecure compression functions,
 the \MD construction is still collision resistant. 
@@ -674,7 +674,7 @@ The capital letters, ($\checkmark$) and (-) are the attack types from \cite{C:Pr
 The most interesting schemes are the ones only susceptible to a backward attack (B).
 13 schemes are in this category.
 According to \cite{C:BlaRogShr02}, 8 of them are secure in the Merkle Damgard construction.
-For the other 5 they claim a collision can be found by at most 2 ideal cipher queries.
+For the other 5, they claim a collision can be found by at most 2 ideal cipher queries.
 It turns out that for these 5 schemes the collisions that can be found are only for different length messages.
 Some of them also rely on the fact that they only consider the field $\F = \{0,1\}^n$, for which $x + x = 0$ for any $x \in \{0,1\}^n$.
 This will be analyzed in more detail below.
@@ -688,9 +688,9 @@ Ideal cipher Linicrypt has enabled us to prove collision resistance for all 12 g
 The sufficient and necessary condition \eqref{eq_compression_secure} for a scheme to belong to group-1
 can be easily derived from the more general Corollary \ref{corollary_single_query_cr_resistance}.
 Intuitively, using the language we introduced in the previous chapters,
-a compression function is secure, if the associated ideal cipher constraint is unsolvable fixing the output.
+a compression function is secure if the associated ideal cipher constraint is unsolvable fixing the output.
 
-The ideal cipher Linicrypt model can also be used to derive the conditions for a scheme $f$ to be of type -, D, F or P. 
+The ideal cipher Linicrypt model can also be used to derive the conditions for a scheme $f$ to be of type -, D, F, or P. 
 These attack types have in common that they allow for an easy second-preimage attack on $H^n_f$ for $n \geq 2$.
 We will define 3 Linicrypt attack types:
 \begin{enumerate}
@@ -699,13 +699,13 @@ We will define 3 Linicrypt attack types:
 \item Permutation attack
 \end{enumerate}
 We will define category 1) and 2) by deriving them from Lemma \ref{lemma_no_collision_structure}.
-The permutation attack on the other hand, can only be explained from a Linicrypt perspective
+The permutation attack, on the other hand, can only be explained from a Linicrypt perspective
 once you take into account interactions that can happen between different ideal cipher queries.
 
 This categorization is guided by visual intuition.
 As defined above, the parameters $(a,b,c,d,e,f)$ determine the vectors $\O, \vk$ and $\vx$.
 Each attack type corresponds can be derived from the relationship these three vectors have with each other and with the basis vectors $\vh, \vm, \vy$.
-The graphical representation introduced in Figure \ref{fig:graphical_rep} of a compression function might aide the visual intuition.
+The graphical representation introduced in Figure \ref{fig:graphical_rep} of a compression function might assist the visual intuition.
 \begin{figure}[ht]
 \centering
 
@@ -781,7 +781,7 @@ The graphical representation introduced in Figure \ref{fig:graphical_rep} of a c
 \end{axis}
 \end{tikzpicture}
 \caption{
-Visual representation of the Matyas-Meyer-Oseas compression function (left) and two insecure compression function (middle, right).
+Visual representation of the Matyas-Meyer-Oseas compression function (left) and two insecure compression functions (middle, right).
 The arrows represent $\O$ (black), $\vk$ (red) and $\vx$ (blue).
 A violet arrow means $\vk = \vx$.
 One should keep in mind that $\rowsp(\C)$ includes the vector $\vy$, which is omitted as it always points up.
@@ -805,7 +805,7 @@ there are only two cases for this split.
 
 \textbf{Case 1: $\Ccs = \{\}$ and $\Cfix = \C$.}
 
-In this case we know by definition that $\Fix$ has to be the whole space $\Frowsp$.
+In this case, we know by definition that $\Fix$ has to be the whole space $\Frowsp$.
 Therefore, equation \ref{eq_coll_structure_compression_functions} translates to
 $\rowsp(\O, \vk, \vx, \vy) \neq \Fix = \Frowsp$.
 This is exactly the condition by which the authors of \cite{TCC:McQSwoRos19} call $\P$ degenerate.
@@ -920,7 +920,7 @@ By the assumption that $f$ has a collision structure, we get:
 $\C$ is deterministically solvable fixing $\Fix \supsetneq \rowsp(\O)$.
 Recall, that this means one can fix $\O\vv$ and some other base variables value arbitrarily and still find a $\vv \in \sol(\C)$.
 $\Fix$ has to be 2 dimensional, because of the bijection from the inputs of a program to $\sol(\C)$.
-The 2 dimensional subspace $\Fix$ can only be one of these 7.
+The 2-dimensional subspace $\Fix$ can only be one of these 7.
 \begin{center}
 \cubealt{\plane{1,0,0}{1,0,1}{0,0,1}}
 \cubealt{\plane{1,1,0}{1,1,1}{0,0,1}}
@@ -1004,32 +1004,43 @@ Altogether these are 12 compression schemes.
 \end{proof}
 
 
-At this point there are 18 schemes left with a collision structure.
+At this point, out of the 42 schemes with a collision structure, 18 are left.
 Unfortunately, the categorization of these does not follow directly from the Linicrypt model as the first two categories do.
+This is because the attacks on them rely on causing interactions between different queries.
+Neither our security proof, which is restricted to single query constructions
+nor the proof from \cite[Theorem 1]{TCC:McQSwoRos19}, which is restricted to constructions using distinct nonces,
+can explain these behaviors.
+
+Consider the Permutation Attack from \cite{C:PreGovVan93}.
+It can be described by the following condition on the algebraic representation of $f$.
 
 \textbf{Case 2.2: $\vh\t \in \ker(\C)$.}
 
-In this case $f(h,m) = f_1(h) + f_2(m)$ for some functions $f_1$ and $f_2$.
+This case overlaps with both Case 1 and Case 2.1.
+$\vh\t \in \ker(\C)$ equivalent to setting the parameters $c$ and $e$ to 0.
+That is, $f(h,m) = ah + f_2(m)$ for some function $f_2$ and $a \in \{0,1\}$.
 Then 
 \[
-H^n_f(\dts m n) = f(h_{n-1}, m_n) = f_1(h_{n-2}) + f_2(m_{n-1}) = \cdots = f_1(h_0) + \sum_{i=1}^n f_2(m_i).
+H^n_f(\dts m n) = f(h_{n-1}, m_n) = a h_{n-1} + f_2(m_n) = \cdots = a^n h_{0} + \sum_{i=1}^n a^{n-i}f_2(m_i).
 \]
-In this case $H^n_f(m_0, \dots, m_n) = H^n_f(m_{\pi(0)}, \dots, m_{\pi(0)})$ for a permutation $\pi$ of $\{1, \dots, n\}$.
+Therefore, $H^n_f(m_0, \dots, m_n) = H^n_f(m_{\pi(0)}, \dots, m_{\pi(0)})$ for a permutation $\pi$ of $\{1, \dots, n\}$.
 If $n \geq 1$ this allows for a second preimage attack which does not need any queries to the ideal cipher.
-One can identify 16 schemes for which $H^n_f$ is susceptible to such a permutation attack.
-The 5 schemes fulfilling this requirement, which were not already categorized before, are:
+One can identify $2^{6-2} = 16$ schemes $f$ such that $H^n_f$ is susceptible to this permutation attack.
+The 5 schemes that meet this requirement and have not yet been categorized are:
 \begin{center}
-\cube{\arrows{1,0}{0,1}{0,1}}
-\cube{\arrows{1,0}{0,1}{0,0}}
-\cube{\arrows{1,1}{0,1}{0,1}}
-\cube{\arrows{1,1}{0,0}{0,1}}
-\cube{\arrows{1,1}{0,1}{0,0}}
+\cubealt{\plane{0,1,0}{1,1,1}{1,0,1}\arrows{1,0}{0,1}{0,1}}
+\cubealt{\plane{0,1,0}{1,1,1}{1,0,1}\arrows{1,0}{0,1}{0,0}}
+\cubealt{\plane{0,1,0}{1,1,1}{1,0,1}\arrows{1,1}{0,1}{0,1}}
+\cubealt{\plane{0,1,0}{1,1,1}{1,0,1}\arrows{1,1}{0,0}{0,1}}
+\cubealt{\plane{0,1,0}{1,1,1}{1,0,1}\arrows{1,1}{0,1}{0,0}}
 \end{center}
 
+\textbf{Case 2.3: None of the above cases.}
+
 Finally, we are left with 13 schemes.
-All 13 of them are given the type (B) by \cite{C:PreGovVan93}.
-8 schemes are identified as secure if composed in the \MD construction by \cite{C:BlaRogShr02}.
-These are called group-2 schemes and are given the attack type (c).
+These are exactly the 13 schemes of the type Backward Attack (B) from \cite{C:PreGovVan93}.
+8 of those schemes have been shown to be secure if composed in the \MD construction by \cite{C:BlaRogShr02}.
+They call them the group-2 schemes with attack type (c).
 This is the visual representation corresponding to them:
 \begin{center}
 \cube{\plane{1,1,0}{1,1,1}{0,0,1}\arrows{0,0}{1,1}{0,1}}
@@ -1043,40 +1054,43 @@ This is the visual representation corresponding to them:
 \end{center}
 
 
-The 5 remaining schemes of type (B) are marked with attack type (g).
-That means, the authors \cite{C:BlaRogShr02} identified a collision attack making 2 or fewer queries.
+The 5 remaining schemes are marked with attack type (g).
+That means, that the authors \cite{C:BlaRogShr02} identified a collision attack making 2 or fewer queries.
 These collisions are special, as they can be produced only for different input lengths.
 Take for example the compression scheme $f(h,m) = \E(0,h+m) + m$.
-We define 
+Let $n$ be fixed.
+For $i \leq n$ we define the message blocks:
 \[
-m_n = \begin{cases}
--h_0 & \textrm{for even $n$} \\
-0 & \textrm{for odd $n$}
-\end{cases},
-\]
-where $h_0 = f(0,0) = \E(0,0)$.
-All the collisions we found are:
-\[
-H^n_f(m_0, \dots, m_n) = H^{n-2}(m_0, \dots, m_{n-2}) = \begin{cases}
-h_0 & \textrm{for even $n$} \\
-0 & \textrm{for odd $n$}
+m_i = \begin{cases}
+0 & \textrm{for odd $i$} \\
+-E(0,0) & \textrm{for even $i$}
 \end{cases}
 \]
+Then the Linicrypt \MD construction computes to:
+\[
+H_f^n(m_1, \dots, m_n) = \begin{cases}
+E(0,0) & \textrm{for odd $n$} \\
+0 & \textrm{for even $n$}
+\end{cases}
+\]
+All the collisions we found are then: $H^n_f(m_1, \dots, m_n) = H^{n-2}_f(m_1, \dots, m_{n-2})$.
 
 For the two schemes where $\O = \m{1&0&1}$ the collisions are very similar in structure,
 if one assumes the field $\F$ has characteristic 2, i.e. $x + x = 0$ for any $x \in \F$.
 
 \begin{center}
-\cube{\arrows{1,0}{1,1}{1,1}}
-\cube{\arrows{1,0}{1,1}{0,0}}
-\cube{\arrows{0,1}{1,1}{1,1}}
-\cube{\arrows{0,1}{1,1}{0,0}}
-\cube{\arrows{0,1}{0,0}{1,1}}
+\cubealt{\plane{1,1,0}{1,0.5,0.5}{1,0,1}\arrows{1,0}{1,1}{1,1}}
+\cubealt{\plane{1,1,0}{1,0.5,0.5}{1,0,1}\arrows{1,0}{1,1}{0,0}}
+\cubealt{\plane{1,1,0}{0.5,1,0.5}{0,1,1}\arrows{0,1}{1,1}{1,1}}
+\cubealt{\plane{1,1,0}{0.5,1,0.5}{0,1,1}\arrows{0,1}{1,1}{0,0}}
+\cubealt{\plane{1,1,0}{0.5,1,0.5}{0,1,1}\arrows{0,1}{0,0}{1,1}}
 \end{center}
 
 To conclude this section we have summarized the comparison of the Linicrypt attack taxonomy and the previous taxonomies in Table \ref{table:64_compression_schemes}.
+From the derivation, it is clear that the subspaces for which $\C$ is deterministically solvable
+contain a lot of information about the security properties of the scheme.
 
-\begin{table}[]
+\begin{table}[ht]
 \centering
 \renewcommand{\arraystretch}{1.2}
 \input{chapters/attacks_summary.tex}
@@ -1090,15 +1104,110 @@ To conclude this section we have summarized the comparison of the Linicrypt atta
 \label{table:64_compression_schemes}
 \end{table}
 
+\section{Limitations and Future Work}
+
+\subsection{On the permutation attack and the 5 remaining schemes}
+The attacks on the collision resistance of the schemes from Case 2.2 and the schemes marked with both attack types (g) and (B)
+are different in nature than the attacks on those in the categories Degenerate or \OHCS.
+They make use of the fact that the block cipher takes no nonces,
+and hence independent oracle calls can be switched around or made to collapse.
+
+Consider a compression function $f$ such that the Permutation Attack applies and some message $\vm = (m_0, \dots, m_n)$.
+Let $\pi \vm \coloneqq (m_{\pi(1)}, \dots, m_{\pi(n)})$ for some permutation $\pi$ of $\{1,\dots,n\}$.
+The queries made in the execution of $\H(\vm)$ are the same as those for $\H(\pi\vm)$,
+just in a different order.
+This attack can be described in Linicrypt.
+
+\begin{lemma}[Permutation Attack]
+    Let $\P = (\I, \O, \C)$ be a (standard or ideal cipher) Linicrypt program.
+    Assume there exists a basis change $\B \neq 1$ such that $\O = \O\B$ and $\C = \C\B$.
+    Let $\vv \in \sol(\C)$ with $\B\vv \neq \vv$.
+    Then $\I\B\vv$ is a second preimage to $\I\vv$.
+\end{lemma}
+\begin{proof}
+    The basis change $\B$ is a bijection from $\sol(\C\B) = \sol(\C)$ to $\sol(\C)$.
+    Using the assumptions from the Lemma this means that $\B\vv$ is in $\sol(\C)$.
+    Also, $\O\B\vv = \O\vv$.
+    By the definition of the algebraic representation we have
+    $\P(\I\vv) = \O\vv = \O\B\vv = \P(\I\B\vv)$.
+    Lemma \ref{lemma:solution_space_bijection} states that $\I|_{\sol(\C)}$ is a bijection.
+    Therefore $\I\B\vv \neq \I\vv$ follows from $\B\vv \neq \vv$.
+\end{proof}
+In the context of second preimage resistance and collision resistance,
+the extra condition in the Lemma that $\B\vv \neq \vv$ is not a strong restriction.
+One can expect $\spn\big(\sol(\C)\big) = \Fsp$.
+If $\B \neq 1$ then its eigenspace has dimension $\leq \base - 1$.
+Therefore choosing a random $\vv \in \sol(\C)$, which equates to choosing a random input,
+has a very low probability of landing in the eigenspace of $\B$, i.e. $\B\vv \neq \vv$.
+
+Now let $f$ be one of the 5 compression functions for we have found collisions only for different input lengths.  
+In order to be concrete, let us consider the same example as before: $f(h,m) = \E(0, h+m) +m$.
+Let $\vm = (\dts m n)$ be the message we have defined before that causes the collisions.
+In the execution of $\H^n_f(\vm)$ only a single independent query is made, that is $\E(0,0)$.
+By carefully choosing an input, we have caused the $n$ different queries to collapse to a single one.
+The authors of \cite{TCC:McQSwoRos19} discuss this issue in the section ``Why the Restriction to Distinct Nonces".
+They give the example program $\P(x,y) = \H(\H(x)) - \H(y)$.
+For this example, setting $x=y$ causes the program to ``collapse" to $\P(x) = 0$,
+clearly a program that is degenerate.
+In our case, setting $\vm$ in that specific way,
+causes the program to collapse to $\H^n_f() = 0$ for even $n$ and $\H^n_f() = E(0,0)$ for odd $n$.
+We put the phrase ``collapse a program" in quotes here, as this needs to be rigorously defined.
+Such a collapse attack can probably be defined similarly to the permutation attack.
+
+\subsection{Collision Resistance for Linicrypt with repeated nonces}
+The missing pieces in the derivation of the attack taxonomy for the 64 PGV compression functions
+hints towards further attack types apart from the collision structure attack.
+Maybe a further generalization of the collision structure attack could contain the attacks described above as a special case.
+We believe that this is an interesting area for future research
+towards solving collision resistance for Linicrypt programs that use repeated nonces.
+
+We identify these two simple programs which are not collision resistant, 
+but which exemplify the attacks described above.
+\begin{pchstack}[center, space=2cm]
+  \pcbl[valign=c]{$\P_\mathrm{collapse}(x, y)$}{
+    \pcreturn \H(x) - \H(y)
+  }
+    \pcbm[valign=c]{Algebraic Representation}{
+    \begin{pcmbox}
+        \arraycolsep=3pt
+        \begin{array}{r wl{3mm} l}
+        \O    = \> \begin{bmatrix}0 \> 0 \> 1 \> -1\end{bmatrix} \\[2pt]
+        \vq_1 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0 \end{bmatrix} \\[2pt]
+        \va_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0 \end{bmatrix} \\[2pt]
+        \vq_2 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0 \end{bmatrix} \\[2pt]
+        \va_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \end{bmatrix} \\[2pt]
+        \end{array}
+    \end{pcmbox}
+    }
+\end{pchstack}
+\begin{pchstack}[center, space=2cm]
+  \pcbl[valign=c]{$\P_\mathrm{permutation}(x, y)$}{
+    \pcreturn \H(x) + \H(y)
+  }
+    \pcbm[valign=c]{Algebraic Representation}{
+    \begin{pcmbox}
+        \arraycolsep=3pt
+        \begin{array}{r wl{3mm} l}
+        \O    = \> \begin{bmatrix}0 \> 0 \> 1 \> 1\end{bmatrix} \\[2pt]
+        \vq_1 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \va_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0\end{bmatrix} \\[2pt]
+        \vq_2 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \va_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1\end{bmatrix} \\[2pt]
+        \end{array}
+    \end{pcmbox}
+    }
+\end{pchstack}
+All are all inputs of the form $(x,x)$ collide under $\P_{\mathrm{collapse}}$.
+On the other hand, every $(x,y)$ is a collision with $(y,x)$ under $\P_{\mathrm{permutation}}$ if $x \neq y$.
+A general characterization of collision resistance would have to take these two examples into account.
+
 \pagebreak
 
 \subsection{TODOS}
 
 Must do:
 \begin{enumerate}
-\item Security Definitions
 \item Abstract
-\item Conclusion arguments with flair
 \item Ideal cipher security proposition needs SPR statement.
 \item Summary table should contain both SPR advantage and CR advantage?
 \item State MD security of Secure schemes comes from standard argument
@@ -1107,12 +1216,11 @@ Must do:
 
 Want to do:
 \begin{enumerate}
-\item Limitation and future work: Mention properties no nonces theorem should have
-\item State Permutation attack and collapse attack
-\item Connect these attacks with the compression functions example (type (f) and the 5 real (g))
+\item Properly define the collapse attack
+\item Prove that the special compression functions (type (f) and the 5 real (g)) fall into permutation attack and collapse attack
 \item Conjecture for no nonces theorem
 \item Use Linicrypt to get bounds on compression ratio, how many ideal cipher calls per message block are necessary.
-At a certain point a collision structure can be shown to exist.
+At a certain point, a collision structure can be shown to exist.
 Collapse attacks and permutation attacks could cause this bound to not be tight.
 Compare this with Stams bound.
 \end{enumerate}
