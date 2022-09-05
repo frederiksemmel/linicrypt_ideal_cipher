@@ -1,7 +1,7 @@
 \chapter{Revisiting Algebraic Representations}
-\label{revisiting_algebraic_representations}
+\label{chapter:revisiting_algebraic_representations}
 
-In the previous section we have defined the algebraic representation for a Linicrypt program.
+In the previous section, we defined the algebraic representation for a Linicrypt program.
 It consists of the input matrix $\Inp \in \F^{k \times \base}$,
 the output matrix $\O \in \F^{l \times \base}$
 and the set of constraints $\C = \{ (t_i, \Q_i, \va_i) \mid i = 1, \dots, n \}$,
@@ -9,7 +9,7 @@ with $\Q_i \in \F^{m_i \times \base}$ and $\va_i \in \F^{1 \times \base}$.
 These matrices are such that,
 if one constrains $\vbase \in \Fsp$ with $\I\vbase = \m{i_1 & \cdots & i_k}^\top$ for some arbitrary input,
 the program can compute the rest of the base variables and output $\O \vbase = \m{o_1 & \cdots & o_l}^\top$.
-To simplify the notation we will sometimes write $\vec v k$ for the column vector $\m{v_1 & \cdots & v_k}^\top$.
+To simplify the notation we will sometimes write $\dts v k$ for the column vector $\mdts{v}{k}^\top$.
 
 Our goal for this section is to find a better understanding of algebraic representations and thus also for collision structures.
 The algebraic representation suggest
@@ -30,7 +30,7 @@ $t \in \bin^*$, $\Q \in \F^{m \times \base}$ and $\va \in \F^{1 \times \base}$.
 This definition is a generalization of the definition in the preliminaries.
 When constructing the algebraic representation for a Linicrypt program,
 we always have the special case that $\va = \m{0&\cdots&0&1&0&\cdots&0}$.
-We call $t$ the nonce and refer to $\Q$ as the query matrix and to $\va$ as answer matrix.
+We call $t$ the nonce and refer to $\Q$ as the query matrix and to $\va$ as the answer matrix.
 If the nonce is the empty string, then we just write $(\Q, \va)$ instead of $(t, \Q, \va)$.
 Usually we just say ``a constraint" when the other variables are clear from the context.
 
@@ -66,7 +66,7 @@ and solve each random oracle constraint one by one in the order of the correspon
 Let us call the resulting vector containing the values of the base variables in this execution $\vv \in \Fsp$.
 Then it is a solution of $\C$ satisfying $\I\vv = (\dts i k)$.
 
-If a set of constraints is well-defined, it might still not  correspond to a valid Linicrypt program.
+If a set of constraints is well-defined, it might still not correspond to a valid Linicrypt program.
 Consider the set
 \[
 \C = \left\{ \m{1&0} \mapsto \m{0&1}, \m{0&1} \mapsto \m{1&0}\right\}.
@@ -108,8 +108,8 @@ Note the following equivalence, which follows from the associativity of the matr
 This implies that $\B|_{\sol(\C\B)}: \sol(\C\B) \to \sol(\C)$ is a well-defined bijection.
 
 We restrict our goal to characterizing which matrices $\I$ and $\O$ and constraints $\C$ are pseudo algebraic representations of some program $\P$. 
-This is interesting because it enables us to choose an arbitrary input matrix for a given set $\C$ and check whether there exists a Linicrypt program which computes solutions to $\C$.
-The degeneracy and collision structure attack described in \cite{TCC:McQSwoRos19} are both attacks that can be performed as Linicrypt programs.
+This is interesting because it enables us to choose an arbitrary input matrix for a given set $\C$ and check whether there exists a Linicrypt program that computes solutions to $\C$.
+The degeneracy and collision structure attacks described in \cite{TCC:McQSwoRos19} are both attacks that can be performed as Linicrypt programs.
 
 First, we describe the form $(\I, \O, \C)$ need to have such that they are the algebraic representation of a Linicrypt program.
 \begin{lemma}
@@ -131,11 +131,11 @@ First, we describe the form $(\I, \O, \C)$ need to have such that they are the a
 
 \begin{sketch}
     This is only a sketched proof.
-    In order to formalize it one first has to formalize the Linicrypt model as is done in \cite{C:CarRos16}.
+    In order to formalize it, one first has to formalize the Linicrypt model as is done in \cite{C:CarRos16}.
 
     Assume there is such an ordering as in the Lemma.
     We will construct the program $\P$.
-    First $\P$ will store it's $k$ inputs into intermediate variables,
+    First, $\P$ will store its $k$ inputs into intermediate variables,
     thus the input matrix is $\I = \m{\Id_k & 0}$.
     Then each of the random oracle constraints is converted into Linicrypt commands of the form
     $v_{k+i} = H(\dts q {k+i-1})$.
@@ -206,8 +206,9 @@ can be exactly the order of the corresponding queries in the execution of $\P$.
 
 The following Lemma shows that the reversed direction also works,
 meaning that we can recover a deterministic Linicrypt program from deterministically solvable constraints by applying a basis change.
+% TODO fix this thought
 This characterization up to basis change is not a problem, 
-if all security characterization making use of the algebraic representation are invariant under basis change.
+if all security characterizations making use of the algebraic representation are invariant under basis change.
 
 \begin{lemma}
 \label{det_solvable_lemma}
@@ -281,11 +282,11 @@ In order to abstract the questions about deterministic Linicrypt programs to the
 we need the following Lemma and Corollary.
 
 Let $\P = (\I, \O, \C)$ be a deterministic Linicrypt program taking $k$ inputs and returning $l$ outputs.
-First we note that one can see a deterministic Linicrypt program as a function from its input space to its output space.
+First, we note that one can see a deterministic Linicrypt program as a function from its input space to its output space.
 We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ onto the output of $\P(\dts i k)$.
 
 \begin{lemma}
-\label{solution_space_bijection}
+\label{lemma:solution_space_bijection}
     Let $\C$ be deterministically solvable fixing some $\I$.
     If we view $\I$ as a function $\Fsp \to \F^k$,
     then $\I|_{\sol(\C)}$ is a bijection.
@@ -297,7 +298,7 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
     $\P = (\I\B, \B, \C\B)$. 
     The associated function $f_{\P}: \F^k \to \F^\base$ is injective,
     as $\P$ is deterministic.
-    By definition of the algebraic representation 
+    By definition of the algebraic representation, 
     the vector of the values of the base variables in any execution of $\P$ is in $\sol(\C\B)$.
     Note that the output matrix of $\P$ is $\B$ 
     and $\B|_{\sol(\C\B)}: \sol(\C\B) \to \sol(\C)$ is a bijection.
@@ -305,15 +306,15 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 
     Now we will show that the input matrix $\I: \Fsp \to \F^k$ is injective
     when restricted to $\sol(\C)$.
-    This would then complete the proof, because $\F^k$ is a finite set.
+    This would then complete the proof because $\F^k$ is a finite set.
     
     Assume we have $\vv, \vv' \in \sol(\C)$ with $\I\vv = \I\vv'$.
-    Also assume that $\C$ is deterministically solvable fixing $\I$
+    Also, assume that $\C$ is deterministically solvable fixing $\I$
     using the ordering $(\dts c n)$ of $\C$.
     We will inductively prove that $\va_i \vv = \va_i \vv'$ for all $i = 1, \dots, n$.
 
     Assume this is true for all $ j \leq i$.
-    Because of the solution ordering of $\C$ we know that
+    Because of the solution ordering of $\C$, we know that
     $\rows(\Q_{i+1}) \subseteq \rowsp(\I) + \rowsp(\dts \va {i})$. 
     This means there is a $\v \lambda$ such that $\Q_{i+1} = \v \lambda \m{\I^\top & \va_1^\top & \cdots & \va_n^\top}^\top =: \lambda \v A_i$.
     Therefore, we have $\Q_{i+1} \vv' = \vl \v A_i \vv' = \vl \v A_i \vv = \Q_{i+1} \vv$.
@@ -342,7 +343,7 @@ We associate to $\P$ the function $f_\P: \F^k \to \F^l$ which maps $(\dts i k)$ 
 \end{corollary}
 
 \begin{proof}
-    Consider the function $f_\P$ from the proof of Lemma \ref{solution_space_bijection}.
+    Consider the function $f_\P$ from the proof of Lemma \ref{lemma:solution_space_bijection}.
     It can be computed with $|\C|$ queries to the random oracle.
     Because $(\I\B, \B, \C\B)$ is an algebraic representation,
     we have $\I\B = \Id_k \mid 0$. 
@@ -383,7 +384,7 @@ Explicitly, we can formulate the following corollary.
     For the other direction, assume we have such a $\vv \in \Base$.
     If we run $\P$ on $\I\vv = (\dts i k)$ we compute the base variables $\vv' \in \Base$.
     Again by definition of the algebraic representation $\vv'$ is a solution to $\C$ with $\I\vv' = (\dts i k) = \I\vv$.
-    By Lemma \ref{solution_space_bijection} $\I|_{\sol(\C)}$ is bijective,
+    By Lemma \ref{lemma:solution_space_bijection} $\I|_{\sol(\C)}$ is bijective,
     so we have $\vv = \vv'$.
     Running $\P$ on $(\dts i k)$ gives output $\O\vv' = \O\vv = (\dts o l)$.
 \end{proof}
@@ -392,7 +393,7 @@ Explicitly, we can formulate the following corollary.
 
 Using this language we can argue about the invertibility and second preimage resistance of a Linicrypt program.
 The goal of this section is to describe collision structures in a more abstract form 
-which is easier to adapt to the ideal cipher model.
+that is easier to adapt to the ideal cipher model.
 We will describe collision structures as a program being partially invertible with extra degrees of freedom.
 As a stepping stone towards this goal, we start by describing a sufficient condition for a Linicrypt program to be invertible.
 
