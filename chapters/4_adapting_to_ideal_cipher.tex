@@ -1140,7 +1140,7 @@ If $\B \neq 1$ then its eigenspace has dimension $\leq \base - 1$.
 Therefore choosing a random $\vv \in \sol(\C)$, which equates to choosing a random input,
 has a very low probability of landing in the eigenspace of $\B$, i.e. $\B\vv \neq \vv$.
 
-Now let $f$ be one of the 5 compression functions for we have found collisions only for different input lengths.  
+Now let $f$ be one of the 5 compression functions for which we found collisions only for different input lengths.
 In order to be concrete, let us consider the same example as before: $f(h,m) = \E(0, h+m) +m$.
 Let $\vm = (\dts m n)$ be the message we have defined before that causes the collisions.
 In the execution of $\H^n_f(\vm)$ only a single independent query is made, that is $\E(0,0)$.
@@ -1197,7 +1197,7 @@ but which exemplify the attacks described above.
     \end{pcmbox}
     }
 \end{pchstack}
-All are all inputs of the form $(x,x)$ collide under $\P_{\mathrm{collapse}}$.
+On one hand, all inputs of the form $(x,x)$ collide under $\P_{\mathrm{collapse}}$.
 On the other hand, every $(x,y)$ is a collision with $(y,x)$ under $\P_{\mathrm{permutation}}$ if $x \neq y$.
 A general characterization of collision resistance would have to take these two examples into account.
 
@@ -1207,6 +1207,7 @@ A general characterization of collision resistance would have to take these two 
 
 Must do:
 \begin{enumerate}
+\item make 4.4 as chapter, do a intro sentence
 \item Abstract
 \item Ideal cipher security proposition needs SPR statement.
 \item Summary table should contain both SPR advantage and CR advantage?

@@ -1,4 +1,7 @@
-\chapter{Revisiting Algebraic Representations}
+\chapter{A new level of abstraction for Linicrypt}
+TODO Intro blabla of why we introduce new concepts -> to seperate linicrypt from the model, ideal cipher model or random oracle model
+
+\section{Revisiting Algebraic Representations}
 \label{chapter:revisiting_algebraic_representations}
 
 In the previous section, we defined the algebraic representation for a Linicrypt program.
@@ -7,9 +10,8 @@ the output matrix $\O \in \F^{l \times \base}$
 and the set of constraints $\C = \{ (t_i, \Q_i, \va_i) \mid i = 1, \dots, n \}$,
 with $\Q_i \in \F^{m_i \times \base}$ and $\va_i \in \F^{1 \times \base}$.
 These matrices are such that,
-if one constrains $\vbase \in \Fsp$ with $\I\vbase = \m{i_1 & \cdots & i_k}^\top$ for some arbitrary input,
-the program can compute the rest of the base variables and output $\O \vbase = \m{o_1 & \cdots & o_l}^\top$.
-To simplify the notation we will sometimes write $\dts v k$ for the column vector $\mdts{v}{k}^\top$.
+if one constrains $\vbase \in \Fsp$ with $\I\vbase = (\dts i k)$ for some arbitrary input,
+the program computes the rest of the base variables and it outputs $\O \vbase = (\dts o l)$.
 
 Our goal for this section is to find a better understanding of algebraic representations and thus also for collision structures.
 The algebraic representation suggest

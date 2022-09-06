@@ -11,7 +11,7 @@ On the other hand, we aim to improve and extend the proof model.
 It has been well studied, that hash functions can be constructed securely from block ciphers.
 Since the success of very strong block ciphers such as AES, 
 the trust in the security of modern block cipher constructions is very high.
-Therefore, it is sensible to use a block cipher that is believed to be secure as a building block for other constructions,
+Therefore, it makes sense to use a block cipher that is believed to be secure as a building block for other constructions,
 and express their security in terms of the security of the block cipher.
 The ideal cipher model, which was introduced by Shannon in \cite{Shannon49},
 is a useful technique in this context.
@@ -30,7 +30,7 @@ they find that 8 insecure compression functions of the 64 PGV constructions stil
 
 The PGV compression functions as well as the \MD construction itself consist of linear operations in a field,
 mixed with calls to a primitive.
-They are just two of many examples of this type of cryptographic construction.
+They are just two of many examples of this type of cryptographic constructions.
 The Linicrypt model was introduced by Carmer and Rosulek \cite{C:CarRos16}
 with the aim of analyzing such constructions at a higher level of abstraction.
 The central idea of this proof model is the abstraction of a cryptographic construction from its program representation to an algebraic representation.
@@ -41,7 +41,7 @@ It is easier to create a characterization for a given security definition at the
 Therefore, one can write proofs that work for all constructions that fulfill this characterization.
 Secondly, characterizations can often be checked efficiently by a machine.
 For example, in \cite{C:CarRos16} two inputless Linicrypt programs were shown to be indistinguishable if and only if their algebraic representation are equivalent under a relation they define.
-Another example is a Theorem from \cite{EPRINT:HolRosRoy22}.
+Another example Theorem 1 from \cite{EPRINT:HolRosRoy22}.
 The authors describe a sufficient condition for a program to be IND\$-CPA secure in terms of ts the algebraic representation.
 Both these characterizations can be computed in polynomial time.
 
@@ -62,17 +62,18 @@ Some basic lemmas have to be proven separately for both cases, but their stateme
 Our characterization of the existence of a second-preimage attack is then expressed in terms of these lemmas.
 This way, the characterization and proof for the attack work for both primitives at the same time.
 If a program fulfills our condition we say that it has a collision structure, copying \cite{TCC:McQSwoRos19}.
-But our more general definition of collision structure naturally includes the case of degeneracy as an edge case,
+But our more general definition of collision structure includes the case of degeneracy as an edge case,
 which they had to treat separately.
 Unfortunately, the security proof from \cite{TCC:McQSwoRos19} cannot be used directly in the ideal cipher model,
 because a block cipher does not take a nonce as input.
 Therefore, we restrict ourselves to single query constructions for our security proof.
 The existence of a collision structure is then a complete and sound characterization of collision resistance and second-preimage resistance for single query constructions.
+
 We then apply this ideal cipher based Linicrypt model to the 64 compression functions from \cite{C:PreGovVan93}.
 Using the new concepts we can derive an attack taxonomy for the \MD constructions based on these compression functions.
 Such a derivation of the types of attacks was not given in the aforementioned works.
 Our categorization for second-preimage attacks agrees mostly with the categories developed by \cite{C:PreGovVan93} and \cite{C:BlaRogShr02} for collision attacks.
-However, we consider ours to be a bit more fine-grained.
+However, we consider ours to be more fine-grained.
 We could not find a second-preimage attack for 13 schemes.
 8 of them have been proven to be collision resistant by \cite{C:BlaRogShr02},
 hence also second-preimage resistant.
