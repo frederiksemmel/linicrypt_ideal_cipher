@@ -1,5 +1,19 @@
 \chapter{A new level of abstraction for Linicrypt}
-TODO Intro blabla of why we introduce new concepts -> to seperate linicrypt from the model, ideal cipher model or random oracle model
+
+The goal of this chapter is to introduce new concepts which are useful for adapting Linicrypt to the ideal cipher model.
+We separate some Linicrypt arguments from the actual properties of the oracle model which is used.
+The oracle model defines which values can be derived from which other values.
+For example, in the random oracle model, if one has some value $q \in \F$, one can get the value $a \in \F$ from the random oracle such that $a = \H(q)$ .
+But going from $a$ to $q$ is difficult in the random oracle model.
+In contrast, for the ideal cipher model, we can find an $x$ such that $E(k,x) = y$ for given $k$ and $y$.
+The adversary has access to the inverse permutaton $D(k, \ddot)$.
+We make a small set of definitions and lemmas which encapsulate these properties of the oracle.
+Because the statements of the definitions and lemmas are identical for both oracle models,
+we can base further argumentation on these building blocks.
+Our definition for a collision structure,
+which incorporates the notions of collision structure and degeneracy from \cite{TCC:McQSwoRos19},
+is expressed in terms of these concepts.
+Thus it works for both oracle models at the same time.
 
 \section{Revisiting Algebraic Representations}
 \label{chapter:revisiting_algebraic_representations}
@@ -208,9 +222,12 @@ can be exactly the order of the corresponding queries in the execution of $\P$.
 
 The following Lemma shows that the reversed direction also works,
 meaning that we can recover a deterministic Linicrypt program from deterministically solvable constraints by applying a basis change.
-% TODO fix this thought
-This characterization up to basis change is not a problem, 
-if all security characterizations making use of the algebraic representation are invariant under basis change.
+The fact that a basis change is necessary is not surprising.
+In the definition of the algebraic representation,
+we make a choice in ordering the base variables.
+Any other choice of ordering should not change the properties of the algebraic representation.
+This corresponds to rewriting the program in trivial ways,
+e.g. changing the order in which inputs are retrieved.
 
 \begin{lemma}
 \label{det_solvable_lemma}
@@ -249,7 +266,6 @@ We choose the new basis for $\Frowsp$ as $(\dts \vi k, \dts \va n)$, hence the b
 
 In the following we denote by $\v e_i$ the $i$th canonical row vector in $\Frowsp$.
 By definition of $\B$ we have for $i=1, \dots, n$
-% TODO this is not compact enough, for its importance
 \begin{equation*}
 \I = \begin{bmatrix}
     \v e_1 \\
@@ -271,17 +287,17 @@ which is equivalent to
 \end{equation*}
 
 Additionally, as $\C$ is solvable via the ordering $(c_1, \dots, c_n)$,
-we know that 
+we know for any $i \leq n$:
 \[
-\rows(\Q_i \B) \subset \rowsp(\vi_1 \B, \dots, \vi_k \B, \va_1 \B, \dots, \va_{i-1} \B) = \rowsp(\dts \ve k+i-1)
+\rows(\Q_i \B) \subset \rowsp(\vi_1 \B, \dots, \vi_k \B, \va_1 \B, \dots, \va_{i-1} \B) = \rowsp(\dts \ve {k+i-1})
 \]
 
 This shows that $(\I\B, \O\B, \C\B)$ fulfills the conditions in Lemma \ref{is_algebraic_repr},
 therefore we obtain the corresponding program $\P$ from the statement.
 \end{proof}
 
-In order to abstract the questions about deterministic Linicrypt programs to the level of the algebraic representation,
-we need the following Lemma and Corollary.
+In order to complete the abstratction to the level of the algebraic representation,
+we need the following Lemma and Corollaries.
 
 Let $\P = (\I, \O, \C)$ be a deterministic Linicrypt program taking $k$ inputs and returning $l$ outputs.
 First, we note that one can see a deterministic Linicrypt program as a function from its input space to its output space.
@@ -509,7 +525,6 @@ The following is the running example from \cite{TCC:McQSwoRos19}.
     w = \H(x) + \H(z) + y \\
     \pcreturn (\H(w) + x, \H(z))
 }
-% TODO fix alignment
 \begin{align*}
 \I    &= \begin{bmatrix}
             1 & 0 & 0 & 0 & 0 & 0 \\
@@ -538,11 +553,10 @@ Condition \eqref{cs_condition} is fulfilled because
 \rowsp(\I_{cs}) = \big(\rowsp(\O) + \rowsp(\Cfix)\big) \oplus \rowsp(\vq_3).
 \]
 The direct sum means that $\vq_3$ is not in $\rowsp(\O) + \rowsp(\Cfix)$.
-Then Lemma \ref{det_solvable_lemma} gives us the transformation $\B$
+Then Lemma \ref{det_solvable_lemma} gives us the basis change $\B$
 such that $(\I_{cs} \B, \I \B, \Ccs \B)$
 is the algebraic representation of some $\P_{cs}$.
 Here we have
-% TODO fix alignment
 \[
 \B = 
 \begin{bmatrix}

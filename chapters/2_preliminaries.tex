@@ -7,7 +7,6 @@ The Linicrypt model for cryptographic constructions was introduced by Carmer \& 
 Summarizing the formalization from that paper,
 a pure Linicrypt program $\P$ is a straight line program
 whose intermediate variables are elements in a field $\F$.
-% TODO maybe operation isn't right
 The only operations allowed to create an intermediate variable are:
 \begin{itemize}
   \item Retrieve an input, which is in $\F$
@@ -16,10 +15,11 @@ The only operations allowed to create an intermediate variable are:
   \item Sample from $\F$ uniformly
 \end{itemize}
 Finally, the program $\P$ is allowed to output one or more of its variables.
+One can formalize a Linicrypt program as a sequence of commands,
+where each command creates a new itermediate variable.
+The input size and the specification of which variables form the output are also part of the formal description in \cite{C:CarRos16}.
 
 Below is an example of a Linicrypt program $\P^\H$,
-% TODO Linicrypt is actually a tuple of CMD's ... should I specify that? Maybe in the 
-% block cipher part.
 written in conventional pseudocode on the left and in explicit Linicrypt on the right. 
 
 \begin{pchstack}[center, space=0.4cm]
@@ -72,19 +72,18 @@ A \textbf{base variable} is an intermediate variable that was created by retriev
 calling the random oracle $\H$ or sampling from $\F$.
 These are special because they are not intrinsically linearly dependent on other intermediate variables.
 A \textbf{derived variable} is an intermediate variable that is created by performing a linear combination of existing intermediate variables.
-Note, that derived variables can always be uniquely written as linear combinations of base variables.
+Note, that derived variables can always be written as a unique linear combination of base variables.
 Let $\base$ be the number of base variables,
 and let us call them $\dts b \base \subset \{\dts v n\}$.
 We fix the ordering of the base variables by their order in $v_1, \dots, v_n$.
 We denote by $\vbase \in \Base$ the column vector
 consisting of the values that the base variables take in a specific execution of $\P$.
-That is, the $i$th component of $\vbase$ is set to the value of $b_i$ in that execution.
+That is, the $i$th component of $\vbase$ is set to the value that $b_i$ takes in that execution.
 One should think of $\vbase$ as a vector containing the whole state of the program execution.
 An intermediate variable, base or derived,
 can then be seen as a linear function going from the vector space $\Fsp$ to its concrete value in $\F$.
 
 Let $v_i$ be an intermediate variable.
-% TODO here we make the distinction betwenn variable, its value on an execution, is this cleaner? 
 We define the \textbf{associated row vector} $\v v_i$ to be the unique row vector in $\Frowsp$ representing this function.
 That means, that for every execution of $\P$:
 If base variables take the values $\vbase$,
