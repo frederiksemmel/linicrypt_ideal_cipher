@@ -43,7 +43,7 @@ We will usually work with programs in conventional pseudocode and use suggestive
 Nevertheless, one should keep in mind,
 that such programs could be formalized as a sequence of Linicrypt commands,
 each generating a new intermediate variable.
-The superscript $\H$ is used to highlight that $\P$ has access to a random oracle.
+The superscript is used to highlight that $\P$ has access to a random oracle $\H$.
 As this is often clear from the context, this superscript will usually be dropped.
 When a Linicrypt program contains no sampling operations it is called a deterministic Linicrypt program. 
 In the context of collision resistance, this is the case we care about the most.
@@ -74,8 +74,8 @@ These are special because they are not intrinsically linearly dependent on other
 A \textbf{derived variable} is an intermediate variable that is created by performing a linear combination of existing intermediate variables.
 Note, that derived variables can always be uniquely written as linear combinations of base variables.
 Let $\base$ be the number of base variables,
-and we name them $\dts b \base \subset \{\dts v n\}$
-We fix the ordering of the base variables by their order in $v_1, \dots, v_n$
+and let us call them $\dts b \base \subset \{\dts v n\}$.
+We fix the ordering of the base variables by their order in $v_1, \dots, v_n$.
 We denote by $\vbase \in \Base$ the column vector
 consisting of the values that the base variables take in a specific execution of $\P$.
 That is, the $i$th component of $\vbase$ is set to the value of $b_i$ in that execution.
@@ -214,7 +214,7 @@ where we replace the random oracle $\H$ with an ideal cipher $\BC=(\E, \D)$.
 Along the way,
 we will merge the concepts of degeneracy and collision structure by considering degeneracy as an edge case of a collision structure.
 
-\subsection{Notation}
+\section{Notation}
 We have already introduced some notational conventions.
 For reference, we summarize the notation we are going to use throughout the argument.
 Variables of a Linicrypt program and their values will be denoted with letters from the Latin alphabet in regular font.
@@ -224,6 +224,10 @@ Column vectors and matrices are also denoted by bold letters.
 We use $\vbase \in \Fsp$ or $\vv \in \Fsp$ to denote the column vector containing all the values for the base variables in the program's execution.
 In a slight overload of notation,
 we will denote both the canonical basis column vectors and the canonical basis row vectors by $\ve_i$.
+In order to simplify the notation,
+we will write $\vi = (i_1, \dots, i_k)$ to denote the column vector $\m{i_1 & \cdots & i_k}^\top$.
+We allow a Linicrypt program to take such a column vector as input,
+writing $\P(\vi)$ to denote the output of $\P$ given the input $\dts i k$. 
 
 Linicrypt statements are often about the span of the rows of matrices.
 If $\v A \in \F^{a\times\base}$ for arbitrary $a \in \NN$,
@@ -247,7 +251,7 @@ For example:
 If $\rowsp(\v A) + \rowsp(\v B) = \Frowsp$,
 then $\v A \vv = \v A \vv'$ and $\v B \vv = \v B \vv'$ implies $\vv = \vv'$ for any $\vv, \vv' \in \Fsp$.
 
-\subsection{Security Definitions}
+\section{Security Definitions}
 We will use the following security definitions.
 We only state them for the ideal cipher model,
 as that is the one we need in the argument.
@@ -257,7 +261,7 @@ The collision game and the second-preimage game in the ideal cipher model are de
   \pcbl[]{$\crgame(\P, \A)$}{
   \textrm{instantiate an ideal cipher } \BC = (\E, \D)\\
   (\vi, \vi') \sample \A^\BC \\
-  \pcreturn \vi \neq \vi') \land \big(\P^\BC(\vi) = \P^\BC(\vi) \big)
+  \pcreturn (\vi \neq \vi') \land \big(\P^\BC(\vi) = \P^\BC(\vi) \big)
   }
   \pcbl[]{$\sprgame(\P, \A)$}{
   \textrm{instantiate an ideal cipher } \BC = (\E, \D) \\

@@ -1,3 +1,10 @@
 \begin{abstract}
-    Todo
+Linicrypt is a proof model used to analyze programs that only make calls to a random oracle and perform linear operations in a field $\F$.
+We introduce new abstractions which allow us to extend Linicrypt to work with the ideal ciphers instead of random oracles.
+Specifically, given Lincrypt oracle constraints $\C$ of dimension $\base$, we define the set of solutions to $\C$ as a subspace of $\Fsp$.
+A Linicrypt program can then be interpreted as a method for finding a solution to $\C$ while fulfilling a given linear constraint.
+This allows us to characterize a weakness with regard to collision resistance simultaneously for Linicrypt programs in the ideal cipher model and in the random oracle model.
+The characterization is sound and complete in the case of Linicrypt programs making only a single query.
+We apply these concepts in the derivation of an attack taxonomy regarding the \MD construction
+for the 64 compression functions introduced by Preneel, Govaerts, and Vandewalle (Crypto 1993).
 \end{abstract}

@@ -1,0 +1,119 @@
+\chapter{Limitations and Future Work}
+
+\section{On the permutation attack and the 5 remaining schemes}
+The attacks on the collision resistance of the schemes from Case 2.2 and the schemes marked with both attack types (g) and (B)
+are different in nature than the attacks on those in the categories Degenerate or \OHCS.
+They make use of the fact that the block cipher takes no nonces,
+and hence independent oracle calls can be switched around or made to collapse.
+
+Consider a compression function $f$ such that the Permutation Attack applies and some message $\vm = (m_0, \dots, m_n)$.
+Let $\pi \vm \coloneqq (m_{\pi(1)}, \dots, m_{\pi(n)})$ for some permutation $\pi$ of $\{1,\dots,n\}$.
+The queries made in the execution of $\H(\vm)$ are the same as those for $\H(\pi\vm)$,
+just in a different order.
+This attack can be described in Linicrypt.
+
+\begin{lemma}[Permutation Attack]
+    Let $\P = (\I, \O, \C)$ be a (standard or ideal cipher) Linicrypt program.
+    Assume there exists a basis change $\B \neq 1$ such that $\O = \O\B$ and $\C = \C\B$.
+    Let $\vv \in \sol(\C)$ with $\B\vv \neq \vv$.
+    Then $\I\B\vv$ is a second preimage to $\I\vv$.
+\end{lemma}
+\begin{proof}
+    The basis change $\B$ is a bijection from $\sol(\C\B) = \sol(\C)$ to $\sol(\C)$.
+    Using the assumptions from the Lemma this means that $\B\vv$ is in $\sol(\C)$.
+    Also, $\O\B\vv = \O\vv$.
+    By the definition of the algebraic representation we have
+    $\P(\I\vv) = \O\vv = \O\B\vv = \P(\I\B\vv)$.
+    Lemma \ref{lemma:solution_space_bijection} states that $\I|_{\sol(\C)}$ is a bijection.
+    Therefore $\I\B\vv \neq \I\vv$ follows from $\B\vv \neq \vv$.
+\end{proof}
+In the context of second preimage resistance and collision resistance,
+the extra condition in the Lemma that $\B\vv \neq \vv$ is not a strong restriction.
+One can expect $\spn\big(\sol(\C)\big) = \Fsp$.
+If $\B \neq 1$ then its eigenspace has dimension $\leq \base - 1$.
+Therefore choosing a random $\vv \in \sol(\C)$, which equates to choosing a random input,
+has a very low probability of landing in the eigenspace of $\B$, i.e. $\B\vv \neq \vv$.
+
+Now let $f$ be one of the 5 compression functions for which we found collisions only for different input lengths.
+In order to be concrete, let us consider the same example as before: $f(h,m) = \E(0, h+m) +m$.
+Let $\vm = (\dts m n)$ be the message we have defined before that causes the collisions.
+In the execution of $\H^n_f(\vm)$ only a single independent query is made, that is $\E(0,0)$.
+By carefully choosing an input, we have caused the $n$ different queries to collapse to a single one.
+The authors of \cite{TCC:McQSwoRos19} discuss this issue in the section ``Why the Restriction to Distinct Nonces".
+They give the example program $\P(x,y) = \H(\H(x)) - \H(y)$.
+For this example, setting $x=y$ causes the program to ``collapse" to $\P(x) = 0$,
+clearly a program that is degenerate.
+In our case, setting $\vm$ in that specific way,
+causes the program to collapse to $\H^n_f() = 0$ for even $n$ and $\H^n_f() = E(0,0)$ for odd $n$.
+We put the phrase ``collapse a program" in quotes here, as this needs to be rigorously defined.
+Such a collapse attack can probably be defined similarly to the permutation attack.
+
+\section{Collision Resistance for Linicrypt with repeated nonces}
+The missing pieces in the derivation of the attack taxonomy for the 64 PGV compression functions
+hints towards further attack types apart from the collision structure attack.
+Maybe a further generalization of the collision structure attack could contain the attacks described above as a special case.
+We believe that this is an interesting area for future research
+towards solving collision resistance for Linicrypt programs that use repeated nonces.
+
+We identify these two simple programs which are not collision resistant, 
+but which exemplify the attacks described above.
+\begin{pchstack}[center, space=2cm]
+  \pcbl[valign=c]{$\P_\mathrm{collapse}(x, y)$}{
+    \pcreturn \H(x) - \H(y)
+  }
+    \pcbm[valign=c]{Algebraic Representation}{
+    \begin{pcmbox}
+        \arraycolsep=3pt
+        \begin{array}{r wl{3mm} l}
+        \O    = \> \begin{bmatrix}0 \> 0 \> 1 \> -1\end{bmatrix} \\[2pt]
+        \vq_1 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0 \end{bmatrix} \\[2pt]
+        \va_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0 \end{bmatrix} \\[2pt]
+        \vq_2 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0 \end{bmatrix} \\[2pt]
+        \va_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1 \end{bmatrix} \\[2pt]
+        \end{array}
+    \end{pcmbox}
+    }
+\end{pchstack}
+\begin{pchstack}[center, space=2cm]
+  \pcbl[valign=c]{$\P_\mathrm{permutation}(x, y)$}{
+    \pcreturn \H(x) + \H(y)
+  }
+    \pcbm[valign=c]{Algebraic Representation}{
+    \begin{pcmbox}
+        \arraycolsep=3pt
+        \begin{array}{r wl{3mm} l}
+        \O    = \> \begin{bmatrix}0 \> 0 \> 1 \> 1\end{bmatrix} \\[2pt]
+        \vq_1 = \> \begin{bmatrix}1 \> 0 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \va_1 = \> \begin{bmatrix}0 \> 0 \> 1 \> 0\end{bmatrix} \\[2pt]
+        \vq_2 = \> \begin{bmatrix}0 \> 1 \> 0 \> 0\end{bmatrix} \\[2pt]
+        \va_2 = \> \begin{bmatrix}0 \> 0 \> 0 \> 1\end{bmatrix} \\[2pt]
+        \end{array}
+    \end{pcmbox}
+    }
+\end{pchstack}
+On one hand, all inputs of the form $(x,x)$ collide under $\P_{\mathrm{collapse}}$.
+On the other hand, every $(x,y)$ is a collision with $(y,x)$ under $\P_{\mathrm{permutation}}$ if $x \neq y$.
+A general characterization of collision resistance would have to take these two examples into account.
+
+\pagebreak
+
+Must do:
+\begin{enumerate}
+\item make 4.4 as chapter, do a intro sentence
+\item Abstract
+\item Ideal cipher security proposition needs SPR statement.
+\item Summary table should contain both SPR advantage and CR advantage?
+\item State MD security of Secure schemes comes from standard argument
+\item Feedback loop abstract, introduction v2 with Papo
+\end{enumerate}
+
+Want to do:
+\begin{enumerate}
+\item Properly define the collapse attack
+\item Prove that the special compression functions (type (f) and the 5 real (g)) fall into permutation attack and collapse attack
+\item Conjecture for no nonces theorem
+\item Use Linicrypt to get bounds on compression ratio, how many ideal cipher calls per message block are necessary.
+At a certain point, a collision structure can be shown to exist.
+Collapse attacks and permutation attacks could cause this bound to not be tight.
+Compare this with Stams bound.
+\end{enumerate}
