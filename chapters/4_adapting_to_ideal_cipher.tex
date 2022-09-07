@@ -416,7 +416,8 @@ We will confirm this for the case of a Linicrypt program which makes only a sing
     i.e. $\C = \{ (\vk, \vx, \vy)\}$ for some $\vk, \vx, \vy \in \Frowsp$.
     Assume there is an adversary $\adv$ making $N$ queries to the ideal cipher winning the collision resistance security game with
     \[
-        \prob{\mathsf{ColGame}(\P, \adv, \lambda) = 1 } > \frac{N(N-1)}{2(|\F| - N)}.
+        \cradv(\A, \P) > \frac{(N+1)N}{2|\F|}
+        % \prob{\mathsf{ColGame}(\P, \adv, \lambda) = 1 } > \frac{N(N-1)}{2(|\F| - N)}.
     \]
     Then $\P$ has a collision structure.
 \end{prop}
@@ -435,9 +436,18 @@ This proof is based on the proofs of McQuoid, Swope and Rosulek in \cite[Lemma 1
     Let $\v i$ and $\v i'$ be the output of $\A$ in the event that it successfully found a collision.
     As $\C$ is deterministically solvable fixing $\I$, they correspond to unique vectors $\vv \neq \vv'$ in $\sol(\C)$.
     We can assume the adversary actually makes the queries corresponding to these inputs,
-    i.e. $(\vk \vv, \vx \vv, \vy \vv)$ and $(\vk \vv', \vx \vv', \vy \vv')$ are contained in $\im(\mathcal{T})$.
-    Otherwise, we can force $\A$ to make these queries by modifying it,
+    therefore $(\vk \vv, \vx \vv, \vy \vv)$ and $(\vk \vv', \vx \vv', \vy \vv')$ are contained in $\im(\mathcal{T})$.
+
+    Otherwise, the adversary has won just by chance.
+    If we assume $N \geq 2$, the probability for this is bounded by
+    \[
+        \frac{1}{|\F| - N} \leq \frac{(N+1)N - 2N}{2|\F| - 2N} \leq \frac{(N+1)N}{2|\F|}.
+    \]
+    This would contradict with the assumption in the Lemma.
+
+    Or: Otherwise, we can force $\A$ to make these queries by modifying it,
     so that it runs $\P(\v i)$ and $\P(\v i')$ as its last action.
+
     Let $i$ and $j$ be defined by $\mathcal{T}(i) = (\vk \vv, \vx \vv, \vy \vv)$
     and $\mathcal{T}(j) = (\vk \vv', \vx \vv', \vy \vv')$. 
     That is, at query $i$ the adversary has determined the values involved in the query for $\P(\v i)$ and
@@ -475,18 +485,23 @@ This proof is based on the proofs of McQuoid, Swope and Rosulek in \cite[Lemma 1
     \end{equation}
     All the values on the right of \eqref{security_proof_equation2} have been determined,
     while $\va\vv'$ is sampled uniformly from a set of size at least $|\F| - j + 1$.
-    We call the event that this equation holds $Z_{ij}$, then
+    We call the event that equation \eqref{security_proof_equation2} holds $Z_{ij}$, so
     \[
         \prob{Z_{ij}} = \frac{1}{|\F| - j + 1}.
     \]
     Using the union bound we have
     \begin{equation*}
-    \prob{\mathsf{ColGame}(\P,\A,\lambda) = 1}
-    \leq \sum_{j=1}^N \sum_{i=1}^{j-1} \prob{Z_{ij}}
-    \leq \sum_{j=1}^N \frac{j - 1}{|\F| - j + 1}
-    \leq \frac{N(N-1)}{2(|\F| - N)},
+    \cradv(\A, \P)
+    \leq \sum_{j=1}^{N} \sum_{i=1}^{j-1} \prob{Z_{ij}}
+    \leq \sum_{j=0}^{N-1} \frac{j}{|\F| - j}
+    \leq \frac{(N-1)N}{2(|\F| - N)}
+    \leq \frac{(N+1)N}{2|\F|}.
     \end{equation*}
-    which gives the contradiction.
+    The last inequality follows from the fact that $\frac{a-c}{b-c} \leq \frac{a}{b} \iff a \leq b$ for $a,b,c \in \RR_+$ with $a,b \geq c$.
+    In our case we have $(N+1)N \leq 2|\F|$ for $N < \sqrt{2|\F|}$ and $(N+1)N \geq 2N$.
+    If $N \geq \sqrt{2|\F|}$ the inequality holds trivially.
+
+    This gives the contradiction.
 \end{proof}
 
 \begin{corollary}
@@ -496,7 +511,7 @@ This proof is based on the proofs of McQuoid, Swope and Rosulek in \cite[Lemma 1
     \begin{enumerate}
     \item $\P$ has a collision structure.
     \item There is an adversary making $2$ queries that always finds second preimages.
-    \item There is an adversary making $N$ queries that finds collisions with probability $N(N-1) / 2(|\F| - N)$.
+    \item There is an adversary making $N$ queries that finds collisions with probability $ \geq (N+1)N / 2|\F|$.
     \end{enumerate}
 \end{corollary}
 
