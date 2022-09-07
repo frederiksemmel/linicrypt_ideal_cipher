@@ -1,12 +1,15 @@
 \begin{abstract}
-Linicrypt is a proof model used to analyze programs that only make calls to a random oracle and perform linear operations in a field $\F$.
-We introduce new abstractions which allow us to extend Linicrypt to work with the ideal ciphers instead of random oracles.
-Specifically, given Lincrypt oracle constraints $\C$ of dimension $\base$, we define the set of solutions to $\C$ as a subspace of $\Fsp$.
-A Linicrypt program can then be interpreted as a method for finding a solution to $\C$ while fulfilling a given linear constraint.
-This allows us to characterize a weakness with regard to collision resistance simultaneously for Linicrypt programs in the ideal cipher model and in the random oracle model.
-If a program has this weakness, which we call a collision structure,
-one can transform the program into its attack by performing a basis change on the algebraic representation and reversing the roles of the input and output.
+Linicrypt is a mathematical framework introduced by Carmer and Rosulek (Crypto 2016).
+It is used to prove cryptographic properties of programs that only make calls to a random oracle and perform linear operations in a field $\F$.
+We introduce new abstractions which allow us to extend Linicrypt to work with ideal ciphers instead of random oracles.
+In Linicrypt, the execution of a program is viewed as a vector in a finite-dimensional vector space over $\F$.
+We describe the subset of such vectors abstractly.
+Using this abstraction, we characterize a weakness regarding collision resistance called a collision structure.
+Because of the new level of abstraction,
+this characterization is applicable simultaneously in the ideal cipher model and the random oracle model.
+We show that one can transform a program with a collision structure into its own attack
+by performing a basis change on an algebraic representation of itself and then reversing its input and output.
 The characterization is sound and complete in the case of Linicrypt programs making only a single query.
-We apply these concepts in the derivation of an attack taxonomy regarding the \MD construction
-for the 64 compression functions introduced by Preneel, Govaerts, and Vandewalle (Crypto 1993).
+We apply these concepts in deriving an attack taxonomy for the \MD construction obtained from the 64 compression functions
+introduced by Preneel, Govaerts, and Vandewalle (Crypto 1993).
 \end{abstract}
