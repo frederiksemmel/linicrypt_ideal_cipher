@@ -3,8 +3,7 @@ Linicrypt is a mathematical framework introduced by Carmer and Rosulek (Crypto 2
 It is used to prove cryptographic properties of programs that only make calls to a random oracle and perform linear operations in a field $\F$.
 We introduce new abstractions which allow us to extend Linicrypt to work with ideal ciphers instead of random oracles.
 In Linicrypt, the execution of a program is viewed as a vector in a finite-dimensional vector space over $\F$.
-We describe the subset of such vectors abstractly.
-Using this abstraction, we characterize a weakness regarding collision resistance called a collision structure.
+We describe the subset of such vectors abstractly and use it to characterize a weakness regarding collision resistance called a collision structure.
 Because of the new level of abstraction,
 this characterization is applicable simultaneously in the ideal cipher model and the random oracle model.
 We show that one can transform a program with a collision structure into its own attack

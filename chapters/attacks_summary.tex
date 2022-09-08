@@ -1,25 +1,25 @@
-\begin{tabular}{lllrc}
+\begin{tabular}{lllrcc}
 \toprule
- &  &  & \# & $\spradv(\A, \H^n_f)$ \\
-Linicrypt Attack & BRS & PGV &  &  \\
+ &  &  & \# & $\spradv{\A, \H^n_f}$ & $\cradv{\A, \H^n_f}$ \\
+Linicrypt Attack & BRS & PGV &  &  &  \\
 \midrule
-\multirow[c]{3}{*}{Degenerate} & a & - & 15 & 1 \\
-\cline{2-5} \cline{3-5}
- & b & D & 2 & 1 \\
-\cline{2-5} \cline{3-5}
- & g & F & 5 & 1 \\
-\cline{1-5} \cline{2-5} \cline{3-5}
-$\<\O, \vh\>$-Collision Structure & b & D & 12 & 1 \\
-\cline{1-5} \cline{2-5} \cline{3-5}
-Permutation attack & f & P & 5 & 1 \\
-\cline{1-5} \cline{2-5} \cline{3-5}
-\multirow[c]{2}{*}{Secure} & d & $\checkmark$ & 4 & $\leq N/|\F|$ \\
-\cline{2-5} \cline{3-5}
- & e & FP & 8 & $\leq N/|\F|$ \\
-\cline{1-5} \cline{2-5} \cline{3-5}
-\multirow[c]{2}{*}{Other Collision Structure} & c & B & 8 &  \\
-\cline{2-5} \cline{3-5}
- & g & B & 5 &  \\
-\cline{1-5} \cline{2-5} \cline{3-5}
+\multirow[c]{3}{*}{Degenerate} & a & - & 15 & 1 & 1 \\
+\cline{2-6} \cline{3-6}
+ & b & D & 2 & 1 & 1 \\
+\cline{2-6} \cline{3-6}
+ & g & F & 5 & 1 & 1 \\
+\cline{1-6} \cline{2-6} \cline{3-6}
+$\<\O, \vh\>$-Collision Structure & b & D & 12 & 1 & 1 \\
+\cline{1-6} \cline{2-6} \cline{3-6}
+Permutation attack & f & P & 5 & 1 & 1 \\
+\cline{1-6} \cline{2-6} \cline{3-6}
+\multirow[c]{2}{*}{Secure} & d & $\checkmark$ & 4 &  & $\leq (N+1)N/2|\F|$ \\
+\cline{2-6} \cline{3-6}
+ & e & FP & 8 &  & $\leq (N+1)N/2|\F|$ \\
+\cline{1-6} \cline{2-6} \cline{3-6}
+\multirow[c]{2}{*}{Other Collision Structure} & c & B & 8 &  & $\leq 3(N+1)N/|\F|$ \\
+\cline{2-6} \cline{3-6}
+ & g & B & 5 &  &  \\
+\cline{1-6} \cline{2-6} \cline{3-6}
 \bottomrule
 \end{tabular}

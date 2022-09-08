@@ -224,13 +224,13 @@ For example, depending on the context, $x$ denotes the variable itself,
 or it stands for the value it takes in $\F$ during a specific execution of the program.
 Their associated row vectors will have the same letter in bold font, e.g., $\vx \in \Frowsp$.
 Column vectors and matrices are also denoted by bold letters.
-We use $\vbase \in \Fsp$ or $\vv \in \Fsp$ to denote the column vector containing all the values for the base variables in the program's execution.
+We use $\vv \in \Fsp$ to denote the column vector containing all the values for the base variables in the program's execution.
 In a slight overload of notation,
 we will denote both the canonical basis column vectors and the canonical basis row vectors by $\ve_i$.
-In order to simplify the notation,
+Also, in order to simplify the notation,
 we will write $\vi = (i_1, \dots, i_k)$ to denote the column vector $\m{i_1 & \cdots & i_k}^\top$.
 We allow a Linicrypt program to take such a column vector as input,
-writing $\P(\vi)$ to denote the output of $\P$ given the input $\dts i k$. 
+writing $\P(\vi)$ for the output of $\P$ when given the input $\dts i k$. 
 
 Linicrypt statements are often about the span of the rows of matrices.
 If $\v A \in \F^{a\times\base}$ for arbitrary $a \in \NN$,
@@ -279,10 +279,10 @@ The collision game and the second-preimage game in the ideal cipher model are de
   Let $\A$ be an adversary, and $\P$ be a Linicrypt program.
   We define $\A$'s advantage as 
   \[
-    \cradv[\A, \P] = \prob{\crgame(\P, \A) = 1}.
+    \cradv{\A, \P} = \prob{\crgame(\P, \A) = 1}.
   \]
   We call $\P$ collision resistant if
-  $\cradv[\A, \P]$ is negligible for all (possibly not efficient) adversaries $\A$.
+  $\cradv{\A, \P}$ is negligible for all (possibly not efficient) adversaries $\A$.
 \end{defn}
 
 \begin{defn}[Second-preimage Resistance]
@@ -290,7 +290,7 @@ The collision game and the second-preimage game in the ideal cipher model are de
   Let $\A$ be an adversary, and $\P$ be a Linicrypt program.
   We define $\A$'s advantage as 
   \[
-    \spradv[\A, \P] = \prob{\sprgame(\P, \A) = 1}.
+    \spradv{\A, \P} = \prob{\sprgame(\P, \A) = 1}.
   \]
   We call $\P$ second-preimage resistant
   if $\spradv[\A, \P]$ is negligible for all (possibly not efficient) adversaries $\A$.
