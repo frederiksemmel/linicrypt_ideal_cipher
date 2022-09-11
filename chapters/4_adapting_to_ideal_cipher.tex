@@ -436,15 +436,15 @@ We give a short proof of this statement.
 \label{prop:single_query_cr_resistance}
     Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher,
     i.e. $\C = \{ (\vk, \vx, \vy)\}$ for some $\vk, \vx, \vy \in \Frowsp$.
-    Assume there is an adversary $\adv$ making $N$ queries to the ideal cipher winning the collision resistance security game with
+    Assume there is an adversary $\adv$ making $N$ queries to the ideal cipher and winning the collision resistance security game with
     \[
-        \cradv{\A, \P} > \frac{(N+1)N}{2|\F|}
+        \cradv{\A, \P} > \frac{(N+1)N}{2|\F|}.
         % \prob{\mathsf{ColGame}(\P, \adv, \lambda) = 1 } > \frac{N(N-1)}{2(|\F| - N)}.
     \]
     Then $\P$ has a collision structure.
 \end{prop}
 
-This proof is based on the proofs from McQuoid, Swope and Rosulek in \cite[Lemma 10]{TCC:McQSwoRos19} and from Boneh-Shoup in \cite[Theorem 8.4 (Davies-Meyer)]{Boneh2015CourseIA}.
+This proof is in part on the proofs from McQuoid, Swope and Rosulek in \cite[Lemma 10]{TCC:McQSwoRos19} and from Boneh-Shoup in \cite[Theorem 8.4 (Davies-Meyer)]{Boneh2015CourseIA}.
 
 \begin{proof}
     Assume towards a contradiction that there is such an adversary $\A$ making $N$ queries
@@ -455,17 +455,13 @@ This proof is based on the proofs from McQuoid, Swope and Rosulek in \cite[Lemma
     Let $\mathcal{T}: \{1, \dots, N\} \to \F^3$ be the function defined by $\mathcal{T}(i) = (k, x, y)$,
     if the $i$th query of $\A$ is $\E(k, x)$ with response $y$ or if it is $\D(k, y)$ with response $x$.
 
-    Let $\v i$ and $\v i'$ be the output of $\A$ in the event that it successfully found a collision.
-    As $\C$ is deterministically solvable fixing $\I$, they correspond to unique vectors $\vv \neq \vv'$ in $\sol(\C)$.
-    We can assume the adversary actually makes the queries corresponding to these inputs,
-    therefore $(\vk \vv, \vx \vv, \vy \vv)$ and $(\vk \vv', \vx \vv', \vy \vv')$ are contained in $\im(\mathcal{T})$.
-    Otherwise, the adversary has won just by chance.
-    If we assume $N \geq 2$, the probability for this event is bounded from above by
-    \[
-        \frac{1}{|\F| - N} \leq \frac{(N+1)N - 2N}{2|\F| - 2N} \leq \frac{(N+1)N}{2|\F|}.
-    \]
-    This would contradict the assumption in the Lemma.
-
+    We consider the event that $\A$ successfully outputs a collision $(\vi, \vi')$.
+    Our goal is to bound the probability of this event.
+    As $\C$ is deterministically solvable fixing $\I$, these two inputs to $\P$ correspond to unique vectors $\vv \neq \vv'$ in $\sol(\C)$.
+    We make a case distinction on whether $\A$ makes the two queries corresponding to $\vv$ and $\vv'$ respectively.
+    Let us denote by $Z$ the event that $\A$ makes the two queries, i.e. that $(\vk \vv, \vx \vv, \vy \vv)$ and $(\vk \vv', \vx \vv', \vy \vv')$ are in $\im(\mathcal{T})$.
+    
+    We first bound the conditional probability of $\A$ winning given that $Z$ is the case.
     Let $i$ and $j$ be defined by $\mathcal{T}(i) = (\vk \vv, \vx \vv, \vy \vv)$
     and $\mathcal{T}(j) = (\vk \vv', \vx \vv', \vy \vv')$. 
     That is, at query $i$ the adversary has determined the values involved in the query for $\P(\v i)$ and
@@ -483,17 +479,17 @@ This proof is based on the proofs from McQuoid, Swope and Rosulek in \cite[Lemma
     we can assume it outputs the value it fixes first as its first output.
     Because $i$ corresponds $\vi$ and $j$ to $\vi'$, we have $i < j$.
     Consider the point where $\A$ sent its $j$th query and is waiting to receive the answer from the ideal cipher.
-    If this query was to $\E$ we define $\Q = \m{\vk \\ \vx}$ and $\va = \vy$,
-    otherwise we define $\Q = \m{\vk \\ \vy}$ and $\va = \vx$.
+    If this query was to $\E$ we define $\Q = (\vk, \vx)$ and $\va = \vy$,
+    otherwise we define $\Q = (\vk, \vy)$ and $\va = \vx$.
     
     In either case, we know from Corollary \ref{corollary:single_query_properties} that
     \begin{equation}
     \label{security_proof_equation}
-    \va \in \rowsp(\O) + \rowsp(\Q) ,\quad \textrm{which means} \quad \va = \v \lambda \O + \v \gamma \Q.
+    \va \in \rowsp(\O) + \rowsp(\Q) ,\quad \textrm{which means} \quad \va = \v \lambda \O + \v \gamma \Q \quad \textrm{for some $\v\lambda, \v\gamma$}.
     \end{equation}
     At query $j$ the vectors $\Q\vv, \va\vv, \Q\vv'$ and $\O(\vv' - \vv)$ are determined.
     The latter is equal to $0$ by the assumption that $\v i$ and $\v i'$ are a collision.
-    Therefore, we can use \eqref{security_proof_equation} to show
+    Therefore, we can apply \eqref{security_proof_equation} to get
     \begin{equation*}
     \va (\vv' - \vv) = \v\lambda\O(\vv' - \vv) + \v\gamma \Q (\vv' - \vv),
     \end{equation*}
@@ -509,18 +505,43 @@ This proof is based on the proofs from McQuoid, Swope and Rosulek in \cite[Lemma
         \prob{Z_{ij}} = \frac{1}{|\F| - j + 1}.
     \]
     Using the union bound we get
-    \begin{equation*}
-    \cradv{\A, \P}
-    \leq \sum_{j=1}^{N} \sum_{i=1}^{j-1} \prob{Z_{ij}}
-    \leq \sum_{j=0}^{N-1} \frac{j}{|\F| - j}
-    \leq \frac{(N-1)N}{2(|\F| - N)}
-    \leq \frac{(N+1)N}{2|\F|}.
-    \end{equation*}
+    \begin{align}
+    \prob{\crgame(\A, \P) = 1 \mid Z} &\leq \sum_{j=1}^{N} \sum_{i=1}^{j-1} \prob{Z_{ij}} \\
+    &\leq \sum_{j=0}^{N-1} \frac{j}{|\F| - j} \\
+    &\leq \frac{(N-1)N}{2(|\F| - N)} \\
+    \label{eq:bound_z}
+    &\leq \frac{(N+1)N}{2|\F|}.
+    \end{align}
     The bound holds trivially in the case of $N \geq \sqrt{2|\F|}$.
     If $N < \sqrt{2|\F|}$, the last inequality follows from Lemma \ref{lemma:fraction_bound}
     with $a = (N+1)N$, $b = 2|\F|$ and $c = 2N$.
 
-    This gives the contradiction, and therefore $\P$ must have a collision structure given the assumptions in the Proposition.
+    What remains is that case that $\A$ wins without making the corresponding oracle queries.
+    Intuitively, $\A$ has just won by chance in this event, as the output of $\P$ has to depend on the query it makes.
+    If $\P$ makes a query to $\E$, we define $\Q = (\vk, \vx)$ and $\va = \vy$, otherwise we define $\Q = (\vk, \vy)$ and $\va = \vx$.
+    Because $\P$ is a deterministic program, we know $\rowsp(\Q) \subseteq \rowsp(\I)$.
+    Then, using Corollary \ref{corollary:det_solvable_computeable_ic} again, we have
+    $\va \in \rowsp(\O) + \rowsp(\I)$, which means $\va = \v\lambda \O + \v\gamma \I$ for some $\v\gamma, \v\lambda$.
+    By applying this equation to $\vv - \vv'$ and using the fact that we are in the event of a succesful collision we get:
+    \[
+    \va(\vv - \vv') = \v\gamma (\vi - \vi')
+    \]
+    The value on the left is sampled uniformly from at least $|\F| - (N+1)$ values, while the value on the right is fixed.
+    The probability for $\A$ to win while $Z$ is not the case is bounded by the probability of that this equation holds,
+    which means for $N \geq 3$
+    \begin{equation}
+    \label{eq:bound_y}
+        \prob{\crgame(\A, \P) = 1 \mid \bar{Z}} \leq \frac{1}{|\F| - (N+1)} \leq \frac{N+2}{|\F|} \leq \frac{(N+1)N}{2|\F|}.
+    \end{equation}
+    
+    We can put equations \eqref{eq:bound_z} and \eqref{eq:bound_y} together to bound the probability of $\A$ winning altogether.
+    \begin{align*}
+    \cradv{\A, \P} = & \prob{\crgame(\A, \P) = 1 \mid Z}\cdot \prob{Z} \\
+    + & \prob{\crgame(\A, \P) = 1 \mid \bar{Z}}\cdot \prob{\bar{Z}} \\
+    \leq & \frac{(N+1)N}{2|\F|}
+    \end{align*}
+    
+    This gives the contradiction, and therefore $\P$ must have a collision structure.
 \end{proof}
 
 We can achieve a similar result for the second-preimage game.
@@ -537,34 +558,42 @@ We can achieve a similar result for the second-preimage game.
 \end{prop}
 
 \begin{proof}
-    The proof is similar to the proof of \ref{prop:single_query_cr_resistance}.
-    Let $\A$ and $\P$ be as stated in the Proposition.
-    Assume towards contradiction, that $\P$ does not have a collision structure.
-    We consider the event that $\A(\vi)$ outputs $\vi'$ which collides with the randomly sampled $\vi$ from the game definition.
-    Let $\mathcal{T}$ denote the transcript of $\A(\vi)$ as before.
-    We write $\vv, \vv'$ for the vectors in $\sol(\C)$ corresponding to $\vi$ and $\vi'$.
-    Wlog we assume $\A$ actually asks for the query $(\vk\vv', \vx\vv', \vy\vv')$.
-    
-    Let $i$ be defined by $\mathcal{T}(i) = (\vk\vv', \vx\vv', \vy\vv')$.
+    The proof is similar to the proof of \ref{prop:single_query_cr_resistance},
+    and therefore we will refer to it for the details.
+    Let $\A$ and $\P$ be as stated.
+    We assume towards contradiction, that $\P$ does not have a collision structure.
+    Let $\mathcal{T}$, $\vv$ and $\vv'$ be defined as in Proposition \ref{prop:single_query_cr_resistance}.
+    Also, let $Z$ denote the event that $(\vk\vv', \vx\vv', \vy\vv')$ is in $\im(\mathcal{T})$.
+
+    By the same argumentation as before, we bound the winning probability given that $\A$ does not make this query by
+    \begin{equation}
+    \label{eq:spr_bound_notz}
+        \prob{\sprgame(\A, \P) = 1 \mid \bar{Z}} \leq \frac{1}{|\F| - (N+1)} \leq \frac{N+2}{|\F|} \leq \frac{2N}{|\F|},
+    \end{equation}
+    for $N \geq 2$.
+
+    Now, assume $Z$ is the case and let $i$ be defined by $\mathcal{T}(i) = (\vk\vv', \vx\vv', \vy\vv')$.
     Consider the time when $\A$ makes its $i$th query and waits for the response.
-    We define $\Q$ and $\va$ as in the previous Proposition.
-    Using Corollary \ref{corollary:single_query_properties} we get
+    We define $\Q$ and $\va$ as in Proposition \ref{prop:single_query_cr_resistance} and
+    use Corollary \ref{corollary:single_query_properties} to get for some $\v\gamma$ that
     \begin{equation}
     \label{eq:spr_security_proof_equation2}
     \va \vv' = \va\vv + \v\gamma \Q \vv' - \v\gamma \Q\vv.
     \end{equation}
-    Let us call the event that equation \eqref{eq:spr_security_proof_equation2} holds $Z_i$. Then
-    As before we can bound the advantage as follows:
-    \begin{equation*}
-    \spradv{\A, \P}
+    Let us call the event that equation \eqref{eq:spr_security_proof_equation2} holds $Z_i$.
+    Then, as before, we can bound $\A$'s advantage as follows:
+    \begin{equation}
+    \label{eq:spr_bound_z}
+    \prob{\sprgame(\A, \P) = 1 \mid Z}
     \leq \sum_{i=1}^{N} \prob{Z_i}
     \leq \sum_{i=1}^{N} \frac{1}{|\F| - i}
     \leq \frac{N}{|\F| - N}
-    \leq \frac{2N}{|\F|},
-    \end{equation*}
-    leading to the contradiction.
+    \leq \frac{2N}{|\F|}.
+    \end{equation}
+    Putting \eqref{eq:spr_bound_notz} and \eqref{eq:spr_bound_notz} together leads to the contradiction.
 \end{proof}
 
+Following \cite[Main Theorem]{TCC:McQSwoRos19TCC:}, summarize these results in the following theorem.
 \begin{thm}
 \label{theorem:single_query_security}
     Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher.
@@ -572,8 +601,8 @@ We can achieve a similar result for the second-preimage game.
     \begin{enumerate}
     \item $\P$ has a collision structure.
     \item There is an adversary making $2$ queries that always finds second preimages.
-    \item There is an adversary making $N$ queries with $\cradv{\A, \P} > 2N / |\F|$.
-    \item There is an adversary making $N$ queries with $\spradv{\A, \P} > (N+1)N / 2|\F|$.
+    \item There is an adversary $\A$ making $N$ queries with $\cradv{\A, \P} > 2N / |\F|$.
+    \item There is an adversary $\A$ making $N$ queries with $\spradv{\A, \P} > (N+1)N / 2|\F|$.
     % \item There is an adversary making $N$ queries that finds second-preimages with probability $> 2N / |\F|$.
     % \item There is an adversary making $N$ queries that finds collisions with probability $> (N+1)N / 2|\F|$.
     % \item There is an adversary making $N$ queries that finds second-preimages with probability $> 2N / |\F|$.
@@ -697,9 +726,10 @@ In order to formalize this idea, we define the \MD construction in the Linicrypt
 \end{defn}
 
 The $\PMD{f_\P}$ in the definition is clearly a Linicrypt program as the calls to the Linicrypt program $\P$ could be expanded into regular Linicrypt commands.
-In the standard \MD construction, the IV is chosen to be any fixed constant.
+In the standard \MD construction, the IV, which corresponds to $h_0$, is chosen to be any fixed constant.
 Linicrypt does not allow for fixed constants.
 But as 0 is a linear combination of the input variables, we can use 0 as the IV.
+% We use $\P(0,0)$ as the IV such that collision resistance for the whole family of programs $\PMD{f_\P}$ with varying $n$ follows from collision resistance of $\P$ with the standard \MD argument.
 
 Another way in which the definition varies from the usual definition,
 is that $\PMD{f_\P}$ takes $n$ inputs for some fixed $n$.
@@ -708,24 +738,62 @@ The Linicrypt model does not allow for variable input length.
 One has to consider $H^n_f$ to be a different Linicrypt program from $H^{n'}_f$ for $n \neq n'$.
 Therefore, $H^n_f$ is actually a compression function with a compression ratio of $n$-to-1.
 
+We will restate the cassical result for collision resistance of the \MD construction:
+An adversary against the \MD construction can be efficiently converted into an adversary against the compression function.
+
+\begin{thm}[Linicrypt \MD collision resistance]
+    Let $\P$ be Linicrypt program taking 2 inputs and returning a single output.
+    Let $\A$ be an adversary against $\PMD{f_\P}$ for some $n \in \NN$.
+    Then there exists an adversary $\advB$ against $\P$ such that
+    \[
+        \cradv{\A, \PMD{f_\P}} = \cradv{\advB, \P}.
+    \]
+\end{thm}
+
+\begin{proof}
+    The adversary $\mathcal{B}$ simply runs $\A$ to completion to get two messages
+    $\vm = (\dts m n)$ and $\vm' = (\dts {m'} n)$.
+    He checks wether $\PMD{f_\P}(\vm) = \PMD{f_\P}(\vm')$ and $\vm \neq \vm'$.
+    If this is not the case, then $\advB$ outputs $\perp$.
+    We will refer to the intermediate chaining values computed in $\PMD{f_\P}(\vm)$ and $\PMD{f_\P}(\vm')$ as $h_i$ and $h_i'$ respectively for $i=1, \dots, n$.
+    If $\A$ did output a valid collision then $\advB$ outputs the first pair $\big((h_{i-1}, m_i), (h_{i-1}', m_i')\big)$ where $i$ goes from $n$ to $1$ such that $(h_{i-1}, m_i) \neq (h_{i-1}', m_i')$.
+    At least one pair fulfills this condition because $\vm \neq \vm'$.
+    
+    From the definition of $\advB$ it is clear that $\advB$ wins $\crgame(\advB, \P)$ if and only if $\A$ wins $\crgame(\A, \PMD{f_\P})$.
+\end{proof}
+
+We have to remark, that this is a result for collision resistance of the Linicrypt \MD construction,
+as this is all we need in the further argumentation.
+It only proves that it is hard to find collisions of the same length $n$.
+
+To fix this, different approaches are taken in the literature.
+One approach is to change the definition of collision resistance for the compression function to allow the adversary to win when it finds a preimage to the IV,
+as in \cite{C:BlaRogShr02}.
+Without adding a separate definition for collision resistance of compression functions,
+we could also bound $\cradv{\A, \PMD{f_\P}}$ by the sum of the maximal advantage against $\P$ in the collision game and the maximal advantage against $\P$ in a preimage game for the chosen IV.
+Although, this bound would not be tight.
+Another approach, commonly done in practice, is to encode the length of the message in the last input of the message,
+which is called \MD strengthening.
+But, to analyze the effect of \MD strengthening one has to step out of the Linicrypt framework,
+as this would not be a Linicrypt program.
+
 \subsection{Deriving a taxonomy of attacks from Linicrypt}
 
-The authors of \cite{C:PreGovVan93} and \cite{C:BlaRogShr02} classify the 64 compression schemes by the attacks they allow,
-when used in the \MD construction.
-The attack types are stated in a table, but no derivation or intuition for why this structure makes sense is given.
+The authors of \cite{C:PreGovVan93} and \cite{C:BlaRogShr02} classify the 64 compression schemes by the attacks they enable on the \MD construction.
+The attack types are stated in a table, but no derivation or intuition for the stated structure is given.
 We will briefly present their categorizations of the attacks.
 This serves as a comparison to the classification which we will later derive from the Linicrypt model.
 Our classification agrees for the most part with theirs,
 although a few interesting differences remain.
 
 In \cite{C:BlaRogShr02}, the authors classify the schemes into 3 groups.
-There are 12 group-1 schemes that are secure compression functions and give secure \MD constructions.
+There are 12 group-1 schemes that are secure compression functions and therefore make up secure \MD constructions.
 Then they define 8 additional group-2 schemes.
 Although these are insecure compression functions,
 the \MD construction is still collision resistant. 
 Finally, the remaining 44 schemes are defined as group-3,
 and it is stated that a collision resistance attack using at most 3 queries to the ideal cipher exists.
-In Figure 1 of said paper, each scheme is assigned to an attack type ranging from (a) to (g).
+In Figure 1 of said paper, each scheme is assigned an attack type ranging from (a) to (g).
 The group-1 schemes correspond to attack types (d) and (e), while group-2 schemes are susceptible to attack type (c).
 
 Their attack categorization agrees almost completely with the one created by \cite{C:PreGovVan93}.
@@ -736,7 +804,7 @@ The capital letters, ($\checkmark$) and (-) are the attack types from \cite{C:Pr
 \item \textbf{Permutation Attack (P) $\leftrightarrow$ (f):} The chaining value $h$ is not used in the query to $\E$,
         hence the order of inputs for $\H^n_f$ does not matter.
 \item \textbf{Forward Attack (F) $\leftrightarrow$ 5 schemes from (g):} Given $o, h, m, h' \in \F$ one can find an $m' \in \F$ such that $f(h',m') = o = f(h, m)$.
-\item \textbf{Backward Attack (B) $\leftrightarrow$ (c) and 5 schemes from (g):} Given $o \in \F$ one can find $(h,m)$ such that $f(h,m) = o$.
+\item \textbf{Backward Attack (B) $\leftrightarrow$ (c) and 5 schemes from (g):} Given $o \in \F$ one can find $h,m \in \F$ such that $f(h,m) = o$.
 \item \textbf{Fixed Point Attack (FP) $\leftrightarrow$ (e):} One can find $h,m \in \F$ such that $f(h,m) = h$.
 \item \textbf{Secure ($\checkmark$) $\leftrightarrow$ (d):} $f$ has none of the weaknesses above.
 \end{itemize}
@@ -773,7 +841,7 @@ once you take into account interactions that can happen between different ideal 
 
 This categorization is guided by visual intuition.
 As defined above, the parameters $(a,b,c,d,e,f)$ determine the vectors $\O, \vk$ and $\vx$.
-Each attack type corresponds can be derived from the relationship these three vectors have with each other and with the basis vectors $\vh, \vm, \vy$.
+Each attack type can be derived from the relationship these three vectors have with each other and with the basis vectors $\vh, \vm, \vy$.
 The graphical representation introduced in Figure \ref{fig:graphical_rep} of a compression function might assist the visual intuition.
 \begin{figure}[ht]
 \centering
@@ -902,14 +970,14 @@ If $\vv$ is in $\sol(\C)$ then $\vv + \vw$ is in $\sol(\C)$ with $\O\vv = \O(\vv
 In other words: $\P\big(\I(\vv + \vw)\big) = \O(\vv + \vw) = \O\vv = \P(\I\vv)$.
 
 As $f$ is degenerate, $\dim\big(\rowsp(\O,\vk,\vx,\vy)\big) \leq 2$.
-Also, $\vy = \ve^3 \in \rowsp(\O, \vk, \vx, \vy)$.
+Also, $\vy = \ve_3 \in \rowsp(\O, \vk, \vx, \vy)$.
 Therefore, $\ker(\O) \cap \ker(\C)$ can only be one of 4 subspaces.
 We do a case separation for these 4 subspaces.
 
 % \textbf{Case 1.1: $\ker(\O) \cap \ker(\C) = \spn(\ve_1, \ve_2) = \rowsp(\vh)\t + \rowsp(\vm)\t = \spn(\vh\t, \vm\t)$.}
 \textbf{Case 1.1: $\ker(\O) \cap \ker(\C) = \rowsp(\vh, \vm)\t = \spn(\ve_1, \ve_2)$.}
 
-It follows that $\rowsp(\C) = \rowsp(\O) = \rowsp(\ve_3)$, i.e. $\vk = \vx = 0$ and $\O = \ve^3$.
+It follows that $\rowsp(\C) = \rowsp(\O) = \rowsp(\ve_3)$, i.e. $\vk = \vx = 0$ and $\O = \ve_3$.
 This is the scheme $f(h,m) = E(0,0)$.
 The function $H^n_f$ is constant, so every input is a collision with every other input.
 This is the graphical representation of its algebraic representation.
@@ -1122,6 +1190,9 @@ This is the visual representation corresponding to them:
 \cube{\plane{0,1,0}{0,1,1}{0,0,1}\arrows{0,1}{0,1}{1,1}}
 \end{center}
 
+In \cite{C:BlaRogShr02} it is proven that the group-2 schemes are collision resistant.
+Specifically, they prove $\cradv{\A, H^n_f} \leq 3(N+1)N / |\F|$ for an arbitrary $\A$,
+so the 8 group-2 schemes are just as collision resistant as the 12 group-1 schemes, up to a constant factor.
 
 The 5 remaining schemes are marked with attack type (g).
 That means, that the authors \cite{C:BlaRogShr02} identified a collision attack making 2 or fewer queries.

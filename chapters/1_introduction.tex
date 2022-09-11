@@ -14,7 +14,8 @@ Therefore, it makes sense to use a block cipher that is believed to be secure as
 and express their security in terms of the security of the block cipher.
 The ideal cipher model, which Shannon introduced in \cite{Shannon49},
 is a useful technique in this context.
-This model assumes that the block cipher is a uniformly random permutation for any key.
+% TODO check if independet is good here
+This model assumes that the block cipher is an independent uniformly random permutation for any key.
 Consequently, security properties can be proven in absolute terms, depending only on the number of queries an adversary makes to the ideal cipher.
 The number of queries acts as a proxy for the time and resources needed to break the construction,
 as we assume that the execution of the ideal cipher program has a fixed cost.
