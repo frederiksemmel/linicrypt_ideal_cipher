@@ -152,7 +152,7 @@ With these definitions in place, the Lemmas from Chapter \ref{chapter:revisiting
     For each constraint $c = (\vk, \vx, \vy)$ in $\C$ we set $\Q = \m{\vk^\top & \vx^\top}^\top$ and $\va = \vy$ if $c$ is associated to a call to $\E$.
     If $c$ is associated to a call to $\D$,
     we set $\Q = \m{\vk^\top & \vy^\top}^\top$ and $\va = \vx$.
-    The rest of the proof is identical to the proof of Lemma \ref{alg_rep_det_solvable}.
+    The rest of the proof is identical to the proof of Lemma \ref{lemma:alg_rep_det_solvable}.
 \end{sketch}
 
 \begin{lemma}
@@ -593,7 +593,7 @@ We can achieve a similar result for the second-preimage game.
     Putting \eqref{eq:spr_bound_notz} and \eqref{eq:spr_bound_notz} together leads to the contradiction.
 \end{proof}
 
-Following \cite[Main Theorem]{TCC:McQSwoRos19TCC:}, summarize these results in the following theorem.
+Following \cite[Main Theorem]{TCC:McQSwoRos19}, we summarize these results in the following theorem.
 \begin{thm}
 \label{theorem:single_query_security}
     Let $\P = (\I, \O, \C)$ be a program making only a single call to the ideal cipher.
