@@ -1,4 +1,4 @@
-\chapter{Adapting Linicrypt to the ideal cipher model}
+\chapter{Adapting Linicrypt to the Ideal Cipher Model}
 
 In this chapter, we modify the Linicrypt model by replacing the random oracle with an ideal cipher.
 This means that a Linicrypt program gets access to a block cipher $\mathcal{E} = (E, D)$ instead of the hash function $\H : \{0,1\}^* \times \F^* \to \F$.
@@ -28,7 +28,7 @@ For any $k' \in \F$ the input $(k', x')$ for $x' = \D\big(k', \E(k, x)\big)$ is 
 This invertibility property of block ciphers has to be taken into account
 in both the algebraic representation and the characterization of collision resistance.
 
-\section{Algebraic representation for ideal cipher Linicrypt}
+\section{Algebraic Representation for Ideal Cipher Linicrypt}
 
 The definitions and lemmas in this section are parallel to the ones in section \ref{chapter:revisiting_algebraic_representations}.
 Only some basic lemmas need to be proven separately; the others have identical proofs.
@@ -632,7 +632,7 @@ Following \cite[Main Theorem]{TCC:McQSwoRos19}, we summarize these results in th
     \end{enumerate}
 \end{thm}
 
-\section{Application: Compression schemes}
+\section{Application: Compression Schemes}
 
 The papers \cite{C:BlaRogShr02} and \cite{C:PreGovVan93} have analyzed the 64 most basic constructions for a compression function
 based on a single call to a block cipher $\BC = (\E, \D)$.

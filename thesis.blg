@@ -1,0 +1,65 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: thesis.aux
+The style file: biblatex.bst
+Database file #1: thesis-blx.bib
+Database file #2: refs.bib
+Database file #3: crypto.bib
+Warning--string name "crypto16ed" is undefined
+--line 139189 of file crypto.bib
+Warning--string name "crypto16name3" is undefined
+--line 139190 of file crypto.bib
+Warning--string name "crypto16vol3" is undefined
+--line 139191 of file crypto.bib
+Warning--string name "cryptoaddr" is undefined
+--line 139192 of file crypto.bib
+Warning--string name "crypto16month" is undefined
+--line 139193 of file crypto.bib
+Warning--string name "cryptopub" is undefined
+--line 139194 of file crypto.bib
+Warning--string name "mylncs" is undefined
+--line 139195 of file crypto.bib
+Warning--string name "crypto02ed" is undefined
+--line 149290 of file crypto.bib
+Warning--string name "crypto02name" is undefined
+--line 149291 of file crypto.bib
+Warning--string name "crypto02vol" is undefined
+--line 149292 of file crypto.bib
+Warning--string name "cryptoaddr" is undefined
+--line 149293 of file crypto.bib
+Warning--string name "crypto02month" is undefined
+--line 149294 of file crypto.bib
+Warning--string name "cryptopub" is undefined
+--line 149295 of file crypto.bib
+Warning--string name "mylncs" is undefined
+--line 149296 of file crypto.bib
+Warning--string name "crypto93ed" is undefined
+--line 154632 of file crypto.bib
+Warning--string name "crypto93name" is undefined
+--line 154633 of file crypto.bib
+Warning--string name "crypto93vol" is undefined
+--line 154634 of file crypto.bib
+Warning--string name "cryptoaddr" is undefined
+--line 154635 of file crypto.bib
+Warning--string name "crypto93month" is undefined
+--line 154636 of file crypto.bib
+Warning--string name "cryptopub" is undefined
+--line 154637 of file crypto.bib
+Warning--string name "mylncs" is undefined
+--line 154638 of file crypto.bib
+Warning--string name "tcc19ed" is undefined
+--line 632268 of file crypto.bib
+Warning--string name "tcc19name1" is undefined
+--line 632269 of file crypto.bib
+Warning--string name "tcc19vol1" is undefined
+--line 632270 of file crypto.bib
+Warning--string name "tcc19addr" is undefined
+--line 632271 of file crypto.bib
+Warning--string name "tcc19month" is undefined
+--line 632272 of file crypto.bib
+Warning--string name "tccpub" is undefined
+--line 632273 of file crypto.bib
+Warning--string name "mylncs" is undefined
+--line 632274 of file crypto.bib
+Biblatex version: 3.16
+(There were 28 warnings)
